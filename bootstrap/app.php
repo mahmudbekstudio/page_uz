@@ -11,8 +11,10 @@
 |
 */
 
-$app = new Gecche\Multidomain\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
+$basePath = $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__);
+$app = new App\Application(
+    $basePath,
+    $basePath . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'domains' . DIRECTORY_SEPARATOR . 'env'
 );
 
 /*
