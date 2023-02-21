@@ -23,7 +23,7 @@ class WebsiteRepository extends BaseRepository {
     /**
      * Get website mode by id
      *
-     * @param int $id
+     * @param string $id
      * @return Website|null
      */
     public function getById(int $id) {
@@ -52,6 +52,11 @@ class WebsiteRepository extends BaseRepository {
      * @return Website|null
      */
     public function getByDomain(string $domain) {
+        if(isset($_ENV['current-website'])) {
+            $website = new Website($_ENV['current-website']);
+            $this->setVar($website->id, $website);
+        }
+
         $website = $this->getVarByField('domain', $domain);
 
         if($website) {
@@ -61,20 +66,40 @@ class WebsiteRepository extends BaseRepository {
         $website = $this->model->where('domain', $domain)->first();
 
         if($website) {
-            $this->setVar($website->id, $website);
+            if($website->domain_id) {
+                $website = $this->getById($website->domain_id);
+            } else {
+                $this->setVar($website->id, $website);
+            }
         }
 
         return $website;
     }
 
-    public function getMetaValue(string $keyValue, string $lang = '') {
-        $meta = $this->getCurrent()->metas()->where('meta_key', $keyValue)->where('lang', $lang)->first();
+    public function getMetas($id = 0)
+    {
+        $result = $this->getVar('metas_' . $id);
 
-        if (!$meta) {
-            return null;
+        if(!$result) {
+            $current = $id ? $this->getById($id) : $this->getCurrent();
+            $metas = $current->metas;
+            $result = [];
+
+            foreach($metas as $meta) {
+                $key = $meta->lang ? $meta->meta_key . '_' . $meta->lang : $meta->meta_key;
+                $result[$key] = DataFormat::toFormat($meta->meta_value, $meta->meta_format);
+            }
+
+            $this->setVar('metas_' . $id, $result);
         }
 
-        return DataFormat::toFormat($meta->meta_value, $meta->meta_format);
+        return $result;
+    }
+
+    public function getMetaValue(string $keyValue, string $lang = '') {
+        $metas = $this->getMetas();
+        $key = $lang ? $keyValue . '_' . $lang : $keyValue;
+        return $metas[$key] ?: null;
     }
 
     public function getMetaLangValue(string $keyValue) {

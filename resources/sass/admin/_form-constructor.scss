@@ -1,0 +1,104 @@
+.form-constructor {
+  .custom-tabs-items {
+    overflow: inherit;
+  }
+  .constructor-tab-body {
+    .constructor-container {
+      .constructor-row {
+        position: relative;
+        min-height: 100px;
+
+        .row-action {
+          display: none;
+          position: absolute;
+          left: -24px;
+          width: 24px;
+          z-index: 1;
+
+          .row-actions-list {
+            border-radius: 5px 0 0 5px;
+            overflow: hidden;
+
+            .action-ico {
+              cursor: pointer;
+              fill: #FFF;
+              margin-bottom: 1px;
+              background-color: #333;
+              display: block;
+              height: 26px;
+
+              &:last-child {
+                margin-bottom: 0;
+              }
+
+              &:hover {
+                background-color: #AAA;
+                fill: #000;
+              }
+            }
+          }
+        }
+
+        &:hover {
+          outline: 1px solid #dee2e6;
+          background-color: #F6F6F6;
+
+          .row-action {
+            display: block;
+          }
+        }
+
+        .constructor-col {
+          position: relative;
+          min-height: 100px;
+
+          .cell-action {
+            display: none;
+            position: absolute;
+            top: -27px;
+            left: 50%;
+            margin-left: -45px;
+            height: 30px;
+            color: #FFF;
+
+            .cell-actions-list {
+              border-radius: 5px 5px 0 0;
+              overflow: hidden;
+              display: flex;
+
+              .action-ico {
+                cursor: pointer;
+                fill: #FFF;
+                margin-right: 1px;
+                background-color: #333;
+                display: inline-block;
+                width: 26px;
+                height: 26px;
+
+                &:last-child {
+                  margin-right: 0;
+                }
+
+                &:hover {
+                  background-color: #AAA;
+                  fill: #000;
+                }
+              }
+            }
+          }
+
+          &:hover {
+            outline: 1px solid #dee2e6;
+            background-color: #F6F6F6;
+
+            .cell-action {
+              display: block;
+            }
+          }
+        }
+      }
+
+
+    }
+  }
+}

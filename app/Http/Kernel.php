@@ -2,10 +2,65 @@
 
 namespace App\Http;
 
+use App\Models\Website;
 use Gecche\Multidomain\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Routing\Router;
+use Gecche\Multidomain\Foundation\Bootstrap\DetectDomain;
+use Dotenv\Dotenv;
 
 class Kernel extends HttpKernel
 {
+    public function __construct(Application $app, Router $router)
+    {
+        parent::__construct($app, $router);
+        $app->beforeBootstrapping(DetectDomain::class, function ($app) {
+            $dotenv = Dotenv::createImmutable(base_path());
+            $dotenv->load();
+
+            $connection = new \PDO("{$_ENV['DB_CONNECTION']}:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_DATABASE']};port={$_ENV['DB_PORT']}", $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
+            $result = $connection
+                ->query("SELECT * FROM `websites` WHERE `domain`='" . $_SERVER['SERVER_NAME'] . "'")
+                ->fetchAll(\PDO::FETCH_ASSOC);
+
+            if(!empty($result)) {
+                $result = $result[0];
+                $domainId = $result['domain_id'] ?: $result['id'];
+
+                if ($result['type'] == Website::TYPE_MAIN) {
+                    $_ENV['current-website'] = $result;
+                    $this->initDotEnv($app, $domainId);
+                } elseif(in_array($result['type'], [Website::TYPE_REDIRECT, Website::TYPE_ALIAS])) {
+                    $websiteResult = $connection
+                        ->query("SELECT * FROM `websites` WHERE (`id`='" . $domainId . "' OR `domain_id`='" . $domainId . "') AND `type`='" . Website::TYPE_MAIN . "'")
+                        ->fetchAll(\PDO::FETCH_ASSOC);
+
+                    if(!empty($websiteResult)) {
+                        if ($result['type'] == Website::TYPE_REDIRECT) {
+                            $protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
+                            header('Location: ' . $protocol . '://' . $websiteResult[0]['domain']);
+                            exit;
+                        }
+
+                        $this->initDotEnv($app, $websiteResult[0]['id']);
+                    } else {
+                        errorPageNotFound();
+                    }
+                }
+
+            }
+        });
+    }
+
+    private function initDotEnv($app, $domainId)
+    {
+        $dotenv = Dotenv::createMutable(storage_path('domains/env'), '.env.' . $domainId);
+        $dotenv->safeLoad();
+
+        //$app->setEnvironmentFile('.env.' . $domainId);
+        $app->useStoragePath(storage_path('domains/' . $domainId));
+    }
+
     /**
      * The application's global HTTP middleware stack.
      *
@@ -63,5 +118,8 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
     ];
 }

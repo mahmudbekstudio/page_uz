@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Requests\Admin\Filemanager;
+
+use App\Http\Requests\Traits\JsonResponseValidation;
+use Illuminate\Foundation\Http\FormRequest;
+
+class UploadFileRequest extends FormRequest
+{
+    use JsonResponseValidation;
+
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'file' => "required|mimes:" . implode(',', config('app.allow_extension')) . "|max:" . config('app.max_upload_size')
+        ];
+    }
+}

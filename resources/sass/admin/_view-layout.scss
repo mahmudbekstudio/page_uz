@@ -1,0 +1,27 @@
+.empty-layout {
+  display: flex;
+  flex: 1 0 auto;
+}
+
+.profile-menu {
+  cursor: pointer;
+  min-width: 70px;
+
+  .user-name {
+    display: inline-block;
+    padding: 0 5px;
+    vertical-align: middle;
+  }
+}
+
+.layout-snackbar {
+  .v-snack__content {
+    span {
+      line-height: 36px;
+    }
+
+    button {
+      float: right;
+    }
+  }
+}

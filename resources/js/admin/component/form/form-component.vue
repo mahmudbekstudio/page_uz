@@ -1,0 +1,106 @@
+<template>
+    <div>
+        <v-form ref="form" lazy-validation :disabled="disabled" v-model="valid" v-if="formObject">
+            <v-tabs
+                    v-model="tab"
+                    align-with-title
+                    v-if="showTabs"
+            >
+                <v-tabs-slider color="yellow"></v-tabs-slider>
+
+                <v-tab
+                        v-for="(tab, index) in formObject.children"
+                        :key="'tab' + index"
+                >
+                    {{ tab.title }}
+                </v-tab>
+            </v-tabs>
+            <v-tabs-items v-model="tab">
+                <v-tab-item
+                        v-for="(tab, index) in formObject.children"
+                        :key="'tab' + index"
+                >
+                    <v-container>
+                        <v-row
+                                v-for="(row, rowIndex) in tab.children"
+                                :key="'row' + rowIndex"
+                        >
+                            <v-col
+                                    v-for="(col, colIndex) in row.children"
+                                    :key="'col' + colIndex"
+                            >
+                                <div
+                                        v-for="(field, fieldIndex) in col.children"
+                                        :key="'col' + fieldIndex"
+                                >
+                                    <field-component
+                                            :fieldKey="[index, rowIndex, colIndex, fieldIndex].join(fieldSplitter)"
+                                            :type="field.type"
+                                            :disabled="field.disabled"
+                                            :value="field.value"
+                                            @input="fieldChanged"
+                                            :params="field.params"
+                                            :events="field.events"
+                                    />
+                                </div>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-tab-item>
+            </v-tabs-items>
+        </v-form>
+    </div>
+</template>
+<script>
+    import { Form as FormClass } from './classes/form';
+    import fieldComponent from './field-component';
+    import {FORM} from '../../constants';
+    export default {
+        data() {
+            return {
+                fieldSplitter: FORM.fieldKeySplitter,
+                tab: 0,
+                valid: true,
+                formObject: null
+            }
+        },
+        props: {
+            disabled: {
+                type: Boolean,
+                default() {
+                    return false;
+                }
+            },
+            value: {
+                default() {
+                    return []
+                }
+            }
+        },
+        created() {
+            this.$emit('validate', () => this.$refs.form.validate());
+        },
+        computed: {
+            showTabs() {
+                return this.formObject.children.length && (this.formObject.children.length > 1 || !!this.formObject.children[0].title);
+            }
+        },
+        watch: {
+            value(val) {
+                this.formObject = val instanceof FormClass ? val : new FormClass(val);
+            },
+            valid(val) {
+                this.$emit('valid', val);
+            }
+        },
+        methods: {
+            fieldChanged(key, val) {
+                this.formObject.setFieldValue(key, val);
+                this.$emit('input', this.formObject)
+            }
+        },
+        components: {
+            fieldComponent
+        }
+    }
+</script>

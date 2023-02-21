@@ -3,12 +3,25 @@
 use Illuminate\Support\Facades\Facade;
 
 return [
+    'version' => '1',
+    'main_website' => env('MAIN_WEBSITE', 'page.uz'),
+    'locale_list' => ['en', 'ru', 'uz'],
     'route_rules' => [
         'number' => '[0-9]+',
         'name' => '[a-z0-9_\-]+',
         'domain' => '[a-z0-9_\-\.]+',
     ],
     'website_id' => 0,
+    'min_password_length' => 6,
+    'max_upload_size' => 5000,// Kb
+    'allow_extension' => [
+        '3gp', 'avi', 'flv', 'mov', 'mp4', 'mpg', 'mpeg', 'wmv',
+        'jpg', 'png', 'gif', 'jpeg', 'ico', 'svg',
+        'doc', 'docx', 'pdf', 'txt', 'xls', 'xlsx', 'rtf', 'xml',
+        'mp3', 'wav', 'mid', 'midi', 'mpa', 'ogg',
+        'rar', 'zip', 'tar.gz',
+        'css'
+    ],
 
     /*
     |--------------------------------------------------------------------------

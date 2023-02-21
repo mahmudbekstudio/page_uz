@@ -49,11 +49,11 @@ if(!function_exists('errorWebsiteBlocked')) {
     }
 }
 
-if(!function_exists('errorWentWront')) {
+if(!function_exists('errorWentWrong')) {
     /**
      * Something went wrong
      */
-    function errorWentWront()
+    function errorWentWrong()
     {
         abort(500, __('error.500.title'));
     }

@@ -30,9 +30,9 @@ if (!function_exists('getCurrentWebsiteId')) {
     /**
      * Get current website id
      *
-     * @return int
+     * @return string
      */
-    function getCurrentWebsiteId(): int
+    function getCurrentWebsiteId(): string
     {
         $currentWebsite = \App\Repositories\WebsiteRepository::getInstance()->getCurrent();
 
