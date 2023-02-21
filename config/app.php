@@ -3,6 +3,12 @@
 use Illuminate\Support\Facades\Facade;
 
 return [
+    'route_rules' => [
+        'number' => '[0-9]+',
+        'name' => '[a-z0-9_\-]+',
+        'domain' => '[a-z0-9_\-\.]+',
+    ],
+    'website_id' => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -195,6 +201,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        App\Providers\HelperServiceProvider::class,
     ],
 
     /*
