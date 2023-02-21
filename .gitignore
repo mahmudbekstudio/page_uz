@@ -17,3 +17,7 @@ yarn-error.log
 /.idea
 /.vscode
 /config/domain.php
+/public/css/*
+/public/js/*
+/public/fonts/*
+/public/mix-manifest.json

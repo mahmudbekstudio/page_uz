@@ -41,6 +41,13 @@ class Website extends Model
     protected $fillable = ['id', 'status', 'domain', 'type', 'domain_id'];
 
     /**
+     * @var string[]
+     */
+    protected $casts = [
+        'status' => 'int'
+    ];
+
+    /**
      * @return HasMany
      */
     public function metas(): HasMany

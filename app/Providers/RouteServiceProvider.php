@@ -104,10 +104,5 @@ class RouteServiceProvider extends ServiceProvider
         }
 
         WebsiteRepository::getInstance()->setCurrent($website->id);
-
-        /*if ($website->status === Website::STATUS_REDIRECT) {
-            header('Location: ' . WebsiteRepository::getInstance()->getMetaValue('redirect'));
-            exit;
-        }*/
     }
 }

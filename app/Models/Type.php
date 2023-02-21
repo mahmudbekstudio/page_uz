@@ -33,4 +33,14 @@ class Type extends Model
         static::setWebsiteAttr();
         static::setUserAttr();
     }
+
+    public static function types(): array
+    {
+        return [self::TYPE_POST, self::TYPE_CATEGORY];
+    }
+
+    public static function defaultType(): string
+    {
+        return self::TYPE_POST;
+    }
 }
