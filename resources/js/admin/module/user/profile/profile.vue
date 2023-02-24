@@ -1,6 +1,15 @@
 <template>
-    <page-box :actions="actionsList" :footerActions="footerActionsList">
-        <formComponent :value="profileForm" :disabled="isLoading" @input="formChanged($event)" @validate="formValidateFunc($event)" @valid="formValid($event)"></formComponent>
+    <page-box
+        :actions="actionsList"
+        :footerActions="footerActionsList"
+    >
+        <formComponent
+            :value="profileForm"
+            :disabled="isLoading"
+            @input="formChanged($event)"
+            @validate="formValidateFunc($event)"
+            @valid="formValid($event)"
+        />
     </page-box>
 </template>
 <script>

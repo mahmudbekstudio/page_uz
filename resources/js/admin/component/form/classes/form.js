@@ -2,6 +2,8 @@ import textareaField from './textareaField';
 import textField from './textField';
 import passwordField from './passwordField';
 import selectField from './selectField';
+import fileField from './fileField';
+import switchField from "./switchField";
 import { FORM } from '../../../constants';
 import * as _ from 'lodash';
 
@@ -264,6 +266,12 @@ export class Field {
             case 'select':
                 this.field = new selectField(fieldObj);
                 break;
+            case 'file':
+                this.field = new fileField(fieldObj);
+                break;
+            case 'switch':
+                this.field = new switchField(fieldObj);
+                break;
         }
     }
 
@@ -284,7 +292,7 @@ export class Field {
     }
 
     get value() {
-        return this.field.value || null;
+        return typeof this.field.value !== 'undefined' ? this.field.value : null;
     }
 
     set value(val) {

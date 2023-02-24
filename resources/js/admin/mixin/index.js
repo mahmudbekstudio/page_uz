@@ -1,7 +1,9 @@
 import formField from './form-field';
+import fileField from "./file-field";
 
 const mixinsList = {
-    formField
+    formField,
+    fileField,
 };
 
 class Mixins {

@@ -18,7 +18,7 @@
                 <v-icon v-if="multiple">mdi-file-multiple</v-icon>
                 <v-icon v-else>mdi-file</v-icon>
             </div>
-            <div class="item-name">{{title}}</div>
+            <div class="item-name">{{title || defaultTitleText}}</div>
         </div>
         <dialog-component
                 title=""
@@ -34,7 +34,9 @@
                     @input="saveSelected"
                     @cancel="cancelSelected"
                     :multiple="multiple"
+                    :count="count"
                     :required="required"
+                    :file-type="fileType"
             ></file-manager>
         </dialog-component>
     </div>
@@ -54,13 +56,25 @@
             title: {
                 type: String,
                 default() {
-                    return this.multiple ? this.$t('filemanager.select_files') : this.$t('filemanager.select_file');
+                    return '';
                 }
             },
             multiple: {
                 type: Boolean,
                 default() {
                     return false
+                }
+            },
+            count: {
+                type: Number,
+                default () {
+                    return 0;
+                }
+            },
+            fileType: {
+                type: String,
+                default () {
+                    return constants.FILE_DEFAULT_TYPE
                 }
             },
             required: {
@@ -77,8 +91,11 @@
             }
         },
         computed: {
+            defaultTitleText () {
+                return this.multiple ? this.$t('filemanager.select_files') : this.$t('filemanager.select_file');
+            },
             showSelectBtn() {
-                if(this.multiple) {
+                if(this.multiple && (!this.count || this.count > this.value.length)) {
                     return true
                 }
 

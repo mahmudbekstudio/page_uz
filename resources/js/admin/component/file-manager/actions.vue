@@ -79,6 +79,7 @@
                         @change="changeSelectFile"
                         multiple
                         class="select-file"
+                        :accept="accept"
                 />
             </v-form>
         </Dialog>
@@ -92,6 +93,7 @@
     import * as constants from '../../constants';
     import http from '../../service/http';
     import filemanagerApi from '../../api/file-manager';
+    import {FILE_TYPES} from "../../constants";
 
     export default {
         data: function() {
@@ -139,6 +141,17 @@
                 default() {
                     return []
                 }
+            }
+        },
+        computed: {
+            accept () {
+                const list = [];
+                for (let key in constants.FILE_TYPES) {
+                    if (constants.FILE_TYPES[key] === this.fileType) {
+                        list.push('.' + key);
+                    }
+                }
+                return list.length ? list.join(',') : '*/*';
             }
         },
         watch: {

@@ -1,5 +1,5 @@
 <template>
-    <div class="content-item" :class="{'disabled': isLoading}" @click="itemClick">
+    <div class="content-item" :class="{'disabled': isLoading || disabled}" @click="itemClick">
         <div class="item-check" v-if="value.type !== 'folder'">
             <v-icon v-if="value.item.selected">mdi-checkbox-marked</v-icon>
             <v-icon v-else>mdi-checkbox-blank</v-icon>
@@ -13,7 +13,7 @@
             </template>
             <span>{{value.item.name}}<span v-show="value.item.extension">.{{value.item.extension}}</span></span>
         </v-tooltip>
-        <v-menu bottom left class="item-menu">
+        <v-menu bottom left class="item-menu" v-if="!disabled">
             <template v-slot:activator="{ on }">
                 <v-icon v-on="on" class="sub-menu">mdi-dots-vertical</v-icon>
             </template>
@@ -98,6 +98,10 @@
                 }
             },
             isLoading: {
+                type: Boolean,
+                default: false
+            },
+            disabled: {
                 type: Boolean,
                 default: false
             },
@@ -302,6 +306,8 @@
                 }
             },
             itemClick() {
+                if(this.disabled) return false;
+
                 this.value.item.selected = !this.value.item.selected;
                 this.$emit('input', this.value);
             }

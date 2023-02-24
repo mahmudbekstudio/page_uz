@@ -8,4 +8,5 @@ return [
     'rename_file' => 'Rename file',
     'select_file' => 'Select file',
     'select_files' => 'Select files',
+    'you_can_select_only_count' => 'You can select only {count} files.',
 ];

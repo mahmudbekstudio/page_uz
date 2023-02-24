@@ -28,6 +28,7 @@
                         v-for="item in content"
                         :value="item"
                         :isLoading="isLoading"
+                        :disabled="isDisabled(item)"
                         @onRenameFolderSave="renameFolderSave($event, item)"
                         @onDeleteFolder="deleteFolder(item)"
                         @onRenameFileSave="renameFileSave($event, item)"
@@ -95,7 +96,7 @@
             loaded: false
         };
     };*/
-    
+
     const navItem = function (params) {
         const defaultParams = {
             id: 0,
@@ -142,6 +143,12 @@
                 type: Boolean,
                 default() {
                     return false
+                }
+            },
+            count: {
+                type: Number,
+                default () {
+                    return 0;
                 }
             },
             required: {
@@ -199,6 +206,9 @@
             }
         },
         methods: {
+            isDisabled (item) {
+                return constants.FILE_TYPES[item.item.extension] !== this.fileType;
+            },
             initSelectFiles(val) {
                 this.selectedFiles = val.map(file => fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size));
             },
@@ -388,7 +398,12 @@
                     }
 
                     if(item.item.selected) {
-                        this.selectedFiles.push(item);
+                        if (this.count && this.count <= this.selectedFiles.length) {
+                            item.item.selected = false;
+                            app.infoMessage(this.$t('filemanager.you_can_select_only_count', {count: this.count}));
+                        } else {
+                            this.selectedFiles.push(item);
+                        }
                     } else {
                         this.selectedFiles = this.selectedFiles.filter(sItem => sItem !== item);
                     }

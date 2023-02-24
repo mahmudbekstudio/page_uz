@@ -22,18 +22,27 @@ export const FILE_TYPES = {
 };
 
 export const FILE_DEFAULT_TYPE = 'file';
+export const FILE_VIDEO_TYPE = 'video';
+export const FILE_IMAGE_TYPE = 'image';
+export const FILE_WORD_TYPE = 'word';
+export const FILE_PDF_TYPE = 'pdf';
+export const FILE_DOCUMENT_TYPE = 'document';
+export const FILE_EXCEL_TYPE = 'excel';
+export const FILE_XML_TYPE = 'xml';
+export const FILE_MUSIC_TYPE = 'music';
+export const FILE_ARCHIVE_TYPE = 'archive';
 
-export const FILE_MEDIA_TYPES = ['video', 'music'];
+export const FILE_MEDIA_TYPES = [FILE_VIDEO_TYPE, FILE_MUSIC_TYPE];
 
 export const FILE_TYPE_LIST = [
     FILE_DEFAULT_TYPE,
-    'video',
-    'image',
-    'word',
-    'pdf',
-    'document',
-    'excel',
-    'xml',
-    'music',
-    'archive'
+    FILE_VIDEO_TYPE,
+    FILE_IMAGE_TYPE,
+    FILE_WORD_TYPE,
+    FILE_PDF_TYPE,
+    FILE_DOCUMENT_TYPE,
+    FILE_EXCEL_TYPE,
+    FILE_XML_TYPE,
+    FILE_MUSIC_TYPE,
+    FILE_ARCHIVE_TYPE
 ];

@@ -10,6 +10,9 @@ import Logger from './service/logger';
 
 Vue.use(Logger);
 
+import fileSelect from "./component/file-select";
+Vue.component('file-select', fileSelect);
+
 (new Vue({
     el: '.admin-app',
     router,

@@ -6,6 +6,9 @@
     import passwordField from './fields/passwordField';
     import textareaField from './fields/textareaField';
     import selectField from './fields/selectField';
+    import fileField from "./fields/fileField";
+    import switchField from "./fields/switchField";
+
     export default {
         props: {
             params: {
@@ -45,7 +48,9 @@
             textField,
             passwordField,
             textareaField,
-            selectField
+            selectField,
+            fileField,
+            switchField,
         }
     }
 </script>
