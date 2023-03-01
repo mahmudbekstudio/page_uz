@@ -38,7 +38,13 @@ class WebsiteRepository extends BaseRepository {
     }
 
     public function setCurrent(int $id) {
-        $this->setVar('current-website', $this->getById($id));
+        $website = $this->getById($id);
+
+        if ($website->domain_id) {
+            $website = $this->getById($website->domain_id);
+        }
+
+        $this->setVar('current-website', $website);
     }
 
     public function getCurrent() {

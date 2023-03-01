@@ -10,6 +10,11 @@ export default {
     layoutsList: ['main', 'empty', 'centered'],
     defaultLayout: 'main',// main, empty, centered
 
+    dataTable: {
+        itemsPerPageOptions: [5, 10, 15, 25, 50],
+        defaultItemsPerPage: 10,
+    },
+
     isDark: false,
     isMini: false,
     title: 'Admin Panel',

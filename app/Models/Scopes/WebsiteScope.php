@@ -18,7 +18,7 @@ class WebsiteScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         if(getCurrentWebsiteId()) {
-            $builder->where('website_id', getCurrentWebsiteId());
+            $builder->where($model->getTable() . '.website_id', getCurrentWebsiteId());
         }
     }
 }

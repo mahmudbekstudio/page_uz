@@ -28,6 +28,7 @@
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                         <span class="text-h5">{{title}}</span>
+                        <div class="dialog-top"><slot name="top" /></div>
                         <v-spacer></v-spacer>
                         <v-toolbar-items>
                             <v-btn
@@ -216,5 +217,8 @@
     }
     .without-padding {
         padding: 0 !important;
+    }
+    .dialog-top {
+        margin-left: 20px;
     }
 </style>

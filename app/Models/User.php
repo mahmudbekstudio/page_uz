@@ -29,6 +29,11 @@ class User extends Authenticatable implements JWTSubject, CanResetPasswordContra
     const ROLE_PUBLISHER = 'publisher';
     const ROLE_USER = 'user';
 
+    public function guardName()
+    {
+        return 'api';
+    }
+
     /**
      * The attributes that are mass assignable.
      *

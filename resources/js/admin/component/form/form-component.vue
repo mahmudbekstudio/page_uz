@@ -1,6 +1,12 @@
 <template>
     <div>
-        <v-form ref="form" lazy-validation :disabled="disabled" v-model="valid" v-if="formObject">
+        <v-form
+            ref="form"
+            lazy-validation
+            :disabled="disabled"
+            v-model="valid"
+            v-if="formObject"
+        >
             <v-tabs
                     v-model="tab"
                     align-with-title
@@ -20,7 +26,7 @@
                         v-for="(tab, index) in formObject.children"
                         :key="'tab' + index"
                 >
-                    <v-container>
+                    <v-container :fluid="fluid">
                         <v-row
                                 v-for="(row, rowIndex) in tab.children"
                                 :key="'row' + rowIndex"
@@ -65,6 +71,12 @@
             }
         },
         props: {
+            fluid: {
+                type: Boolean,
+                default() {
+                    return false;
+                }
+            },
             disabled: {
                 type: Boolean,
                 default() {
@@ -79,6 +91,7 @@
         },
         created() {
             this.$emit('validate', () => this.$refs.form.validate());
+            this.$emit('resetValidation', () => this.$refs.form.resetValidation());
         },
         computed: {
             showTabs() {

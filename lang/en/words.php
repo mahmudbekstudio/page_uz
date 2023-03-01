@@ -60,4 +60,10 @@ return [
     'meta_tags' => 'Meta tags',
     'image_sizes' => 'Image sizes',
     'social_networks' => 'Social networks',
+    'not_confirmed' => 'Not confirmed',
+    'super_admin' => 'Super Admin',
+    'admin' => 'Admin',
+    'manager' => 'Manager',
+    'publisher' => 'Publisher',
+    'user' => 'User'
 ];

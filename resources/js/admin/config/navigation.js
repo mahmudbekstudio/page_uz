@@ -24,6 +24,7 @@ export default {
     [constants.ROLES.super_admin]: [
         {text: 'Dashboard', icon: 'dashboard', route: {name: 'dashboard'}},
         {text: 'Type', icon: 'mdi-format-list-bulleted-type', route: {name: 'type.list'}, active: ['type.list', 'type.create', 'type.edit']},
+        {text: 'Users', icon: 'mdi-account-group', route: {name: 'user.list'}},
         {
             icon: 'settings',
             text: 'Setting',

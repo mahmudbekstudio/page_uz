@@ -4,6 +4,8 @@ use App\Helpers\DataFormat;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Repositories\UserRepository;
+use App\Repositories\WebsiteRepository;
 
 if (! function_exists('route')) {
     /**
@@ -169,14 +171,20 @@ if (! function_exists('getUserData')) {
     /**
      * Get user data
      *
-     * @param \App\Models\User|\Illuminate\Contracts\Auth\Authenticatable|null $user
+     * @param \App\Models\User|\Illuminate\Contracts\Auth\Authenticatable|int|null $user
      * @return array
      */
     function getUserData($user = null): array
     {
         $userData = [];
 
-        if(is_null($user)) {
+        if (is_int($user) && $user > 0) {
+            try {
+                $user = app(UserRepository::class)->getById($user);
+            } catch (Exception $e) {
+                $user = null;
+            }
+        } elseif(is_null($user)) {
             $user = auth()->user();
         }
 
@@ -186,7 +194,8 @@ if (! function_exists('getUserData')) {
                 'status' => $user->status,
                 'email' => $user->email,
                 'role' => $user->role,
-                'meta' => []
+                'meta' => [],
+                'created_at' => $user->created_at,
             ];
 
             foreach($user->metas as $meta) {
@@ -201,7 +210,7 @@ if (! function_exists('getUserData')) {
 if (! function_exists('websiteData')) {
     function websiteData($isJson = false)
     {
-        $instance = \App\Repositories\WebsiteRepository::getInstance();
+        $instance = WebsiteRepository::getInstance();
         $website = $instance->getCurrent();
         $data = [
             'id' => $website->id,

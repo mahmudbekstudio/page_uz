@@ -45,6 +45,14 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::delete('delete-file/{id}', [FolderFileController::class, 'deleteFile'])->name('delete-file');
             });
 
+            Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+                Route::get('list', [UserController::class, 'list'])->name('list');
+                Route::get('{id}', [UserController::class, 'byId'])->name('byId');
+                Route::post('create', [UserController::class, 'create'])->name('create');
+                Route::put('update/{user}', [UserController::class, 'update'])->name('update');
+                Route::delete('delete/{user}', [UserController::class, 'delete'])->name('delete');
+            });
+
             Route::group(['middleware' => [
                 'role:' . implode('|', [User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN])
             ]], function() {

@@ -1,5 +1,6 @@
 import ParentRoute from '../../view/parent-route';
 import profile from './profile/profile';
+import usersList from './list/list.vue';
 
 const route = {
     path: 'user',
@@ -14,6 +15,16 @@ const route = {
                 layout: 'main',
                 requiresAuth: true,
                 title: 'Profile'
+            }
+        },
+        {
+            path: 'list',
+            name: 'user.list',
+            component: usersList,
+            meta: {
+                layout: 'main',
+                requiresAuth: true,
+                title: 'Users'
             }
         }
     ]

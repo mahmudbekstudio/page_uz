@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
+use App\Models\User;
 
 return [
     'version' => '1',
@@ -21,6 +22,20 @@ return [
         'mp3', 'wav', 'mid', 'midi', 'mpa', 'ogg',
         'rar', 'zip', 'tar.gz',
         'css'
+    ],
+    'status' => [
+        'user' => [
+            User::STATUS_NOT_CONFIRMED => 'not_confirmed',
+            User::STATUS_ACTIVE => 'active',
+            User::STATUS_BLOCKED => 'blocked',
+        ]
+    ],
+    'userRoles' => [
+        User::ROLE_SUPER_ADMIN,
+        User::ROLE_ADMIN,
+        User::ROLE_MANAGER,
+        User::ROLE_PUBLISHER,
+        User::ROLE_USER
     ],
 
     /*

@@ -150,8 +150,8 @@ export class Tab {
     get json() {
         const result = {
             children: [],
-            type: this.type,
-            title: this.title
+            type: this.type || 'tab',
+            title: this.title || ''
         };
 
         for(let i = 0; i < this.children.length; i++) {
@@ -191,7 +191,7 @@ export class Row {
             this.children.push(new Col(val.children[i]));
         }
 
-        this.type = val.type;
+        this.type = val.type || 'row';
     }
 
     get json() {
@@ -232,6 +232,9 @@ export class Col {
         for(let i = 0; i < val.children.length; i++) {
             this.children.push(new Field(val.children[i]));
         }
+
+        this.type = this.type || 'col';
+        this.size = this.size || '12';
     }
 
     get json() {
@@ -280,7 +283,7 @@ export class Field {
     }
 
     set type(val) {
-        this.field.type = val;
+        this.field.type = val || 'text';
     }
 
     get disabled() {
