@@ -42,7 +42,9 @@ class Kernel extends HttpKernel
                             exit;
                         }
 
-                        $this->initDotEnv($app, $websiteResult[0]['id']);
+                        $result['domain'] = $websiteResult[0]['domain'];
+                        $_ENV['current-website'] = $result;
+                        $this->initDotEnv($app, $domainId);
                     } else {
                         errorPageNotFound();
                     }

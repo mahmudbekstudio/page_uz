@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Facade;
 use App\Models\User;
+use App\Models\Website;
 
 return [
     'version' => '1',
@@ -28,7 +29,16 @@ return [
             User::STATUS_NOT_CONFIRMED => 'not_confirmed',
             User::STATUS_ACTIVE => 'active',
             User::STATUS_BLOCKED => 'blocked',
-        ]
+        ],
+        'website' => [
+            Website::STATUS_NOT_CONFIRMED => 'not_confirmed',
+            Website::STATUS_ACTIVE => 'active',
+            Website::STATUS_BLOCKED => 'blocked',
+            Website::STATUS_TEMPORARILY_CLOSED => 'temporarily_closed',
+            Website::STATUS_FORBIDDEN => 'forbidden',
+            //Website::STATUS_REDIRECT => 'redirect',
+            Website::STATUS_CLOSED => 'closed',
+        ],
     ],
     'userRoles' => [
         User::ROLE_SUPER_ADMIN,

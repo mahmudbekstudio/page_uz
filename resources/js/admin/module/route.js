@@ -6,6 +6,7 @@ import errorRoute from './error/route';
 import ParentRoute from '../view/parent-route';
 import UserRoute from './user/route';
 import TypeRoute from './type/route';
+import WebsiteRoute from './website/route';
 
 const route = [
     {
@@ -19,6 +20,7 @@ const route = [
             errorRoute,
             UserRoute,
             TypeRoute,
+            WebsiteRoute,
             {path: '*', redirect: {name: viewConfig.page.notFound}}
         ]
     }

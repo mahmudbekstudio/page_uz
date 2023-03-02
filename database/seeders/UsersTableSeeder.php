@@ -33,7 +33,7 @@ class UsersTableSeeder extends Seeder
         ];
 
         foreach($rolesList as $role) {
-            Role::findOrCreate($role, null);
+            Role::findOrCreate($role, User::GUARD_NAME);
         }
 
         if(isProd()) {

@@ -56,6 +56,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_NOT_CONFIRMED,
                 'domain' => 'test-main-' . Website::STATUS_NOT_CONFIRMED . '.' . $domainPostfix,
                 'type' => Website::TYPE_MAIN,
+                'group_id' => $ids[Website::STATUS_NOT_CONFIRMED],
                 'domain_id' => null
             ],
             'metas' => [
@@ -73,6 +74,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-main-' . Website::STATUS_ACTIVE . '.' . $domainPostfix,
                 'type' => Website::TYPE_MAIN,
+                'group_id' => $ids[Website::STATUS_ACTIVE],
                 'domain_id' => null
             ],
             'metas' => [
@@ -90,6 +92,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_BLOCKED,
                 'domain' => 'test-main-' . Website::STATUS_BLOCKED . '.' . $domainPostfix,
                 'type' => Website::TYPE_MAIN,
+                'group_id' => $ids[Website::STATUS_BLOCKED],
                 'domain_id' => null
             ],
             'metas' => [
@@ -107,6 +110,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_TEMPORARILY_CLOSED,
                 'domain' => 'test-main-' . Website::STATUS_TEMPORARILY_CLOSED . '.' . $domainPostfix,
                 'type' => Website::TYPE_MAIN,
+                'group_id' => $ids[Website::STATUS_TEMPORARILY_CLOSED],
                 'domain_id' => null
             ],
             'metas' => [
@@ -124,6 +128,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_FORBIDDEN,
                 'domain' => 'test-main-' . Website::STATUS_FORBIDDEN . '.' . $domainPostfix,
                 'type' => Website::TYPE_MAIN,
+                'group_id' => $ids[Website::STATUS_FORBIDDEN],
                 'domain_id' => null
             ],
             'metas' => [
@@ -141,6 +146,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_CLOSED,
                 'domain' => 'test-main-' . Website::STATUS_CLOSED . '.' . $domainPostfix,
                 'type' => Website::TYPE_MAIN,
+                'group_id' => $ids[Website::STATUS_CLOSED],
                 'domain_id' => null
             ],
             'metas' => [
@@ -158,6 +164,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test1.' . $domainPostfix,
                 'type' => Website::TYPE_MAIN,
+                'group_id' => 7,
                 'domain_id' => null
             ],
             'metas' => [
@@ -175,6 +182,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test2.' . $domainPostfix,
                 'type' => Website::TYPE_MAIN,
+                'group_id' => 8,
                 'domain_id' => null
             ],
             'metas' => [
@@ -191,6 +199,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-alias-' . Website::STATUS_NOT_CONFIRMED . '.' . $domainPostfix,
                 'type' => Website::TYPE_ALIAS,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_NOT_CONFIRMED]
             ]
         ];
@@ -199,6 +208,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-redirect-' . Website::STATUS_NOT_CONFIRMED . '.' . $domainPostfix,
                 'type' => Website::TYPE_REDIRECT,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_NOT_CONFIRMED]
             ]
         ];
@@ -207,6 +217,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-alias-' . Website::STATUS_ACTIVE . '.' . $domainPostfix,
                 'type' => Website::TYPE_ALIAS,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_ACTIVE]
             ]
         ];
@@ -215,6 +226,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-redirect-' . Website::STATUS_ACTIVE . '.' . $domainPostfix,
                 'type' => Website::TYPE_REDIRECT,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_ACTIVE]
             ]
         ];
@@ -223,6 +235,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-alias-' . Website::STATUS_BLOCKED . '.' . $domainPostfix,
                 'type' => Website::TYPE_ALIAS,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_BLOCKED]
             ]
         ];
@@ -231,6 +244,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-redirect-' . Website::STATUS_BLOCKED . '.' . $domainPostfix,
                 'type' => Website::TYPE_REDIRECT,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_BLOCKED]
             ]
         ];
@@ -239,6 +253,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-alias-' . Website::STATUS_TEMPORARILY_CLOSED . '.' . $domainPostfix,
                 'type' => Website::TYPE_ALIAS,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_TEMPORARILY_CLOSED]
             ]
         ];
@@ -247,6 +262,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-redirect-' . Website::STATUS_TEMPORARILY_CLOSED . '.' . $domainPostfix,
                 'type' => Website::TYPE_REDIRECT,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_TEMPORARILY_CLOSED]
             ]
         ];
@@ -255,6 +271,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-alias-' . Website::STATUS_FORBIDDEN . '.' . $domainPostfix,
                 'type' => Website::TYPE_ALIAS,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_FORBIDDEN]
             ]
         ];
@@ -263,6 +280,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-redirect-' . Website::STATUS_FORBIDDEN . '.' . $domainPostfix,
                 'type' => Website::TYPE_REDIRECT,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_FORBIDDEN]
             ]
         ];
@@ -271,6 +289,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-alias-' . Website::STATUS_CLOSED . '.' . $domainPostfix,
                 'type' => Website::TYPE_ALIAS,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_CLOSED]
             ]
         ];
@@ -279,6 +298,7 @@ class WebsitesTableSeeder extends Seeder
                 'status' => Website::STATUS_ACTIVE,
                 'domain' => 'test-redirect-' . Website::STATUS_CLOSED . '.' . $domainPostfix,
                 'type' => Website::TYPE_REDIRECT,
+                'group_id' => null,
                 'domain_id' => $ids[Website::STATUS_CLOSED]
             ]
         ];

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('domain')->unique();
             $table->tinyInteger('type')->default(Website::TYPE_MAIN)->index('type');
             $table->unsignedBigInteger('domain_id')->nullable()->index('domain_id');
+            $table->unsignedBigInteger('group_id')->nullable()->index('group_id');
             $table->timestamps();
         });
     }

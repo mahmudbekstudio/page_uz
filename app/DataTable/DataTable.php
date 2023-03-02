@@ -76,9 +76,14 @@ abstract class DataTable
         }
 
         return Arr::only(
-            $repository->paginate($this->itemsPerPage, $this->selectColumns())->toArray(),
+            $this->transform($repository->paginate($this->itemsPerPage, $this->selectColumns())->toArray()),
             $this->responseData
         );
+    }
+
+    protected function transform(array $list): array
+    {
+        return $list;
     }
 
     private function selectColumns(): array

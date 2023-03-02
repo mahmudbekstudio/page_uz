@@ -25,6 +25,7 @@ export default {
         {text: 'Dashboard', icon: 'dashboard', route: {name: 'dashboard'}},
         {text: 'Type', icon: 'mdi-format-list-bulleted-type', route: {name: 'type.list'}, active: ['type.list', 'type.create', 'type.edit']},
         {text: 'Users', icon: 'mdi-account-group', route: {name: 'user.list'}},
+        {text: 'Websites', icon: 'mdi-account-group', route: {name: 'website.list'}},
         {
             icon: 'settings',
             text: 'Setting',

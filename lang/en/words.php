@@ -65,5 +65,9 @@ return [
     'admin' => 'Admin',
     'manager' => 'Manager',
     'publisher' => 'Publisher',
-    'user' => 'User'
+    'user' => 'User',
+    'temporarily_closed' => 'Temporarily closed',
+    'forbidden' => 'Forbidden',
+    'redirect' => 'Redirect',
+    'closed' => 'Closed',
 ];

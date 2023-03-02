@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property $domain
  * @property $type
  * @property $domain_id
+ * @property $group_id
  */
 class Website extends Model
 {
@@ -38,7 +39,7 @@ class Website extends Model
      *
      * @var array
      */
-    protected $fillable = ['id', 'status', 'domain', 'type', 'domain_id'];
+    protected $fillable = ['id', 'status', 'domain', 'type', 'domain_id', 'group_id'];
 
     /**
      * @var string[]
