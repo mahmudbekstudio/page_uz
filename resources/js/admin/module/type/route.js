@@ -18,7 +18,7 @@ const route = {
             }
         },
         {
-            path: 'create',
+            path: 'create/:type',
             name: 'type.create',
             component: TypeForm,
             meta: {

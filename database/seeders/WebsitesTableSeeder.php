@@ -35,6 +35,13 @@ class WebsitesTableSeeder extends Seeder
                     WebsiteMeta::firstOrCreate($meta);
                 }
             }
+
+            WebsiteMeta::firstOrCreate([
+                'meta_key' => 'root-folder-path',
+                'meta_value' => generateRootFolderName($website->id),
+                'user_id' => 0,
+                'website_id' => $website->id,
+            ]);
         }
     }
 

@@ -2,6 +2,7 @@
 
 use App\Helpers\DataFormat;
 use Illuminate\Encryption\Encrypter;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Repositories\UserRepository;
@@ -212,12 +213,19 @@ if (! function_exists('websiteData')) {
     {
         $instance = WebsiteRepository::getInstance();
         $website = $instance->getCurrent();
+        $storageUrl = Storage::url('');
+
+        if ($storageUrl[strlen($storageUrl) - 1] == '/') {
+            $storageUrl = substr($storageUrl, 0, strlen($storageUrl) - 1);
+        }
+
         $data = [
             'id' => $website->id,
             'status' => $website->status,
             'domain' => app()->domain(),
             'created' => $website->created_at,
-            'metas' => $instance->getMetas()
+            'metas' => $instance->getMetas(),
+            'fileBaseUrl' => $storageUrl,
         ];
         return $isJson ? json_encode($data) : $data;
     }
@@ -236,5 +244,12 @@ if (! function_exists('settingData')) {
             'user' => getUserData($user),
         ];
         return $data;
+    }
+}
+
+if (! function_exists('generateRootFolderName')) {
+    function generateRootFolderName($websiteId)
+    {
+        return $websiteId . 'p' . md5($websiteId);
     }
 }

@@ -1,18 +1,22 @@
 <template>
-    <v-textarea
+    <datetimepicker
         v-bind="params"
         v-on="events"
         v-model="dataValue"
         :disabled="disabled"
-    ></v-textarea>
+    />
 </template>
 <script>
 import mixins from '../../../mixin';
+import datetimepicker from "../../datetime/datetimepicker";
 
 export default {
     mixins: [mixins.get('formField')],
     props: {
         //
+    },
+    components: {
+        datetimepicker
     }
 }
 </script>

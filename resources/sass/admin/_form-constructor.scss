@@ -6,7 +6,6 @@
     .constructor-container {
       .constructor-row {
         position: relative;
-        min-height: 100px;
 
         .row-action {
           display: none;
@@ -50,7 +49,6 @@
 
         .constructor-col {
           position: relative;
-          min-height: 100px;
 
           .cell-action {
             display: none;
@@ -101,4 +99,112 @@
 
     }
   }
+}
+
+.element-cover {
+    display: inline-block;
+    padding: 2px 5px;
+    width: 50%;
+    &-wrapper {
+        border: 1px solid #666;
+        background-color: #FFF;
+        cursor: grab;
+    }
+    &-icon {
+        text-align: center;
+        border: #AAAAAA 1px solid;
+        margin: 3px;
+    }
+    &-name {
+        text-align: center;
+    }
+}
+
+.element-render {
+    padding: 2px 5px;
+    border: 1px solid transparent;
+    position: relative;
+
+    &.active {
+        border: 1px solid #0F0;
+        background-color: #FFF;
+        .element-render-cover {
+            display: block;
+        }
+        .element-render-actions {
+            display: block;
+        }
+    }
+
+    &:hover {
+        border-color: red;
+        .element-render-cover {
+            display: block;
+        }
+        .element-render-actions {
+            display: block;
+        }
+    }
+
+    &-cover {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.2);
+        display: none;
+    }
+    &-actions {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: none;
+        text-align: center;
+        z-index: 10;
+        .action-ico {
+            fill: #666;
+            cursor: pointer;
+            margin: 0 2px;
+            padding: 3px 1px;
+            background-color: #DDD;
+            &:hover {
+                fill: #000;
+                background-color: #EEE;
+            }
+            svg {
+                height: 20px;
+            }
+        }
+    }
+}
+
+.dragging {
+    .element-render {
+        &:hover {
+            border-color: transparent;
+            .element-render-cover {
+                display: none;
+            }
+            .element-render-actions {
+                display: none;
+            }
+        }
+
+        &.sortable-chosen {
+            border-color: red;
+            .element-render-cover {
+                display: block;
+            }
+        }
+    }
+}
+
+.constructor-field {
+    .transition-group {
+        display: block;
+        min-height: 24px;
+    }
 }

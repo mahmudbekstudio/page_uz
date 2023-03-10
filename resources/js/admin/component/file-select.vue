@@ -5,9 +5,21 @@
                 <v-icon>mdi-close-circle</v-icon>
             </div>
             <div class="item-ico">
-                <v-icon>{{itemIco(item.extension)}}</v-icon>
+                <div
+                    v-if="isImage(item)"
+                    class="item-image"
+                >
+                    <img :src="imageUrl(item)" />
+                </div>
+                <v-icon v-else>{{itemIco(item.extension)}}</v-icon>
             </div>
-            <div class="item-name">{{item.name}}.{{item.extension}}</div>
+
+            <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                    <div class="item-name" v-on="on">{{item.name}}<span v-show="item.extension">.{{item.extension}}</span></div>
+                </template>
+                <div class="item-name">{{item.name}}<span v-show="item.extension">.{{item.extension}}</span></div>
+            </v-tooltip>
         </div>
         <div
                 v-if="showSelectBtn"
@@ -45,6 +57,7 @@
     import dialogComponent from './dialog-component';
     import fileManager from './file-manager/file-manager';
     import * as constants from '../constants';
+    import {mapGetters} from "vuex";
     export default {
         name: 'file-select',
         data() {
@@ -91,6 +104,9 @@
             }
         },
         computed: {
+            ...mapGetters({
+                website: 'view/website',
+            }),
             defaultTitleText () {
                 return this.multiple ? this.$t('filemanager.select_files') : this.$t('filemanager.select_file');
             },
@@ -118,6 +134,16 @@
             },
             cancelSelected() {
                 this.showDialog = false;
+            },
+            isImage(val) {
+                return constants.FILE_TYPES[val.extension] === 'image';
+            },
+            imageUrl(val) {
+                if(!this.isImage(val)) {
+                    return false;
+                }
+
+                return this.website.fileBaseUrl + val.folderPath + '/' + val.name + '.' + val.extension;
             }
         },
         components: {
@@ -163,6 +189,10 @@
             .v-icon {
                 font-size: 60px;
                 line-height: 60px;
+            }
+            img {
+                max-width: 100%;
+                max-height: 100%;
             }
         }
         .item-name {

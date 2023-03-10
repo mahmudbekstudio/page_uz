@@ -147,16 +147,16 @@ class FolderFileService extends BaseService {
 
     private function websiteRootPath(): string
     {
-        return '/' . getCurrentWebsiteId();
+        return '/' . getRootFolderName();
     }
 
     public function uploadFile(int $folderId, UploadedFile $file)
     {
         try {
             $size = $file->getSize();
-            $fileName = explode('.', $file->getClientOriginalName());
-            $name = $fileName[0];
-            $ext = $fileName[1];
+            $dotpos = strripos($file->getClientOriginalName(), ".");
+            $name = substr($file->getClientOriginalName(), 0, $dotpos);
+            $ext = substr($file->getClientOriginalName(), $dotpos + 1);
             $newName = $name;
 
             $k = 0;

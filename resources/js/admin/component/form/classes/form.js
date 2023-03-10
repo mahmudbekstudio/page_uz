@@ -4,15 +4,22 @@ import passwordField from './passwordField';
 import selectField from './selectField';
 import fileField from './fileField';
 import switchField from "./switchField";
+import dividerField from "./dividerField";
+import datetimeField from "./datetimeField";
+import dateField from "./dateField";
+import timeField from "./timeField";
+import radioField from "./radioField";
+import checkboxField from "./checkboxField";
 import { FORM } from '../../../constants';
 import * as _ from 'lodash';
+import i18n from "../../../plugin/i18n";
 
 export class Form {
     children = [];
 
     constructor(params = {}) {
         if(!Object.keys(params).length) {
-            this.addTab({}, {}, {});
+            this.addTab({title: i18n.t('words.main')}, {}, {});
         } else {
             this.json = params;
         }
@@ -252,8 +259,11 @@ export class Col {
     }
 }
 
+let fieldId = 0;
+
 export class Field {
     field = {};
+    fieldTitle = '';
 
     constructor(fieldObj) {
         switch (fieldObj.type) {
@@ -275,7 +285,33 @@ export class Field {
             case 'switch':
                 this.field = new switchField(fieldObj);
                 break;
+            case 'divider':
+                this.field = new dividerField(fieldObj);
+                break;
+            case 'datetime':
+                this.field = new datetimeField(fieldObj);
+                break;
+            case 'date':
+                this.field = new dateField(fieldObj);
+                break;
+            case 'time':
+                this.field = new timeField(fieldObj);
+                break;
+            case 'radio':
+                this.field = new radioField(fieldObj);
+                break;
+            case 'checkbox':
+                this.field = new checkboxField(fieldObj);
+                break;
         }
+    }
+
+    get title() {
+        return this.fieldTitle || this.type;
+    }
+
+    set title(val) {
+        this.fieldTitle = val;
     }
 
     get type() {
@@ -284,6 +320,13 @@ export class Field {
 
     set type(val) {
         this.field.type = val || 'text';
+    }
+
+    get id() {
+        if (!this.field.id) {
+            this.field.id = ++fieldId;
+        }
+        return this.field.id;
     }
 
     get disabled() {

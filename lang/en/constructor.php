@@ -1,5 +1,8 @@
 <?php
 
 return [
-    'edit_row' => 'Edit row'
+    'edit_row' => 'Edit row',
+    'field' => [
+        'text' => ''
+    ],
 ];

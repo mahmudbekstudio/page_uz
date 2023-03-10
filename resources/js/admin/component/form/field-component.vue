@@ -8,6 +8,12 @@
     import selectField from './fields/selectField';
     import fileField from "./fields/fileField";
     import switchField from "./fields/switchField";
+    import dividerField from "./fields/dividerField";
+    import datetimeField from "./fields/datetimeField";
+    import dateField from "./fields/dateField";
+    import timeField from "./fields/timeField";
+    import radioField from "./fields/radioField";
+    import checkboxField from "./fields/checkboxField";
 
     export default {
         props: {
@@ -51,6 +57,12 @@
             selectField,
             fileField,
             switchField,
+            dividerField,
+            datetimeField,
+            dateField,
+            timeField,
+            radioField,
+            checkboxField,
         }
     }
 </script>

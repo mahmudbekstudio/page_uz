@@ -34,6 +34,7 @@
                         @onRenameFileSave="renameFileSave($event, item)"
                         @onDeleteFile="deleteFile(item)"
                         @input="itemSelected($event)"
+                        :selectedFolder="selectedFolder"
                         :key="item.id"
                 ></ContentType>
             </div>
@@ -207,7 +208,7 @@
         },
         methods: {
             isDisabled (item) {
-                return constants.FILE_TYPES[item.item.extension] !== this.fileType;
+                return item.type !== 'folder' && constants.FILE_TYPES[item.item.extension] !== this.fileType;
             },
             initSelectFiles(val) {
                 this.selectedFiles = val.map(file => fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size));
@@ -223,7 +224,7 @@
                         const foldersList = response.data.data.folder;
                         const rootFolder = navItem({
                             label: 'Home',
-                            path: '/' + this.website.id,
+                            path: '/' + this.website.metas['root-folder-path'],
                             opened: true,
                             active: true,
                             files: response.data.data.file
@@ -380,9 +381,10 @@
                 if(this.actionBtnDisabled) {
                     return false;
                 }
-                this.$emit('input', this.selectedFiles.map(({item}) => ({
+                this.$emit('input', this.selectedFiles.map(({item, folderPath}) => ({
                     extension: item.extension,
                     folderId: item.folderId,
+                    folderPath: folderPath,
                     id: item.id,
                     name: item.name,
                     size: item.size
@@ -402,6 +404,7 @@
                             item.item.selected = false;
                             app.infoMessage(this.$t('filemanager.you_can_select_only_count', {count: this.count}));
                         } else {
+                            item.folderPath = this.selectedFolder.path;
                             this.selectedFiles.push(item);
                         }
                     } else {

@@ -84,10 +84,14 @@ class WebsiteRepository extends BaseRepository {
 
     public function getMetas($id = 0)
     {
+        if (!$id) {
+            $id = $this->getCurrent()->id;
+        }
+
         $result = $this->getVar('metas_' . $id);
 
         if(!$result) {
-            $current = $id ? $this->getById($id) : $this->getCurrent();
+            $current = $this->getById($id);
             $metas = $current->metas;
             $result = [];
 

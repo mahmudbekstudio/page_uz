@@ -38,9 +38,11 @@
             }
         },
         created() {
-            //this.$logger.error('testing');
-            this.actions.push(getPageBoxAction(this.$t('words.create'), '', {color: 'primary'}, {
-                click: () => this.$router.push({name: 'type.create'})
+            this.actions.push(getPageBoxAction(this.$t('words.create_category'), '', {color: 'primary'}, {
+                click: () => this.$router.push({name: 'type.create', params: {type: 'category'}})
+            }));
+            this.actions.push(getPageBoxAction(this.$t('words.create_post'), '', {color: 'primary'}, {
+                click: () => this.$router.push({name: 'type.create', params: {type: 'post'}})
             }));
         },
         components: {

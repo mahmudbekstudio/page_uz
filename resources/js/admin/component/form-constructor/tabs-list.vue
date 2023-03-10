@@ -21,7 +21,7 @@
                     >mdi-dots-vertical</v-icon>
                 </template>
                 <v-list>
-                    <v-list-item @click="openEditDialog(tabItem)">
+                    <v-list-item @click="openTabFormDialog(tabItem, 'edit')">
                         <v-list-item-title><icon-pen class="icon-action"></icon-pen></v-list-item-title>
                     </v-list-item>
                     <v-list-item @click="deleteTab(tabItem)">
@@ -43,13 +43,13 @@
         </div>
         <dialog-component
                 :actions="editActions"
-                :title="$t('words.edit')"
-                :value="editForm.show"
-                @input="!$event && editClose()"
+                :title="tabFormTitle"
+                :value="tabForm.show"
+                @input="!$event && tabFormClose()"
                 size="small"
         >
-            <v-form ref="editTabForm" v-model="editForm.valid">
-                <FormField :value="editForm.name" :params="tabNameParams" :events="{'change' : editNameChanged, 'keyup': editKeyup}"></FormField>
+            <v-form ref="editTabForm" v-model="tabForm.valid">
+                <FormField :value="tabForm.name" :params="tabNameParams" :events="{'change' : tabFormNameChanged, 'keyup': tabFormNameKeyup}"></FormField>
             </v-form>
         </dialog-component>
     </v-tabs>
@@ -72,10 +72,11 @@
         name: 'tabs-list',
         data() {
             return {
-                editForm: {
+                tabForm: {
                     show: false,
                     name: '',
                     valid: false,
+                    action: '',
                 },
                 tabNameParams: {
                     label: 'Name *',
@@ -115,7 +116,7 @@
             this.editActions.push({
                 color: 'default',
                 text: this.$t('words.close'),
-                click: () => this.editClose()
+                click: () => this.tabFormClose()
             });
             this.editActions.push(
                 {
@@ -127,7 +128,7 @@
         },
         methods: {
             addNewTab() {
-                this.form.addTab({});
+                this.openTabFormDialog(this.form.addTab({}), 'create');
             },
             modeItem(tabItem, fromIndex, toIndex) {
                 if(toIndex < 0 || toIndex >= this.form.children.length) {
@@ -141,40 +142,54 @@
                     if(this.form.children.length === 1) {
                         app.errorMessage('You can not delete last tab');
                     } else {
-                       const itemIndex = this.form.children.indexOf(tabItem);
-                        this.form.children.splice(itemIndex, 1);
+                        this.deleteTabItem(tabItem);
                     }
                 })
             },
-            openEditDialog(tabItem) {
+            deleteTabItem(tabItem) {
+                const itemIndex = this.form.children.indexOf(tabItem);
+                this.form.children.splice(itemIndex, 1);
+            },
+            openTabFormDialog(tabItem, action) {
                 this.selectedTab = tabItem;
-                this.editForm.show = true;
-                this.editForm.name = tabItem.title;
+                this.tabForm.show = true;
+                this.tabForm.action = action;
+                this.tabForm.name = tabItem.title;
             },
-            editNameChanged: function (val) {
-                this.editForm.name = val;
+            tabFormNameChanged: function (val) {
+                this.tabForm.name = val;
             },
-            editKeyup: function(e) {
+            tabFormNameKeyup: function(e) {
                 let key = e.which || e.keyCode || 0;
                 if(e instanceof KeyboardEvent && key === 13) {
                     this.editSave();
                 }
             },
-            editClose() {
-                this.editForm.show = false;
-                this.editForm.name = '';
+            tabFormClose(isSaved = false) {
+                if (!isSaved && this.tabForm.action === 'create') {
+                    this.deleteTabItem(this.selectedTab);
+                }
+
+                this.tabForm.show = false;
+                this.tabForm.name = '';
+                this.tabForm.action = '';
                 this.$refs.editTabForm.reset();
                 //this.$emit('oneditTabClose');
             },
             editSave() {
                 this.$refs.editTabForm.validate();
-                if(!this.editForm.valid) {
+                if(!this.tabForm.valid) {
                     app.errorMessage('Form is not valid');
                     return false;
                 }
-                this.selectedTab.title = this.editForm.name;
-                this.editClose();
-                //this.$emit('onEditTabSave', this.editForm);
+                this.selectedTab.title = this.tabForm.name;
+                this.tabFormClose(true);
+                //this.$emit('onEditTabSave', this.tabForm);
+            }
+        },
+        computed: {
+            tabFormTitle () {
+                return this.$t('words.' + this.tabForm.action);
             }
         },
         components: {

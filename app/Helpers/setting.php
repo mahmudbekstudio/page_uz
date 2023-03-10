@@ -26,6 +26,26 @@ if (!function_exists('getCurrentWebsite')) {
     }
 }
 
+if (!function_exists('getRootFolderName')) {
+    /**
+     * Get root folder name
+     *
+     * @return string
+     */
+    function getRootFolderName($websiteId = 0): string
+    {
+        $website = \App\Repositories\WebsiteRepository::getInstance();
+
+        if ($websiteId) {
+            $website = $website->getById($websiteId);
+        }
+
+        $metas = $website->getMetas();
+
+        return \Illuminate\Support\Arr::get($metas, 'root-folder-path', '');
+    }
+}
+
 if (!function_exists('getCurrentWebsiteId')) {
     /**
      * Get current website id

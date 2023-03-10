@@ -70,4 +70,9 @@ return [
     'forbidden' => 'Forbidden',
     'redirect' => 'Redirect',
     'closed' => 'Closed',
+    'create_category' => 'Create category type',
+    'create_post' => 'Create post type',
+    'basic' => 'Basic',
+    'advanced' => 'Advanced',
+    'required' => 'Required'
 ];

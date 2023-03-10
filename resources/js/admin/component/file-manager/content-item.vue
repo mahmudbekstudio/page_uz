@@ -5,7 +5,13 @@
             <v-icon v-else>mdi-checkbox-blank</v-icon>
         </div>
         <div class="item-ico">
-            <v-icon>{{itemIco}}</v-icon>
+            <div
+                v-if="isImage"
+                class="item-image"
+            >
+                <img :src="imageUrl" />
+            </div>
+            <v-icon v-else>{{itemIco}}</v-icon>
         </div>
         <v-tooltip top>
             <template v-slot:activator="{ on }">
@@ -13,7 +19,7 @@
             </template>
             <span>{{value.item.name}}<span v-show="value.item.extension">.{{value.item.extension}}</span></span>
         </v-tooltip>
-        <v-menu bottom left class="item-menu" v-if="!disabled">
+        <v-menu bottom left class="item-menu">
             <template v-slot:activator="{ on }">
                 <v-icon v-on="on" class="sub-menu">mdi-dots-vertical</v-icon>
             </template>
@@ -55,6 +61,7 @@
     import FormField from '../form/field-component';
     import validation from '../../config/validation';
     import app from '../../service/app';
+    import {mapGetters} from "vuex";
     export default {
         data() {
             return {
@@ -105,8 +112,18 @@
                 type: Boolean,
                 default: false
             },
+            selectedFolder: {
+                type: Object,
+                default() {
+                    return {};
+                }
+            }
         },
         computed: {
+            ...mapGetters({
+                website: 'view/website',
+            }),
+
             itemIco() {
                 if(this.value.type === 'folder') {
                     return 'mdi-folder';
@@ -115,6 +132,16 @@
                 const type = constants.FILE_TYPES[this.value.item.extension] || constants.FILE_DEFAULT_TYPE;
 
                 return constants.FILE_ICONS[type];
+            },
+            isImage() {
+                return this.value.type === 'file' && constants.FILE_TYPES[this.value.item.extension] === 'image';
+            },
+            imageUrl() {
+                if(!this.isImage) {
+                    return false;
+                }
+
+                return this.website.fileBaseUrl + this.selectedFolder.path + '/' + this.value.item.name + '.' + this.value.item.extension;
             }
         },
         watch: {
@@ -356,7 +383,7 @@
             left: 5px;
             top: 0;
             font-size: 18px;
-            z-index: 10;
+            z-index: 9;
         }
         .item-ico {
             width: 100%;
@@ -379,6 +406,8 @@
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: default;
+            z-index: 1000;
+            position: relative;
         }
         .item-menu {
             position: absolute;
@@ -389,6 +418,8 @@
             position: absolute;
             top: 0;
             right: 0;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
         }
     }
 </style>

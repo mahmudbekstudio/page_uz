@@ -111,13 +111,30 @@
                 nameField.value = this.form.name;
 
                 console.log('==', this.settingForm.json);*/
+
+
+
+                // todo: remove after testing
+                tabMain.addField({type: 'text', value: 'text field value', name: 'text_field', params: {label: 'text field'}});
+                tabMain.addField({type: 'password', value: 'password field value', name: 'password_field', params: {label: 'password field'}});
+                tabMain.addField({type: 'textarea', value: 'textarea field value', name: 'textarea_field', params: {label: 'textarea field'}});
+                tabMain.addField({type: 'select', value: '2', name: 'select_field', params: {label: 'select field', options: {1: '11', 2: '22'}}});
+                tabMain.addField({type: 'file', name: 'file_field', params: {label: 'file field', fileType: constants.FILE_IMAGE_TYPE}});
+                tabMain.addField({type: 'switch', value: true, name: 'switch_field', params: {label: 'switch field'}});
+                tabMain.addField({type: 'divider'});
+                tabMain.addField({type: 'datetime', name: 'datetime_field', params: {label: ['date picker', 'time picker'], multiple: true}});
+                tabMain.addField({type: 'date', name: 'date_field', params: {label: 'date field', multiple: true}});
+                tabMain.addField({type: 'time', name: 'time_field', params: {label: 'time field'}});
+                tabMain.addField({type: 'radio', name: 'radio_field', value: '22', params: {label: 'radio field', options: {'11': 'First', '22': 'Second', '33': 'Third'}}});
+                tabMain.addField({type: 'checkbox', name: 'checkbox_field', value: ['22', '33'], params: {label: 'checkbox field', options: {'11': 'First', '22': 'Second', '33': 'Third'}}});
+                console.log(tabMain);
             }, () => {
                 app.openMessage(this.$t('words.error'), constants.SNACKBAR_COLORS.error);
             });
         },
         components: {
             formComponent,
-            pageBox
+            pageBox,
         },
         computed: {
             ...mapGetters('main-setting', ['isLoading', 'isFormChanged', 'form', 'languages'])

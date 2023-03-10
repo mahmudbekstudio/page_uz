@@ -1,14 +1,11 @@
 <template>
     <div class="form-constructor">
-        <draggable
-                :v-bind="dragOptions"
-        ></draggable>
-        <hr>
-        <hr>
+        <components-list :list="componentsList"/>
+        <v-divider/>
         <tabs-list
                 v-model="tab"
                 :form="formObject"
-        ></tabs-list>
+        />
         <v-tabs-items v-model="tab" class="custom-tabs-items">
             <v-tab-item
                     v-for="(tab, index) in formObject.children"
@@ -21,48 +18,40 @@
                             :key="'row' + rowIndex"
                             class="constructor-row"
                     >
-                        <row-action :row="row" :tab="tab"></row-action>
-                        <v-col
-                                v-for="(col, colIndex) in row.children"
-                                :key="'col' + colIndex"
-                                class="constructor-col"
-                                cols="12"
-                                :md="col.size"
-                        >
-                            <cell-action :col="col" :row="row"></cell-action>
-                            <div
-                                    v-for="(field, fieldIndex) in col.children"
-                                    :key="'col' + fieldIndex"
-                                    class="constructor-field"
-                            >
-                                {{[index, rowIndex, colIndex, fieldIndex].join(fieldSplitter)}}
-                            </div>
-                        </v-col>
+                        <row-action
+                            :row="row"
+                            :tab="tab"
+                        />
+                        <template v-for="col in row.children">
+                            <cell
+                                :col="col"
+                                :row="row"
+                            />
+                        </template>
                     </v-row>
                 </v-container>
             </v-tab-item>
         </v-tabs-items>
+        {{formObject}}
     </div>
 </template>
 <script>
-    import { Form as FormClass } from '../form/classes/form';
-    import {FORM} from '../../constants';
-    import draggable from 'vuedraggable';
+    import { Form as FormClass, Field } from '../form/classes/form';
     import tabsList from './tabs-list';
     import rowAction from './row-action';
-    import cellAction from './cell-action';
+    import componentsList from "./components-list";
+    import cell from './cell';
+
     export default {
         data() {
             return {
-                fieldSplitter: FORM.fieldKeySplitter,
+                componentsList: {
+                    basic: [new Field({type: 'text', label: 'Test 1'}), new Field({type: 'textarea', label: 'Test 2'})],
+                    advanced: [],
+                    required: []
+                },
                 tab: 0,
                 formObject: null,
-                dragOptions: {
-                    animation: 200,
-                    group: 'description',
-                    disabled: false,
-                    ghostClass: 'ghost'
-                },
             }
         },
         created() {
@@ -89,14 +78,15 @@
         methods: {
             setForm(val) {
                 this.formObject = val instanceof FormClass ? val : new FormClass(val);
-                this.formObject.addTab({title: 'Tab 111'});
-            }
+                console.log(this.formObject);
+                //this.formObject.addTab({title: 'Tab 111'});
+            },
         },
         components: {
-            draggable,
             tabsList,
             rowAction,
-            cellAction,
+            componentsList,
+            cell,
         }
     }
 </script>
