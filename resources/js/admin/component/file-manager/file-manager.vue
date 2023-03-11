@@ -208,7 +208,9 @@
         },
         methods: {
             isDisabled (item) {
-                return item.type !== 'folder' && constants.FILE_TYPES[item.item.extension] !== this.fileType;
+                return item.type !== 'folder' &&
+                    constants.FILE_DEFAULT_TYPE !== this.fileType &&
+                    constants.FILE_TYPES[item.item.extension] !== this.fileType;
             },
             initSelectFiles(val) {
                 this.selectedFiles = val.map(file => fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size));

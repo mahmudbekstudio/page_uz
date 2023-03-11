@@ -127,6 +127,7 @@
                 tabMain.addField({type: 'time', name: 'time_field', params: {label: 'time field'}});
                 tabMain.addField({type: 'radio', name: 'radio_field', value: '22', params: {label: 'radio field', options: {'11': 'First', '22': 'Second', '33': 'Third'}}});
                 tabMain.addField({type: 'checkbox', name: 'checkbox_field', value: ['22', '33'], params: {label: 'checkbox field', options: {'11': 'First', '22': 'Second', '33': 'Third'}}});
+                tabMain.addField({type: 'editor', name: 'editor_field', value: 'test', params: {label: 'editor field'}});
                 console.log(tabMain);
             }, () => {
                 app.openMessage(this.$t('words.error'), constants.SNACKBAR_COLORS.error);

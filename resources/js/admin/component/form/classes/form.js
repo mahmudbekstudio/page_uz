@@ -10,6 +10,7 @@ import dateField from "./dateField";
 import timeField from "./timeField";
 import radioField from "./radioField";
 import checkboxField from "./checkboxField";
+import editorField from "./editorField";
 import { FORM } from '../../../constants';
 import * as _ from 'lodash';
 import i18n from "../../../plugin/i18n";
@@ -302,6 +303,9 @@ export class Field {
                 break;
             case 'checkbox':
                 this.field = new checkboxField(fieldObj);
+                break;
+            case 'editor':
+                this.field = new editorField(fieldObj);
                 break;
         }
     }

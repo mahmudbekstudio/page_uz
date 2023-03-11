@@ -31,5 +31,8 @@
         "vuedraggable": "^2.24.3",
         "vuetify": "^2.6.14",
         "vuex": "^3.6.2"
+    },
+    "dependencies": {
+        "@tinymce/tinymce-vue": "^3.2.8"
     }
 }

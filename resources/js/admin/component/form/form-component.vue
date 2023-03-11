@@ -38,6 +38,7 @@
                                 <div
                                         v-for="(field, fieldIndex) in col.children"
                                         :key="'col' + fieldIndex"
+                                        class="cell-field-component"
                                 >
                                     <field-component
                                             :fieldKey="[index, rowIndex, colIndex, fieldIndex].join(fieldSplitter)"

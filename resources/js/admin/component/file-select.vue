@@ -175,8 +175,8 @@
         vertical-align: middle;
         .item-close {
             position: absolute;
-            right: 5px;
-            top: 0;
+            right: -12px;
+            top: -15px;
             font-size: 18px;
             z-index: 10;
             cursor: pointer;

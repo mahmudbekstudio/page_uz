@@ -4,11 +4,12 @@
 
 * `git clone <repository> projectname`
 * `cd projectname`
+* `create .env file`
 * `composer install`
 * `npm install`
-* `create .env file`
 * `php artisan key:generate`
 * `php artisan storage:link`
+* `add domain.php config`
 * `Create a database and inform *.env*`
 * `php artisan migrate --seed` to create and populate tables
 * `php artisan jwt:secret` This will update your .env file with something like JWT_SECRET=foobar

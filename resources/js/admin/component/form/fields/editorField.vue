@@ -1,36 +1,26 @@
 <template>
     <div>
         <label class="field-label v-label theme--light">{{params.label}}</label>
-        <v-checkbox
-            v-for="(item, key) in list"
-            :key="key"
+        <editor
             v-bind="params"
             v-on="events"
             v-model="dataValue"
             :disabled="disabled"
-            :label="item"
-            :value="key"
-            hide-details
-        ></v-checkbox>
+        ></editor>
     </div>
 </template>
 <script>
 import mixins from '../../../mixin';
+import editor from '../../editor';
 
 export default {
     mixins: [mixins.get('formField')],
     props: {
         //
     },
-    computed: {
-        list () {
-            return this.params['options'];
-        }
+    components: {
+        editor
     }
 }
 </script>
-<style scoped lang="scss">
-.v-input--selection-controls {
-    margin-top: 4px;
-}
-</style>
+<style scoped lang="scss"></style>

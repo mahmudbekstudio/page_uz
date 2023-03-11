@@ -14,6 +14,7 @@
     import timeField from "./fields/timeField";
     import radioField from "./fields/radioField";
     import checkboxField from "./fields/checkboxField";
+    import editorField from "./fields/editorField";
 
     export default {
         props: {
@@ -63,6 +64,7 @@
             timeField,
             radioField,
             checkboxField,
+            editorField,
         }
     }
 </script>
