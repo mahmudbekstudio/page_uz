@@ -1,5 +1,6 @@
 import textareaField from './textareaField';
 import textField from './textField';
+import numberField from './numberField';
 import passwordField from './passwordField';
 import selectField from './selectField';
 import fileField from './fileField';
@@ -7,13 +8,17 @@ import switchField from "./switchField";
 import dividerField from "./dividerField";
 import datetimeField from "./datetimeField";
 import dateField from "./dateField";
+import dateRangeField from "./dateRangeField";
+import dateMultipleField from "./dateMultipleField";
 import timeField from "./timeField";
 import radioField from "./radioField";
 import checkboxField from "./checkboxField";
 import editorField from "./editorField";
+import validationField from './validationField';
 import { FORM } from '../../../constants';
 import * as _ from 'lodash';
 import i18n from "../../../plugin/i18n";
+import validation from "../../../config/validation";
 
 export class Form {
     children = [];
@@ -265,11 +270,36 @@ let fieldId = 0;
 export class Field {
     field = {};
     fieldTitle = '';
+    fillable = [
+        {
+            type: 'text',
+            name: 'name',
+            params: {label: 'Name', rules: [validation.required('Name')]}
+        },
+        {
+            type: 'text',
+            name: 'label',
+            params: {label: 'Label', rules: [validation.required('Label')]}
+        },
+        {
+            type: 'text',
+            name: 'value',
+            params: {label: 'Default value'}
+        },
+        {
+            type: 'validation',
+            name: 'validation',
+            params: {label: 'Validation'}
+        }
+    ];
 
     constructor(fieldObj) {
         switch (fieldObj.type) {
             case 'text':
                 this.field = new textField(fieldObj);
+                break;
+            case 'number':
+                this.field = new numberField(fieldObj);
                 break;
             case 'password':
                 this.field = new passwordField(fieldObj);
@@ -295,6 +325,12 @@ export class Field {
             case 'date':
                 this.field = new dateField(fieldObj);
                 break;
+            case 'dateRange':
+                this.field = new dateRangeField(fieldObj);
+                break;
+            case 'dateMultiple':
+                this.field = new dateMultipleField(fieldObj);
+                break;
             case 'time':
                 this.field = new timeField(fieldObj);
                 break;
@@ -307,7 +343,24 @@ export class Field {
             case 'editor':
                 this.field = new editorField(fieldObj);
                 break;
+            case 'validation':
+                this.field = new validationField(fieldObj);
+                break;
         }
+    }
+
+    get fillableFields () {
+        const mergeObj = {};
+
+        for (const item of this.fillable) {
+            mergeObj[item.name] = item;
+        }
+
+        for (const item of this.field.fillable) {
+            mergeObj[item.name] = item;
+        }
+
+        return Object.values(mergeObj);
     }
 
     get title() {

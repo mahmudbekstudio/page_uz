@@ -1,10 +1,10 @@
 <template>
     <v-select
-            :items="listItems"
-            v-bind="params"
-            v-on="events"
-            v-model="dataValue"
-            :disabled="disabled"
+        :items="listItems"
+        v-bind="params"
+        v-on="events"
+        v-model="selectedValues"
+        :disabled="disabled"
     ></v-select>
 </template>
 <script>
@@ -16,8 +16,8 @@
             listItems() {
                 const result = [];
                 let isFirst = true;
-                for(let key in this.params['options']) {
-                    const item = this.params['options'][key];
+                for(let key in this.optionsParam) {
+                    const item = this.optionsParam[key];
 
                     if(typeof item === 'object') {
                         if(!isFirst) {
@@ -35,6 +35,51 @@
                     }
                 }
                 return result;
+            },
+            optionsParam () {
+                if (typeof this.params['options'] === 'string') {
+                    const options = this.params['options'].split("\n");
+                    const result = {};
+
+                    for (let item of options) {
+                        item = item.trim().split(':').map(item => item.trim());
+                        if (item.length >= 2 && item[0] && item[1]) {
+                            result[item[0]] = item[1];
+                        }
+                    }
+
+                    return result;
+                }
+
+                return this.params['options'];
+            },
+            selectedValues: {
+                get: function () {
+                    if (this.params.multiple && typeof this.dataValue === 'string') {
+                        return this.dataValue.split(',').map(item => item.trim());
+                    }
+                    return this.dataValue;
+                },
+                set: function (newValue) {
+                    this.dataValue = newValue;
+                }
+            }
+        },
+        methods: {
+            initOptions () {
+                if (typeof this.params['options'] === 'string') {
+                    const options = this.params['options'].split("\n");
+                    const result = {};
+
+                    for (let item of options) {
+                        item = item.trim().split(':').map(item => item.trim());
+                        if (item.length >= 2 && item[0] && item[1]) {
+                            result[item[0]] = item[1];
+                        }
+                    }
+
+                    this.params['options'] = result;
+                }
             }
         }
     }

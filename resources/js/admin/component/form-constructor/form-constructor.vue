@@ -26,13 +26,28 @@
                             <cell
                                 :col="col"
                                 :row="row"
+                                @edit="editCell($event)"
+                                @add="addElement($event)"
                             />
                         </template>
                     </v-row>
                 </v-container>
             </v-tab-item>
         </v-tabs-items>
-        {{formObject}}
+        <dialog-component
+            v-model="elementDialog.show"
+            :title="elementDialogTitle"
+            :actions="elementDialog.actions"
+            @close="closeElementForm"
+        >
+            <form-component
+                v-if="elementDialog.show"
+                :value="elementForm"
+                @input="elementFormChanged"
+                @resetValidation="selectedFormResetValidation = $event"
+                @validate="selectedFormValidation = $event"
+            />
+        </dialog-component>
     </div>
 </template>
 <script>
@@ -41,17 +56,86 @@
     import rowAction from './row-action';
     import componentsList from "./components-list";
     import cell from './cell';
+    import dialogComponent from "../dialog-component";
+    import formComponent from '../form/form-component';
+    import app from "../../service/app";
 
     export default {
         data() {
             return {
                 componentsList: {
-                    basic: [new Field({type: 'text', label: 'Test 1'}), new Field({type: 'textarea', label: 'Test 2'})],
+                    basic: [
+                        new Field({type: 'text'}),
+                        new Field({type: 'textarea'}),
+                        new Field({type: 'number'}),
+                        new Field({type: 'checkbox'}),
+                        new Field({type: 'radio'}),
+                        new Field({type: 'divider'}),
+                        new Field({type: 'date'}),
+                        new Field({type: 'datetime'}),
+                        new Field({type: 'dateMultiple'}),
+                        new Field({type: 'dateRange'}),
+                        new Field({type: 'time'}),
+                        new Field({type: 'switch'}),
+                        new Field({type: 'password'}),
+                        new Field({type: 'select'}),
+                        new Field({type: 'file'}),
+                        new Field({type: 'editor'}),
+                    ],
                     advanced: [],
                     required: []
                 },
                 tab: 0,
                 formObject: null,
+                selectedElement: null,
+                selectedFormResetValidation: null,
+                selectedFormValidation: null,
+                selectedElementForm: null,
+                elementDialog: {
+                    actionType: '',
+                    show: false,
+                    actions: [
+                        {
+                            color: 'default',
+                            text: 'Cancel',
+                            click: () => {
+                                this.closeElementForm();
+                                this.selectedElement = null;
+                                this.elementDialog.show = false;
+                            }
+                        },
+                        {
+                            color: 'primary',
+                            text: 'Save',
+                            click: () => {
+                                if (this.selectedFormValidation()) {
+                                    const fieldValues = Object.keys(this.formObject.getFieldValues());
+                                    let nameExist = false;
+
+                                    if (fieldValues.indexOf(this.selectedElementForm.name) > -1) {
+                                        nameExist = this.elementDialog.actionType === 'add';
+
+                                        if (!nameExist) {
+                                            const fields = this.formObject.getFields();
+                                            const currentElementIndex = fields.indexOf(this.selectedElement.item);
+                                            nameExist = fields[currentElementIndex].name !== this.selectedElementForm.name;
+                                        }
+                                    }
+
+                                    if (nameExist) {
+                                        app.errorMessage('Field with name ' + this.selectedElementForm.name + ' exist');
+                                        return false;
+                                    }
+
+                                    this.selectedElement.item.field.fill = this.selectedElementForm;
+                                    this.selectedElement.col.children = [...this.selectedElement.col.children];
+                                    this.selectedElement = null;
+                                    this.elementDialog.show = false;
+                                }
+                            }
+                        }
+                    ]
+                }
             }
         },
         created() {
@@ -63,7 +147,7 @@
             },
             formObject: {
                 handler: (newVal, oldVal) => {
-                    console.log('formObject', newVal);
+                    //console.log('formObject', newVal);
                 },
                 deep: true
             }
@@ -75,18 +159,79 @@
                 }
             }
         },
+        computed: {
+            elementForm () {
+                const elements = this.selectedElement?.item?.fillableFields || [];
+                if (this.elementDialog.actionType === 'edit') {
+                    for (const element of elements) {
+                        if (typeof this.selectedElement.item.field.fill[element.name] !== 'undefined') {
+                            if (element.name === 'validation') {
+                                element.value = this.selectedElement.item.field.fill[element.name];
+                            } else {
+                                element.value = this.selectedElement.item.field.fill[element.name];
+                            }
+                        }
+                    }
+                }
+
+                return [
+                    {
+                        type: 'tab',
+                        children: [
+                            {
+                                type: 'row',
+                                children: [
+                                    {
+                                        type: 'col',
+                                        size: '12',
+                                        children: elements
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            elementDialogTitle () {
+                return this.elementDialog.actionType === 'add' ? 'Add' : 'Edit';
+            }
+        },
         methods: {
+            closeElementForm() {
+                if (this.selectedElement && this.elementDialog.actionType === 'add') {
+                    this.selectedElement.col.children = this.selectedElement.col.children.filter(item => this.selectedElement.item.field.id !== item.field.id);
+                }
+            },
+            elementFormChanged(form)  {
+                this.selectedElementForm = form.getFieldValues();
+            },
             setForm(val) {
                 this.formObject = val instanceof FormClass ? val : new FormClass(val);
-                console.log(this.formObject);
                 //this.formObject.addTab({title: 'Tab 111'});
             },
+            editCell (cell) {
+                this.selectedElement = cell;
+                this.elementDialog.actionType = 'edit';
+                this.elementDialog.show = true;
+            },
+            addElement (cell) {
+                console.log(cell.item);
+                if (!cell.item.field.hasFillable) {
+                    return false;
+                }
+
+                this.selectedElement = cell;
+                this.elementDialog.actionType = 'add';
+                this.elementDialog.show = true;
+            }
         },
         components: {
             tabsList,
             rowAction,
             componentsList,
             cell,
+            dialogComponent,
+            formComponent,
         }
     }
 </script>

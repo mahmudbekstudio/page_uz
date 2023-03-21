@@ -1,6 +1,19 @@
 import field from './mainField';
+import validation from "../../../config/validation";
 
 export default class textField extends field {
+    fillable = [
+        {
+            type: 'text',
+            name: 'hint',
+            params: {label: 'Hint'}
+        },
+        {
+            type: 'text',
+            name: 'placeholder',
+            params: {label: 'Placeholder'}
+        },
+    ]
     constructor(params) {
         super(params);
     }

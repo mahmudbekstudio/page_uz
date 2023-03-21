@@ -15,7 +15,9 @@ Vue.use(moment);
 
 import fileSelect from "./component/file-select";
 import fileManager from "./component/file-manager/file-manager";
+import fieldComponent from "./component/form/field-component";
 Vue.component('file-select', fileSelect);
+Vue.component('field-component', fieldComponent);
 Vue.component('tinyMceEditor', Editor);
 Vue.component('file-manager', fileManager);
 

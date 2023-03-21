@@ -41,6 +41,8 @@ import cellAction from "./cell-action";
 import elementRender from "./element/element-render";
 import draggable from 'vuedraggable';
 import * as _ from 'lodash';
+import app from '../../service/app';
+import { Field } from '../form/classes/form';
 
 export default {
     data () {
@@ -61,34 +63,33 @@ export default {
     methods: {
         endDrag (e) {
             this.dragging = false;
-            console.log('endDrag', e);
         },
         startDrag (e) {
             this.dragging = true;
-            console.log('dragStart', e);
         },
         changeList (item) {
-            console.log('changeList', item);
             if (item.added) {
-                this.col.children[item.added.newIndex] = _.cloneDeep(item.added.element);
-                this.col.children = this.col.children.slice()
+                const newItem = _.cloneDeep(item.added.element);
+                delete newItem.id;
+                this.col.children[item.added.newIndex] = new Field(newItem);
+                //this.col.children = this.col.children.slice();
+                this.$emit('add', {item: this.col.children[item.added.newIndex], col: this.col});
             }
         },
         elementEdit (item) {
-            console.log('elementEdit item', item)
+            this.$emit('edit', {item, col: this.col});
         },
         elementCopy (item) {
-            console.log('elementCopy', item);
-            /*const itemIndex = this.item.children.indexOf(item)
-            this.item.children.splice(itemIndex, 0, Helpers.deepClone(item))*/
+            const itemIndex = this.col.children.indexOf(item)
+            const newItem = _.cloneDeep(item);
+            delete newItem.id;
+            this.col.children.splice(itemIndex, 0, new Field(newItem));
         },
         elementDelete (item) {
-            console.log('elementDelete', item);
-            /*if (confirm('Do you really want to delete?')) {
-                const itemIndex = this.item.children.indexOf(item)
-                this.item.children.splice(itemIndex, 1)
-                this.$store.commit('setElement', null)
-            }*/
+            app.openConfirm('Do you really want to delete?', () => {
+                const itemIndex = this.col.children.indexOf(item);
+                this.col.children.splice(itemIndex, 1);
+            })
         },
     },
     components: {

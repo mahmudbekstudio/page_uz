@@ -8,6 +8,8 @@ export default class field {
         params: {},
         events: {}
     };
+    hasFillable = true;
+    fillable = [];
     constructor(params = {}) {
         this.fieldObject = Object.assign({}, this.defaultObject);
         this.fieldObject.type = params.type || this.defaultObject.type;
@@ -72,6 +74,28 @@ export default class field {
 
     set events(val) {
         this.fieldObject.events = val;
+    }
+
+    set fill(val) {
+        if (val.name) {
+            this.name = val.name;
+            delete val.name;
+        }
+
+        if (typeof val.value !== 'undefined') {
+            this.value = val.value;
+            delete val.value;
+        }
+
+        this.params = val;
+    }
+
+    get fill () {
+        const params = {...this.params};
+        params.name = this.name;
+        params.value = this.value;
+
+        return params;
     }
 
     setEvents(key, value) {

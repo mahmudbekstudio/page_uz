@@ -15,6 +15,21 @@ export default {
     props: {
         //
     },
+    created() {
+        this.initLabel(this.params.label);
+    },
+    watch:{
+        'params.label' (val) {
+            this.initLabel(val);
+        }
+    },
+    methods: {
+        initLabel(label) {
+            if (typeof label === 'string') {
+                this.params.label = label.split(',')
+            }
+        }
+    },
     components: {
         datetimepicker
     }

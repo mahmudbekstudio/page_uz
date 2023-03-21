@@ -93,6 +93,7 @@
         created() {
             this.$emit('validate', () => this.$refs.form.validate());
             this.$emit('resetValidation', () => this.$refs.form.resetValidation());
+            this.initFormObject(this.value);
         },
         computed: {
             showTabs() {
@@ -101,7 +102,7 @@
         },
         watch: {
             value(val) {
-                this.formObject = val instanceof FormClass ? val : new FormClass(val);
+                this.initFormObject(val);
             },
             valid(val) {
                 this.$emit('valid', val);
@@ -111,6 +112,13 @@
             fieldChanged(key, val) {
                 this.formObject.setFieldValue(key, val);
                 this.$emit('input', this.formObject)
+            },
+            initFormObject (val) {
+                if ((val && val.length) || val instanceof FormClass) {
+                    this.formObject = val instanceof FormClass ? val : new FormClass(val);
+                } else {
+                    this.formObject = new FormClass();
+                }
             }
         },
         components: {

@@ -1,11 +1,11 @@
 import field from './mainField';
 
-export default class datetimeField extends field {
+export default class dateRangeField extends field {
     fillable = [
         {
-            type: 'datetime',
+            type: 'dateRange',
             name: 'value',
-            params: {label: 'date picker,time picker', hint: 'split by comma'}
+            params: {label: 'Default value'}
         },
     ]
     constructor(params) {

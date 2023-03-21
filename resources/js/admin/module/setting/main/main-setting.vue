@@ -125,9 +125,26 @@
                 tabMain.addField({type: 'datetime', name: 'datetime_field', params: {label: ['date picker', 'time picker'], multiple: true}});
                 tabMain.addField({type: 'date', name: 'date_field', params: {label: 'date field', multiple: true}});
                 tabMain.addField({type: 'time', name: 'time_field', params: {label: 'time field'}});
-                tabMain.addField({type: 'radio', name: 'radio_field', value: '22', params: {label: 'radio field', options: {'11': 'First', '22': 'Second', '33': 'Third'}}});
-                tabMain.addField({type: 'checkbox', name: 'checkbox_field', value: ['22', '33'], params: {label: 'checkbox field', options: {'11': 'First', '22': 'Second', '33': 'Third'}}});
+                tabMain.addField({type: 'radio', name: 'radio_field', value: '2', params: {label: 'radio field', options: '1:First\n' +
+                            '2:Second\n' +
+                            '3:Third\n' +
+                            '\n' +
+                            ':\n' +
+                            '6:\n' +
+                            ':Seventh\n' +
+                            ' :aa\n' +
+                            ': '}});
+                tabMain.addField({type: 'checkbox', name: 'checkbox_field', value: "2,3", params: {label: 'checkbox field', options: '1:First\n' +
+                            '2:Second\n' +
+                            '3:Third\n' +
+                            '\n' +
+                            ':\n' +
+                            '6:\n' +
+                            ':Seventh\n' +
+                            ' :aa\n' +
+                            ': '}});
                 tabMain.addField({type: 'editor', name: 'editor_field', value: 'test', params: {label: 'editor field'}});
+                tabMain.addField({type: 'number', name: 'number_field', params: {label: 'number field'}});
                 console.log(tabMain);
             }, () => {
                 app.openMessage(this.$t('words.error'), constants.SNACKBAR_COLORS.error);

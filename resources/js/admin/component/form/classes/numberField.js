@@ -1,12 +1,11 @@
-import field from './mainField';
+import field from './textField';
 
-export default class textareaField extends field {
+export default class numberField extends field {
     fillable = [
         {
             type: 'number',
-            name: 'rows',
-            value: 5,
-            params: {label: 'Rows'}
+            name: 'value',
+            params: {label: 'Default value'}
         },
         {
             type: 'text',
@@ -22,5 +21,13 @@ export default class textareaField extends field {
 
     constructor(params) {
         super(params);
+    }
+
+    get value() {
+        return this.fieldObject.value || 0;
+    }
+
+    set value(val) {
+        this.fieldObject.value = val;
     }
 }

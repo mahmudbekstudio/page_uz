@@ -193,6 +193,10 @@
             },
             show(val) {
                 this.$emit('input', val);
+
+                if (!val) {
+                    this.$emit('close');
+                }
             },
             fullscreen(val) {
                 this.scrollable = val;

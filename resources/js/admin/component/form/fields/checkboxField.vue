@@ -6,7 +6,7 @@
             :key="key"
             v-bind="params"
             v-on="events"
-            v-model="dataValue"
+            v-model="checkboxValues"
             :disabled="disabled"
             :label="item"
             :value="key"
@@ -24,7 +24,32 @@ export default {
     },
     computed: {
         list () {
+            if (typeof this.params['options'] === 'string') {
+                const options = this.params['options'].split("\n");
+                const result = {};
+
+                for (let item of options) {
+                    item = item.trim().split(':').map(item => item.trim());
+                    if (item.length >= 2 && item[0] && item[1]) {
+                        result[item[0]] = item[1];
+                    }
+                }
+
+                return result;
+            }
+
             return this.params['options'];
+        },
+        checkboxValues: {
+            get: function () {
+                if (typeof this.dataValue === 'string') {
+                    this.dataValue = this.dataValue.split(',').map(item => item.trim());
+                }
+                return this.dataValue;
+            },
+            set: function (newValue) {
+                this.dataValue = newValue;
+            }
         }
     }
 }
