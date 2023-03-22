@@ -69,9 +69,10 @@ export default {
         },
         changeList (item) {
             if (item.added) {
-                const newItem = _.cloneDeep(item.added.element);
-                delete newItem.id;
-                this.col.children[item.added.newIndex] = new Field(newItem);
+                const newItem = new Field(_.cloneDeep(item.added.element.json));
+                newItem.newId();
+                this.col.children[item.added.newIndex] = newItem;
+                this.col.children = [...this.col.children];
                 //this.col.children = this.col.children.slice();
                 this.$emit('add', {item: this.col.children[item.added.newIndex], col: this.col});
             }

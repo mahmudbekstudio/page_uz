@@ -14,6 +14,15 @@ import timeField from "./timeField";
 import radioField from "./radioField";
 import checkboxField from "./checkboxField";
 import editorField from "./editorField";
+import advancedParentField from './advanced/advancedParentField';
+import requiredPublishStartField from './required/requiredPublishStartField';
+import requiredPublishEndField from './required/requiredPublishEndField';
+import requiredRouteNameField from './required/requiredRouteNameField';
+import requiredSeoKeywordField from './required/requiredSeoKeywordField';
+import requiredSeoDescriptionField from './required/requiredSeoDescriptionField';
+import requiredStatusField from './required/requiredStatusField';
+import requiredTemplateField from './required/requiredTemplateField';
+import requiredTitleField from './required/requiredTitleField';
 import validationField from './validationField';
 import { FORM } from '../../../constants';
 import * as _ from 'lodash';
@@ -346,6 +355,33 @@ export class Field {
             case 'validation':
                 this.field = new validationField(fieldObj);
                 break;
+            case 'advancedParent':
+                this.field = new advancedParentField(fieldObj);
+                break;
+            case 'requiredPublishStart':
+                this.field = new requiredPublishStartField(fieldObj);
+                break;
+            case 'requiredPublishEnd':
+                this.field = new requiredPublishEndField(fieldObj);
+                break;
+            case 'requiredRouteName':
+                this.field = new requiredRouteNameField(fieldObj);
+                break;
+            case 'requiredSeoKeyword':
+                this.field = new requiredSeoKeywordField(fieldObj);
+                break;
+            case 'requiredSeoDescription':
+                this.field = new requiredSeoDescriptionField(fieldObj);
+                break;
+            case 'requiredStatus':
+                this.field = new requiredStatusField(fieldObj);
+                break;
+            case 'requiredTemplate':
+                this.field = new requiredTemplateField(fieldObj);
+                break;
+            case 'requiredTitle':
+                this.field = new requiredTitleField(fieldObj);
+                break;
         }
     }
 
@@ -384,6 +420,20 @@ export class Field {
             this.field.id = ++fieldId;
         }
         return this.field.id;
+    }
+
+    set id(val) {
+        this.field.id = val;
+    }
+
+    initId() {
+        if (!this.field.id) {
+            this.newId();
+        }
+    }
+
+    newId() {
+        this.field.id = ++fieldId;
     }
 
     get disabled() {

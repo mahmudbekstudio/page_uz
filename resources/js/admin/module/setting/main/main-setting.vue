@@ -145,6 +145,7 @@
                             ': '}});
                 tabMain.addField({type: 'editor', name: 'editor_field', value: 'test', params: {label: 'editor field'}});
                 tabMain.addField({type: 'number', name: 'number_field', params: {label: 'number field'}});
+                tabMain.addField({type: 'requiredRouteName'});
                 console.log(tabMain);
             }, () => {
                 app.openMessage(this.$t('words.error'), constants.SNACKBAR_COLORS.error);

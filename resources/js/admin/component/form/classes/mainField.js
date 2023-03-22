@@ -1,5 +1,6 @@
 export default class field {
     fieldObject = {};
+    id = null;
     defaultObject = {
         type: 'text',
         name: '',

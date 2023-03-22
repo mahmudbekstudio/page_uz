@@ -3,6 +3,7 @@
 return [
     'app.version',
     'lang.list' => 'app.locale_list',
+    'app.routeRules' => 'app.route_rules',
     'token.access_lifetime' => 'jwt.ttl',
     'app.env',
     'app.debug',

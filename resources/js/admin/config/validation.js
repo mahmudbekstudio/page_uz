@@ -30,5 +30,8 @@ export default {
         return v => {
             return ((!v && !value()) || v === value()) || i18n.t('validation.confirmation', {field});
         }
-    }
+    },
+    routeName: function(field) {
+        return v => constants.VALIDATION_ROUTE_NAME.test(v) || i18n.t('validation.field_must_be_valid', {field})
+    },
 }

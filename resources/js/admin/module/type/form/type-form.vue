@@ -33,6 +33,8 @@
             this.actions.push(getPageBoxAction(this.$t('words.back'), '', {color: 'default'}, {click: () => this.$router.push({name: 'type.list'})}));
             this.actions.push(getPageBoxAction(this.$t('words.' + (this.id ? 'update' : 'create')), '', {color: 'primary'}, {click: () => console.log('save clicked', this.formValue.json, this.formValue.getFields(), this.formValue.getFieldValues())}));
             this.formValue = new FormClass();
+            this.formValue.addTab({title: 'SEO'});
+            this.formValue.addTab({title: 'Advanced'});
         },
         methods: {
             ...mapActions({

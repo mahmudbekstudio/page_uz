@@ -65,22 +65,5 @@
                 }
             }
         },
-        methods: {
-            initOptions () {
-                if (typeof this.params['options'] === 'string') {
-                    const options = this.params['options'].split("\n");
-                    const result = {};
-
-                    for (let item of options) {
-                        item = item.trim().split(':').map(item => item.trim());
-                        if (item.length >= 2 && item[0] && item[1]) {
-                            result[item[0]] = item[1];
-                        }
-                    }
-
-                    this.params['options'] = result;
-                }
-            }
-        }
     }
 </script>

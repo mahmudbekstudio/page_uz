@@ -60,6 +60,21 @@
     import formComponent from '../form/form-component';
     import app from "../../service/app";
 
+    const advanced = {
+        parent: new Field({type: 'advancedParent'}),
+    };
+
+    const required = {
+        publishEnd: new Field({type: 'requiredPublishEnd'}),
+        publishStart: new Field({type: 'requiredPublishStart'}),
+        routeName: new Field({type: 'requiredRouteName'}),
+        seoDescription: new Field({type: 'requiredSeoDescription'}),
+        seoKeyword: new Field({type: 'requiredSeoKeyword'}),
+        status: new Field({type: 'requiredStatus'}),
+        template: new Field({type: 'requiredTemplate'}),
+        title: new Field({type: 'requiredTitle'}),
+    };
+
     export default {
         data() {
             return {
@@ -109,6 +124,15 @@
                             text: 'Save',
                             click: () => {
                                 if (this.selectedFormValidation()) {
+                                    if (this.checkAdvanced()) {
+                                        app.errorMessage('Field with special name ' + this.selectedElementForm.name + ' must be added from advanced tab');
+                                        return false;
+                                    }
+
+                                    if (this.checkRequired()) {
+                                        app.errorMessage('Field with special name ' + this.selectedElementForm.name + ' must be added from required tab');
+                                        return false;
+                                    }
                                     const fieldValues = Object.keys(this.formObject.getFieldValues());
                                     let nameExist = false;
 
@@ -146,8 +170,21 @@
                 this.setForm(val);
             },
             formObject: {
-                handler: (newVal, oldVal) => {
-                    //console.log('formObject', newVal);
+                handler(newVal, oldVal) {
+                    const values = newVal.getFieldValues();
+                    this.componentsList.advanced = [];
+                    this.componentsList.required = [];
+                    for (const key in advanced) {
+                        if (typeof values[key] === 'undefined') {
+                            this.componentsList.advanced.push(advanced[key]);
+                        }
+                    }
+
+                    for (const key in required) {
+                        if (typeof values[key] === 'undefined') {
+                            this.componentsList.required.push(required[key]);
+                        }
+                    }
                 },
                 deep: true
             }
@@ -197,6 +234,12 @@
             }
         },
         methods: {
+            checkAdvanced () {
+                return advanced[this.selectedElementForm.name] && this.selectedElement.item.field.fieldObject.type !== advanced[this.selectedElementForm.name].type;
+            },
+            checkRequired () {
+                return required[this.selectedElementForm.name] && this.selectedElement.item.field.fieldObject.type !== required[this.selectedElementForm.name].type;
+            },
             closeElementForm() {
                 if (this.selectedElement && this.elementDialog.actionType === 'add') {
                     this.selectedElement.col.children = this.selectedElement.col.children.filter(item => this.selectedElement.item.field.id !== item.field.id);
@@ -215,7 +258,6 @@
                 this.elementDialog.show = true;
             },
             addElement (cell) {
-                console.log(cell.item);
                 if (!cell.item.field.hasFillable) {
                     return false;
                 }

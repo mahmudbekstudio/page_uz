@@ -18,6 +18,8 @@
                 readonly
                 v-bind="attrs"
                 v-on="on"
+                :append-icon="appendIcon"
+                @click:append="appendClick"
             ></v-text-field>
         </template>
         <clock
@@ -66,6 +68,14 @@ export default {
                 this.$emit('input', newValue);
             }
         },
+        appendIcon () {
+            return this.picker ? 'close' : '';
+        }
+    },
+    methods: {
+        appendClick () {
+            this.picker = '';
+        }
     },
     components: {
         clock,

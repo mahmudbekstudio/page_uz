@@ -19,6 +19,15 @@
     import checkboxField from "./fields/checkboxField";
     import editorField from "./fields/editorField";
     import validationField from "./fields/validationField";
+    import advancedParentField from './fields/advanced/advancedParentField';
+    import requiredPublishEndField from './fields/required/requiredPublishEndField';
+    import requiredPublishStartField from './fields/required/requiredPublishStartField';
+    import requiredRouteNameField from './fields/required/requiredRouteNameField';
+    import requiredSeoDescriptionField from './fields/required/requiredSeoDescriptionField';
+    import requiredSeoKeywordField from './fields/required/requiredSeoKeywordField';
+    import requiredStatusField from './fields/required/requiredStatusField';
+    import requiredTemplateField from './fields/required/requiredTemplateField';
+    import requiredTitleField from './fields/required/requiredTitleField';
 
     export default {
         props: {
@@ -73,6 +82,15 @@
             checkboxField,
             editorField,
             validationField,
+            advancedParentField,
+            requiredPublishEndField,
+            requiredPublishStartField,
+            requiredRouteNameField,
+            requiredSeoDescriptionField,
+            requiredSeoKeywordField,
+            requiredStatusField,
+            requiredTemplateField,
+            requiredTitleField,
         }
     }
 </script>
