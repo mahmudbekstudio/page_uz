@@ -9,6 +9,8 @@ use App\Repositories\UserRepository;
 class UsersDataTable extends DataTable
 {
     protected string $repositoryClass = UserRepository::class;
+    protected string $sortBy = 'created_at';
+    protected bool $sortDesc = true;
     protected array $columns = [
         'users.id' => 'id',
         'users.email' => 'email',

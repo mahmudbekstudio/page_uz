@@ -11,5 +11,6 @@ return [
     'lang.fallback_locale' => 'app.fallback_locale',
     'app.min_password_length',
     'app.status',
+    'app.timeFormat',
     'app.userRoles',
 ];

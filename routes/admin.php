@@ -62,7 +62,9 @@ Route::group(['middleware' => ['auth:api']], function() {
                     Route::get('list', [TypeController::class, 'list'])->name('list');
                     Route::post('create', [TypeController::class, 'create'])->name('create');
                     Route::put('edit/{id}', [TypeController::class, 'edit'])->name('edit');
-                    Route::delete('delete/{id}', [TypeController::class, 'delete'])->name('delete');
+                    Route::get('get/{type}', [TypeController::class, 'get'])->name('get');
+                    Route::delete('delete/{type}', [TypeController::class, 'delete'])->name('delete');
+                    Route::get('categories', [TypeController::class, 'getCategories'])->name('categories');
                 });
 
                 Route::group(['prefix' => 'setting', 'as' => 'setting.'], function () {

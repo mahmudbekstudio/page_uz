@@ -97,7 +97,7 @@
         },
         computed: {
             showTabs() {
-                return this.formObject.children.length && (this.formObject.children.length > 1 || !!this.formObject.children[0].title);
+                return this.formObject.children.length > 1;
             }
         },
         watch: {

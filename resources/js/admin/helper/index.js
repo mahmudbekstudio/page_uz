@@ -1,3 +1,5 @@
+import storage from '../service/storage';
+
 export let parseJson = function (str) {
     try {
         let o = JSON.parse(str);
@@ -45,3 +47,23 @@ export let getPageBoxAction = function(title, icon = '', bind = {}, on = {}) {
         on: on
     };
 };
+
+export let cache = function (key, value = null) {
+    if (value) {
+        storage.set(key, value);
+        return true;
+    } else {
+        return storage.get(key);
+    }
+}
+
+export let temporaryCache = function (key, value = null) {
+    const cacheKeyPrefix = 'temporaryCacheKeys';
+    window[cacheKeyPrefix] = window[cacheKeyPrefix] || {};
+    if (value) {
+        window[cacheKeyPrefix][key] = value;
+        return true;
+    } else {
+        return window[cacheKeyPrefix][key];
+    }
+}

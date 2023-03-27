@@ -11,8 +11,8 @@ abstract class DataTable
 {
     protected int $page;
     protected int $itemsPerPage;
-    protected string $sortBy;
-    protected bool $sortDesc;
+    protected string $sortBy = '';
+    protected bool $sortDesc = false;
     protected array $filter = [];
 
     protected array $columns = [];
@@ -26,10 +26,12 @@ abstract class DataTable
     public function __construct(protected DataTableRequest $request)
     {
         $data = $request->all();
+        $sortBy = Arr::get($data, 'sortBy', []);
+        $sortDec = empty($sortBy) ? [] : Arr::get($data, 'sortDesc', []);
         $this->page = $currentPage = Arr::get($data, 'page', 1);
         $this->itemsPerPage = Arr::get($data, 'itemsPerPage', self::DEFAULT_ITEMS_PER_PAGE);
-        $this->sortBy = Arr::get(Arr::get($data, 'sortBy', []), 0, '');
-        $this->sortDesc = Arr::get(Arr::get($data, 'sortDesc', []), 0, 'false') === 'true';
+        $this->sortBy = Arr::get($sortBy, 0, $this->sortBy);
+        $this->sortDesc = Arr::get($sortDec, 0, $this->sortDesc ? 'true' : 'false') === 'true';
         $this->filter = Arr::get($data, 'filter', []);
         $this->repository = app($this->repositoryClass);
 

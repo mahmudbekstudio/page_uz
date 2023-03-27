@@ -5,7 +5,7 @@ export default class requiredRouteNameField extends field {
     constructor(params) {
         super(params);
 
-        this.fieldObject.params.label = 'Route name';
-        this.fieldObject.name = 'routeName';
+        this.fieldObject.params.label = params?.params?.label || 'Route name';
+        this.fieldObject.name = this.fieldObject.name || 'routeName';
     }
 }

@@ -168,4 +168,5 @@ return [
     "user_not_exist_with_email" => "User does not exist with this email",
     'confirmation' => 'The {field} confirmation does not match.',
     'old_password_incorrect' => 'Old password incorrect',
+    'typename_exist' => 'Type name exist',
 ];

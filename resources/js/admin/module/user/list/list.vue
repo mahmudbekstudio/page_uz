@@ -53,7 +53,7 @@
                 </v-chip>
             </template>
             <template v-slot:item.role="props">{{ $t('words.' + props.value) }}</template>
-            <template v-slot:item.created_at="props">{{ $moment(props.value).format("YYYY-MM-DD HH:mm:ss") }}</template>
+            <template v-slot:item.created_at="props">{{ $moment(props.value).format(mainConfig.app.timeFormat.full) }}</template>
 
         </data-table>
 
@@ -87,7 +87,7 @@ import { getPageBoxAction } from '../../../helper';
 import dataTable from '../../../component/table/data-table';
 import mainConfig from '../../../config/main';
 import dialogComponent from "../../../component/dialog-component";
-import formComponent from "../../../component/form/form-component";
+import formComponent from '../../../component/form/form-component';
 import {mapGetters} from 'vuex';
 import app from "../../../service/app";
 import * as constants from "../../../constants";

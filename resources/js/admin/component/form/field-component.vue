@@ -20,6 +20,7 @@
     import editorField from "./fields/editorField";
     import validationField from "./fields/validationField";
     import advancedParentField from './fields/advanced/advancedParentField';
+    import advancedChildOfField from './fields/advanced/advancedChildOfField';
     import requiredPublishEndField from './fields/required/requiredPublishEndField';
     import requiredPublishStartField from './fields/required/requiredPublishStartField';
     import requiredRouteNameField from './fields/required/requiredRouteNameField';
@@ -83,6 +84,7 @@
             editorField,
             validationField,
             advancedParentField,
+            advancedChildOfField,
             requiredPublishEndField,
             requiredPublishStartField,
             requiredRouteNameField,

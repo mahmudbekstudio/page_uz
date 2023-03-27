@@ -2,7 +2,7 @@
   <div class="element-render">
     <div class="element-render-actions">
       <!--span @click="actionClicked('copy')" class="action-ico"><icon-copy /></span-->
-      <span @click="actionClicked('edit')" class="action-ico"><icon-pen></icon-pen></span>
+      <span v-if="element.field.hasFillable" @click="actionClicked('edit')" class="action-ico"><icon-pen></icon-pen></span>
       <span @click="actionClicked('delete')" class="action-ico"><icon-delete></icon-delete></span>
     </div>
     <div class="element-render-cover" />

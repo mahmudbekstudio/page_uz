@@ -18,6 +18,13 @@ class Type extends Model
      */
     protected $fillable = ['status', 'name', 'type', 'has_parent', 'child_of', 'structure', 'fields'];
 
+    protected $casts = [
+        'structure' => 'array',
+        'fields' => 'array',
+    ];
+
+    protected $hidden = ['website_id', 'user_id'];
+
     const TYPE_POST = 'post';
     const TYPE_CATEGORY = 'category';
 

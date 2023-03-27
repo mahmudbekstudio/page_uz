@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests\Admin\Type;
 
+use App\Models\Type;
+use App\Rules\TypeNameNotExist;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CreateTypeRequest extends FormRequest
 {
@@ -13,7 +17,7 @@ class CreateTypeRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -24,7 +28,17 @@ class CreateTypeRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => [
+                'required',
+                'string', 'regex:/^' . config('app.route_rules.name') . '$/i',
+                new TypeNameNotExist()
+            ],
+            'status' => ['required', 'boolean'],
+            'type' => ['required', Rule::in(Type::types())],
+            'has_parent' => ['required', 'boolean'],
+            'child_of' => ['integer'],
+            'structure' => ['required', 'array'],
+            'fields' => ['required', 'array']
         ];
     }
 }

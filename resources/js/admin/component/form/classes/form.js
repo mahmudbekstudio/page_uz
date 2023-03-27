@@ -15,6 +15,7 @@ import radioField from "./radioField";
 import checkboxField from "./checkboxField";
 import editorField from "./editorField";
 import advancedParentField from './advanced/advancedParentField';
+import advancedChildOfField from './advanced/advancedChildOfField';
 import requiredPublishStartField from './required/requiredPublishStartField';
 import requiredPublishEndField from './required/requiredPublishEndField';
 import requiredRouteNameField from './required/requiredRouteNameField';
@@ -358,6 +359,9 @@ export class Field {
             case 'advancedParent':
                 this.field = new advancedParentField(fieldObj);
                 break;
+            case 'advancedChildOf':
+                this.field = new advancedChildOfField(fieldObj);
+                break;
             case 'requiredPublishStart':
                 this.field = new requiredPublishStartField(fieldObj);
                 break;
@@ -396,7 +400,7 @@ export class Field {
             mergeObj[item.name] = item;
         }
 
-        return Object.values(mergeObj);
+        return Object.values(mergeObj).filter(item => !item.hide);
     }
 
     get title() {

@@ -1,5 +1,9 @@
 <template>
     <div class="form-constructor">
+        <div
+            class="overlay"
+            v-if="disabled"
+        />
         <components-list :list="componentsList"/>
         <v-divider/>
         <tabs-list
@@ -59,21 +63,6 @@
     import dialogComponent from "../dialog-component";
     import formComponent from '../form/form-component';
     import app from "../../service/app";
-
-    const advanced = {
-        parent: new Field({type: 'advancedParent'}),
-    };
-
-    const required = {
-        publishEnd: new Field({type: 'requiredPublishEnd'}),
-        publishStart: new Field({type: 'requiredPublishStart'}),
-        routeName: new Field({type: 'requiredRouteName'}),
-        seoDescription: new Field({type: 'requiredSeoDescription'}),
-        seoKeyword: new Field({type: 'requiredSeoKeyword'}),
-        status: new Field({type: 'requiredStatus'}),
-        template: new Field({type: 'requiredTemplate'}),
-        title: new Field({type: 'requiredTitle'}),
-    };
 
     export default {
         data() {
@@ -174,15 +163,15 @@
                     const values = newVal.getFieldValues();
                     this.componentsList.advanced = [];
                     this.componentsList.required = [];
-                    for (const key in advanced) {
+                    for (const key in this.advanced) {
                         if (typeof values[key] === 'undefined') {
-                            this.componentsList.advanced.push(advanced[key]);
+                            this.componentsList.advanced.push(this.advanced[key]);
                         }
                     }
 
-                    for (const key in required) {
+                    for (const key in this.required) {
                         if (typeof values[key] === 'undefined') {
-                            this.componentsList.required.push(required[key]);
+                            this.componentsList.required.push(this.required[key]);
                         }
                     }
                 },
@@ -193,6 +182,24 @@
             value: {
                 default() {
                     return []
+                }
+            },
+            advanced: {
+                type: Object,
+                default() {
+                    return {};
+                }
+            },
+            required: {
+                type: Object,
+                default() {
+                    return {};
+                }
+            },
+            disabled: {
+                type: Boolean,
+                default() {
+                    return false;
                 }
             }
         },
@@ -235,10 +242,10 @@
         },
         methods: {
             checkAdvanced () {
-                return advanced[this.selectedElementForm.name] && this.selectedElement.item.field.fieldObject.type !== advanced[this.selectedElementForm.name].type;
+                return this.advanced[this.selectedElementForm.name] && this.selectedElement.item.field.fieldObject.type !== this.advanced[this.selectedElementForm.name].type;
             },
             checkRequired () {
-                return required[this.selectedElementForm.name] && this.selectedElement.item.field.fieldObject.type !== required[this.selectedElementForm.name].type;
+                return this.required[this.selectedElementForm.name] && this.selectedElement.item.field.fieldObject.type !== this.required[this.selectedElementForm.name].type;
             },
             closeElementForm() {
                 if (this.selectedElement && this.elementDialog.actionType === 'add') {
@@ -279,8 +286,21 @@
 </script>
 <style scoped lang="scss">
     .form-constructor {
+        position: relative;
+
         .constructor-col {
             border: dashed 1px #EEE;
+        }
+
+        .overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: #000;
+            opacity: 0.2;
+            z-index: 1;
         }
     }
 </style>

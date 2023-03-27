@@ -9,6 +9,7 @@
                 v-for="(components, key) in list"
                 :key="'tab' + key"
                 class="constructor-tab-header"
+                v-if="components.length"
             >{{$t('words.' + key)}}</v-tab>
         </v-tabs>
         <v-tabs-items v-model="currentTab">
