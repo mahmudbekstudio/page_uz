@@ -65,9 +65,7 @@
                 publishStart: new Field({type: 'requiredPublishStart'}),
             };
 
-            if (this.type === 'post') {
-                this.advanced['childOf'] = new Field({type: 'advancedChildOf'});
-            }
+            this.initAdvanced();
 
             this.actions.push(getPageBoxAction(this.$t('words.back'), '', {color: 'default'}, {click: this.backClick}));
             this.actions.push(getPageBoxAction(this.$t('words.' + (this.id ? 'update' : 'create')), '', {color: 'primary'}, {click: this.saveForm}));
@@ -76,13 +74,14 @@
                 this.$options.service.get(
                     this.id,
                     response => {
-                        this.formValue = new FormClass(response.data.type.structure);
+                        this.formValue = new FormClass(response.data.type.structure, true);
                         this.type = response.data.type.type;
+                        this.initAdvanced();
                         this.createTypeForm(response.data.type);
                     }
                 );
             } else {
-                this.formValue = new FormClass();
+                this.formValue = new FormClass({}, true);
                 const mainTab = this.formValue.getTab();
                 mainTab.addField({type: 'requiredTitle'});
                 mainTab.addField({type: 'requiredRouteName'});
@@ -128,6 +127,11 @@
             ...mapActions({
                 changeTitle: 'view/changeTitle',
             }),
+            initAdvanced() {
+                if (this.type === 'post') {
+                    this.advanced['childOf'] = new Field({type: 'advancedChildOf'});
+                }
+            },
             backClick () {
                 this.$router.push({name: 'type.list'});
             },
@@ -149,13 +153,14 @@
                 }
 
                 const formValues = this.formValue.getFieldValues();
+                const fields = this.formValue.getFields().map(item => item.json);
                 const form = {
                     ...this.typeForm.getFieldValues(),
                     type: this.type,
                     has_parent: typeof formValues['parent'] !== 'undefined',
-                    child_of: typeof formValues['childOf'] !== 'undefined' ? formValues['childOf'] : 0,
+                    child_of: this.getChildOfValue(fields),
                     structure: this.formValue.json,
-                    fields: this.formValue.getFields().map(item => item.json),
+                    fields: fields,
                 };
 
                 this.$options.service.submit(this.id, form, response => {
@@ -170,6 +175,18 @@
             },
             formValid(valid) {
                 this.formIsValidValue = valid;
+            },
+            getChildOfValue(fields) {
+                let result = 0;
+
+                for (const field of fields) {
+                    if (field.name === 'childOf') {
+                        result = parseInt(field.params.child_of);
+                        break;
+                    }
+                }
+
+                return result;
             }
         },
         components: {

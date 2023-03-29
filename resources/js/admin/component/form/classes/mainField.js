@@ -1,6 +1,7 @@
 export default class field {
     fieldObject = {};
     id = null;
+    isConstructor = false;
     defaultObject = {
         type: 'text',
         name: '',
@@ -19,6 +20,7 @@ export default class field {
         this.fieldObject.value = params.value || this.defaultObject.value;
         this.fieldObject.params = params.params || this.defaultObject.params;
         this.fieldObject.events = params.events || this.defaultObject.events;
+        this.isConstructor = !!params.isConstructor;
     }
 
     get type() {

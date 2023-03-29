@@ -26,32 +26,37 @@ export default class advancedChildOfField extends field {
             hide: true,
         },
         {
-            type: 'select',
+            type: 'text',
             name: 'value',
+            hide: true,
+        },
+        {
+            type: 'select',
+            name: 'child_of',
             params: {label: 'Category type', options: {}, rules: [validation.required('Category type')]}
         },
     ];
     constructor(params) {
         super(params);
 
-        const categoryType = this.fillable.find(item => item.name === 'value');
-        const categories = temporaryCache('type-categories');
+        if (typeof params.isConstructor !== 'undefined') {
+            if (this.isConstructor) {
+                const categoryType = this.fillable.find(item => item.name === 'child_of');
+                http(typeApi.notUsedCategories)
+                    .send()
+                    .then(response => {
+                        for (const item of response.data.data.list) {
+                            categoryType.params.options[item.id] = item.name;
+                        }
 
-        if (categories) {
-            categoryType.params.options = categories;
-        } else {
-            http(typeApi.categories)
-                .send()
-                .then(response => {
-                    for (const item of response.data.data.list) {
-                        categoryType.params.options[item.id] = item.name;
-                    }
-
-                    temporaryCache('type-categories', categoryType.params.options);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
+                        categoryType.params.options = {...categoryType.params.options};
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            } else {
+                console.log('load categories list');
+            }
         }
     }
 }

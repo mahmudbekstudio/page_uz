@@ -25,12 +25,12 @@ class TypeController extends Controller
 
     public function create(CreateTypeRequest $request, TypeRepository $repository)
     {
-        return responseJsonData(true, ['type' => $repository->create($request->all())]);
+        return responseJsonData(true, ['type' => $repository->create($request->all())], ['typeNavigation' => typeNavigation()]);
     }
 
     public function edit(int $id, CreateTypeRequest $request, TypeRepository $repository)
     {
-        return responseJsonData(true, ['type' => $repository->update($request->all(), $id)]);
+        return responseJsonData(true, ['type' => $repository->update($request->all(), $id)], ['typeNavigation' => typeNavigation()]);
     }
 
     public function get(Type $type)
@@ -41,11 +41,16 @@ class TypeController extends Controller
     public function delete(Type $type)
     {
         $type->delete();
-        return responseJsonData(true, ['type' => $type]);
+        return responseJsonData(true, ['type' => $type], ['typeNavigation' => typeNavigation()]);
     }
 
     public function getCategories(TypeRepository $repository)
     {
         return responseJsonData(true, ['list' => $repository->categories()]);
+    }
+
+    public function getNotUsedCategories(TypeRepository $repository)
+    {
+        return responseJsonData(true, ['list' => $repository->notUsedCategories()]);
     }
 }

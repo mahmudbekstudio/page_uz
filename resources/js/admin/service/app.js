@@ -91,6 +91,22 @@ class App {
         this.openMessage(text, constants.SNACKBAR_COLORS.error, timeout);
     }
 
+    errors(errors) {
+        errors = errors?.response?.data?.errors;
+
+        if (!errors) {
+            this.errorMessage('Error');
+            return false;
+        }
+
+        let messages = [];
+        for (let errorKey in errors) {
+            messages.push(errors[errorKey].join("\n"));
+        }
+
+        this.errorMessage(messages.join("\n"));
+    }
+
     closeMessage() {
         store.dispatch('view/closeSnackbar');
     }

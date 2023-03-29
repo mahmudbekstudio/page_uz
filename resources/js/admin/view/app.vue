@@ -21,6 +21,7 @@
         created() {
             this.$vuetify.theme.dark = viewConfig.isDark;
             this.$store.dispatch('view/changeWebsite', this.website);
+            this.$store.dispatch('view/changeTypeNavigation', this.typeNavigation);
             this.$store.dispatch('view/changeWebsiteTitle', this.website.metas.name);
         },
         props: {
@@ -29,7 +30,13 @@
                 default () {
                     return {};
                 }
-            }
+            },
+            typeNavigation: {
+                type: Array,
+                default () {
+                    return [];
+                }
+            },
         },
         computed: {
             ...mapGetters({

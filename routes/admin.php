@@ -65,6 +65,7 @@ Route::group(['middleware' => ['auth:api']], function() {
                     Route::get('get/{type}', [TypeController::class, 'get'])->name('get');
                     Route::delete('delete/{type}', [TypeController::class, 'delete'])->name('delete');
                     Route::get('categories', [TypeController::class, 'getCategories'])->name('categories');
+                    Route::get('not-used-categories', [TypeController::class, 'getNotUsedCategories'])->name('not-used-categories');
                 });
 
                 Route::group(['prefix' => 'setting', 'as' => 'setting.'], function () {

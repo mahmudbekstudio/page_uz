@@ -9,7 +9,12 @@
     <link href="/css/admin/styles.css" rel="stylesheet">
 </head>
 <body>
-<div class="admin-app"><App :website="{{websiteData(true)}}"></App></div>
+<div class="admin-app">
+    <App
+        :website="{{websiteData(true)}}"
+        :type-navigation="{{typeNavigation(true)}}"
+    ></App>
+</div>
 <script src="/js/admin/main.js?t={{ time() }}"></script>
 </body>
 </html>

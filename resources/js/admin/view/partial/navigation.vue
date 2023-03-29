@@ -58,9 +58,9 @@
                     </template>
                     <v-list-item
                             v-for="child in item.children"
-                            :key="child.route.name"
+                            :key="getKeyByRoute(child.route)"
                             @click="listItemClick(child.route)"
-                            :class="{'v-list-item--active': ($route.name === child.route.name || (child.active && child.active.indexOf($route.name) > -1))}"
+                            :class="{'v-list-item--active': (checkForActive(child.route) || (child.active && child.active.indexOf($route.name) > -1))}"
                             link
                     >
                         <v-list-item-action v-if="child.icon">
@@ -73,9 +73,9 @@
                 </v-list-group>
                 <v-list-item
                         v-else
-                        :key="item.route.name"
+                        :key="getKeyByRoute(item.route)"
                         @click="listItemClick(item.route)"
-                        :class="{'v-list-item--active': ($route.name === item.route.name || (item.active && item.active.indexOf($route.name) > -1))}"
+                        :class="{'v-list-item--active': (checkForActive(item.route) || (item.active && item.active.indexOf($route.name) > -1))}"
                         link
                 >
                     <v-list-item-action v-if="item.icon">
@@ -92,11 +92,12 @@
 <script>
     import {mapGetters, mapActions} from 'vuex';
     import navigationList from '../../config/navigation';
+    import * as _ from 'lodash';
 
     export default {
         data() {
             return {
-                activeNav: null,
+                //activeNav: null,
                 websites: [
                     { title: 'Click Me' },
                     { title: 'Click Me' },
@@ -110,10 +111,11 @@
             ...mapGetters({
                 getDrawer: 'view/drawer',
                 user: 'storage/user',
-                isMini: 'view/isMini'
+                isMini: 'view/isMini',
+                typeNavigation: 'view/typeNavigation',
             }),
             items() {
-                return navigationList[this.user.role];
+                return [navigationList[this.user.role][0], ...this.typeNavigation, ...navigationList[this.user.role].slice(1)];
             },
             drawer: {
                 get() {
@@ -131,7 +133,7 @@
             }),
             isActiveExist(list) {
                 for(let i = 0; i < list.length; i++) {
-                    if(this.$route.name === list[i].route.name) {
+                    if(this.$route.name === list[i].route.name && this.isEqual(this.$route.params, list[i].route.params)) {
                         return true;
                     }
                 }
@@ -139,10 +141,33 @@
                 return false;
             },
             listItemClick(route) {
-                if(this.$route.name !== route.name) {
-                    this.activeNav = route.name;
+                if(this.$route.name !== route.name || !this.isEqual(this.$route.params, route.params)) {
+                    //this.activeNav = route.name;
                     this.$router.push(route);
                 }
+            },
+            getKeyByRoute(route) {
+                let key = route.name;
+
+                if(route.params) {
+                    for (const paramKey in route.params) {
+                        key += '_' + paramKey + route.params[paramKey]
+                    }
+                }
+
+                return key;
+            },
+            checkForActive(route) {
+                return this.$route.name === route.name && this.isEqual(this.$route.params, route.params)
+            },
+
+            isEqual(obj1, obj2) {
+                const obj1Keys = Object.keys(obj1 || {}).map(item => item.toString()).join(',');
+                const obj2Keys = Object.keys(obj2 || {}).map(item => item.toString()).join(',');
+                const obj1Values = Object.values(obj1 || {}).map(item => item.toString()).join(',');
+                const obj2Values = Object.values(obj2 || {}).map(item => item.toString()).join(',');
+
+                return obj1Keys === obj2Keys && obj1Values === obj2Values;
             }
         }
     }

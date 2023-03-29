@@ -3,6 +3,7 @@ import * as constants from '../constants';
 
 const defaultStates = {
     website: null,
+    typeNavigation: [],
     drawer: true,
     title: '',
     websiteTitle: '',
@@ -44,6 +45,9 @@ export default {
         },
         changeWebsite(state, val) {
             state.website = val;
+        },
+        changeTypeNavigation(state, val) {
+            state.typeNavigation = val;
         },
         changeLayout(state, val) {
             state.layout = (viewSettings.layoutsList.indexOf(val) > -1 ? val : viewSettings.defaultLayout) + 'Layout';
@@ -88,6 +92,9 @@ export default {
         },
         changeWebsite({commit}, val) {
             commit('changeWebsite', val);
+        },
+        changeTypeNavigation({commit}, val) {
+            commit('changeTypeNavigation', val);
         },
         changeLayout({commit}, val) {
             commit('changeLayout', val);
@@ -141,6 +148,9 @@ export default {
     getters: {
         website(state) {
             return state.website;
+        },
+        typeNavigation(state) {
+            return state.typeNavigation;
         },
         drawer(state) {
             return state.drawer;

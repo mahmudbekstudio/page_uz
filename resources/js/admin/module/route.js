@@ -7,6 +7,8 @@ import ParentRoute from '../view/parent-route';
 import UserRoute from './user/route';
 import TypeRoute from './type/route';
 import WebsiteRoute from './website/route';
+import PostRoute from './post/route';
+import CategoryRoute from './category/route';
 
 const route = [
     {
@@ -21,6 +23,8 @@ const route = [
             UserRoute,
             TypeRoute,
             WebsiteRoute,
+            PostRoute,
+            CategoryRoute,
             {path: '*', redirect: {name: viewConfig.page.notFound}}
         ]
     }

@@ -5,6 +5,7 @@ import router from '../plugin/route';
 import auth from "./auth";
 import api from '../api';
 import logger from './logger';
+import httpListener from "../httpListener";
 
 class Http {
     constructor(apiName, axios) {
@@ -173,11 +174,17 @@ class Http {
             */
             // `transformResponse` allows changes to the response data to be made before
             // it is passed to then/catch
-            /*transformResponse: [function (data) {
-                // Do whatever you want to transform the data
+            transformResponse: [data => {
+                data = JSON.parse(data);
+
+                for (const listener of httpListener.response) {
+                    if(listener.check(data, params,this)) {
+                        data = listener.callback(data, params,this);
+                    }
+                }
 
                 return data;
-            }],*/
+            }],
 
             headers: this.requestParams.headers,
             params: this.requestParams.params,
@@ -229,6 +236,11 @@ class Http {
         };
 
         this.requestParams = Object.assign({}, this.requestDefault);
+        for (const listener of httpListener.request) {
+            if(listener.check(params, this)) {
+                params = listener.callback(params, this);
+            }
+        }
         return this.axios(params);
     }
 

@@ -73,8 +73,26 @@ class TypeRepository extends BaseRepository {
         return $result;
     }
 
+    public function getActiveList()
+    {
+        return $this->findWhere(['status' => 1], ['id', 'name', 'type', 'child_of']);
+    }
+
     public function categories()
     {
         return $this->findWhere(['status' => 1, 'type' => Type::TYPE_CATEGORY], ['id', 'name']);
+    }
+
+    public function notUsedCategories()
+    {
+        $usedCategories = $this
+            ->findWhere([['child_of', '<>', 0], 'type' => Type::TYPE_POST], ['child_of'])
+            ->pluck('child_of')
+            ->toArray();
+        return $this
+            ->whereNotIn('id', $usedCategories)
+            ->where('status', 1)
+            ->where('type', Type::TYPE_CATEGORY)
+            ->get(['id', 'name']);
     }
 }

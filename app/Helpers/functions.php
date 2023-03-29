@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
+use App\Repositories\TypeRepository;
 
 if (! function_exists('route')) {
     /**
@@ -99,7 +100,7 @@ if (! function_exists('responseJson')) {
             'result' => $result,
             'message' => $message,
             'data' => $data,
-            'setting' => []
+            'setting' => $setting
         ]);
     }
 }
@@ -227,6 +228,59 @@ if (! function_exists('websiteData')) {
             'metas' => $instance->getMetas(),
             'fileBaseUrl' => $storageUrl,
         ];
+        return $isJson ? json_encode($data) : $data;
+    }
+}
+
+if (! function_exists('typeNavigation')) {
+    function typeNavigation($isJson = false)
+    {
+        $posts = [];
+        $categories = [];
+        app(TypeRepository::class)->getActiveList()->each(function ($item) use (&$posts, &$categories) {
+            if ($item->type === 'post') {
+                $posts[] = [
+                    'text' => $item->name,
+                    'icon' => 'article',
+                    'child_of' => $item->child_of,
+                    'children' => [
+                        [
+                            'text' => 'List',
+                            'icon' => 'subject',
+                            'route' => ['name' => 'post.list', 'params' => ['typeId' => $item->id]],
+                        ],
+                        [
+                            'text' => 'Add new',
+                            'icon' => 'playlist_add',
+                            'route' => ['name' => 'post.create', 'params' => ['typeId' => $item->id]],
+                        ]
+                    ]
+                ];
+            } else {
+                $categories[$item->id] = [
+                    'text' => $item->name,
+                    'icon' => 'view_list',
+                    'route' => ['name' => 'category.list', 'params' => ['typeId' => $item->id]]
+                ];
+            }
+        });
+
+        $data = [];
+        foreach ($posts as $post) {
+            if ($post['child_of'] && isset($categories[$post['child_of']])) {
+                $categories[$post['child_of']]['text'] = 'Category';
+                $post['children'][] = $categories[$post['child_of']];
+                unset($categories[$post['child_of']]);
+            }
+            $data[] = $post;
+
+            unset($post['child_of']);
+        }
+
+        foreach ($categories as $category) {
+            $data[] = $category;
+        }
+
         return $isJson ? json_encode($data) : $data;
     }
 }

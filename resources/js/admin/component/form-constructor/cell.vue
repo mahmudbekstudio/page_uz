@@ -69,7 +69,7 @@ export default {
         },
         changeList (item) {
             if (item.added) {
-                const newItem = new Field(_.cloneDeep(item.added.element.json));
+                const newItem = new Field({..._.cloneDeep(item.added.element.json), isConstructor: this.col.isConstructor});
                 newItem.newId();
                 this.col.children[item.added.newIndex] = newItem;
                 this.col.children = [...this.col.children];
@@ -81,10 +81,10 @@ export default {
             this.$emit('edit', {item, col: this.col});
         },
         elementCopy (item) {
-            const itemIndex = this.col.children.indexOf(item)
+            /*const itemIndex = this.col.children.indexOf(item)
             const newItem = _.cloneDeep(item);
             delete newItem.id;
-            this.col.children.splice(itemIndex, 0, new Field(newItem));
+            this.col.children.splice(itemIndex, 0, new Field(newItem));*/
         },
         elementDelete (item) {
             app.openConfirm('Do you really want to delete?', () => {

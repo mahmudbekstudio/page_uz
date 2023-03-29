@@ -43,11 +43,11 @@
                                     <field-component
                                             :fieldKey="[index, rowIndex, colIndex, fieldIndex].join(fieldSplitter)"
                                             :type="field.type"
-                                            :disabled="field.disabled"
+                                            :disabled="!!field.disabled"
                                             :value="field.value"
                                             @input="fieldChanged"
-                                            :params="field.params"
-                                            :events="field.events"
+                                            :params="{...field.params}"
+                                            :events="{...field.events}"
                                     />
                                 </div>
                             </v-col>

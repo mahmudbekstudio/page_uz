@@ -50,7 +50,7 @@ export default class Service {
                     errorCallback(error);
                 } else {
                     logger.error('type submit', error);
-                    app.errorMessage('Error');
+                    app.errors(error);
                 }
             }).then(() => {
                 this.loading(false);

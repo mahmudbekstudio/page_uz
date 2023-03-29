@@ -31,7 +31,7 @@ class CreateTypeRequest extends FormRequest
             'name' => [
                 'required',
                 'string', 'regex:/^' . config('app.route_rules.name') . '$/i',
-                new TypeNameNotExist()
+                new TypeNameNotExist(request()->route('id'))
             ],
             'status' => ['required', 'boolean'],
             'type' => ['required', Rule::in(Type::types())],

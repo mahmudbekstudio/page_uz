@@ -32,8 +32,11 @@ import validation from "../../../config/validation";
 
 export class Form {
     children = [];
+    isConstructor = false;
 
-    constructor(params = {}) {
+    constructor(params = {}, isConstructor = false) {
+        this.isConstructor = isConstructor;
+
         if(!Object.keys(params).length) {
             this.addTab({title: i18n.t('words.main')}, {}, {});
         } else {
@@ -46,7 +49,7 @@ export class Form {
     }
 
     addTab(params, rowParams = {}, colParams = {}) {
-        const tab = new Tab(params);
+        const tab = new Tab(params, this.isConstructor);
         tab.addRow(rowParams, colParams);
         this.children.push(tab);
         return tab;
@@ -116,7 +119,7 @@ export class Form {
 
     set json(val) {
         for(let i = 0; i < val.length; i++) {
-            this.children.push(new Tab(val[i]));
+            this.children.push(new Tab(val[i], this.isConstructor));
         }
     }
 
@@ -135,8 +138,10 @@ export class Tab {
     children = [];
     type = 'tab';
     title = '';
+    isConstructor = false;
 
-    constructor(params) {
+    constructor(params, isConstructor = false) {
+        this.isConstructor = isConstructor;
         //this.addRow(rowParams, colParams);
         this.json = params;
     }
@@ -146,7 +151,7 @@ export class Tab {
     }
 
     addRow(params = {}, colParams = {}) {
-        const row = new Row(params);
+        const row = new Row(params, this.isConstructor);
         row.addCol(colParams);
         this.children.push(row);
         return row;
@@ -163,7 +168,7 @@ export class Tab {
     set json(val) {
         val.children = val.children || [];
         for(let i = 0; i < val.children.length; i++) {
-            this.children.push(new Row(val.children[i]));
+            this.children.push(new Row(val.children[i], this.isConstructor));
         }
 
         this.type = val.type || 'tab';
@@ -188,8 +193,10 @@ export class Tab {
 export class Row {
     children = [];
     type = 'row';
+    isConstructor = false;
 
-    constructor(params) {
+    constructor(params, isConstructor = false) {
+        this.isConstructor = isConstructor;
         //this.addCol(colParams)
         this.json = params;
     }
@@ -199,7 +206,7 @@ export class Row {
     }
 
     addCol(params) {
-        const col = new Col(params);
+        const col = new Col(params, this.isConstructor);
         this.children.push(col);
         return col;
     }
@@ -211,7 +218,7 @@ export class Row {
     set json(val) {
         val.children = val.children || [];
         for(let i = 0; i < val.children.length; i++) {
-            this.children.push(new Col(val.children[i]));
+            this.children.push(new Col(val.children[i], this.isConstructor));
         }
 
         this.type = val.type || 'row';
@@ -235,8 +242,10 @@ export class Col {
     children = [];
     type = 'col';
     size = '12';
+    isConstructor = false;
 
-    constructor(params) {
+    constructor(params, isConstructor = false) {
+        this.isConstructor = isConstructor;
         this.json = params;
     }
 
@@ -245,7 +254,7 @@ export class Col {
     }
 
     addField(fieldObj) {
-        const field = new Field(fieldObj);
+        const field = new Field({...fieldObj, isConstructor: this.isConstructor});
         this.children.push(field);
         return field;
     }
@@ -253,7 +262,7 @@ export class Col {
     set json(val) {
         val.children = val.children || [];
         for(let i = 0; i < val.children.length; i++) {
-            this.children.push(new Field(val.children[i]));
+            this.children.push(new Field({...val.children[i], isConstructor: this.isConstructor}));
         }
 
         this.type = this.type || 'col';
