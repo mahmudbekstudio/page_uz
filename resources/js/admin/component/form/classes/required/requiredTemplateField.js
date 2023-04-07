@@ -5,7 +5,10 @@ export default class requiredTemplateField extends field {
     constructor(params) {
         super(params);
 
+        this.fieldObject.params.valueType = 'int';
+        this.defaultObject.value = 0;
         this.fieldObject.params.label = 'Template';
         this.fieldObject.name = 'template';
+        this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
     }
 }

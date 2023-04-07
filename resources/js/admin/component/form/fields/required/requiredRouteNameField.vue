@@ -4,7 +4,6 @@
         v-on="events"
         v-model="dataValue"
         :disabled="disabled"
-        :rules="rules"
     ></v-text-field>
 </template>
 <script>
@@ -13,11 +12,6 @@ import validation from "../../../../config/validation";
 
 export default {
     mixins: [mixins.get('formField')],
-    data () {
-        return {
-            rules: [validation.required(), validation.routeName()]
-        }
-    },
 }
 </script>
 <style scoped lang="scss">

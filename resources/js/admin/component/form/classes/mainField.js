@@ -6,8 +6,10 @@ export default class field {
         type: 'text',
         name: '',
         disabled: false,
-        value: null,
-        params: {},
+        value: '',
+        params: {
+            valueType: 'string',
+        },
         events: {}
     };
     hasFillable = true;
@@ -17,8 +19,9 @@ export default class field {
         this.fieldObject.type = params.type || this.defaultObject.type;
         this.fieldObject.name = params.name || this.defaultObject.name;
         this.fieldObject.disabled = params.disabled || this.defaultObject.disabled;
-        this.fieldObject.value = params.value || this.defaultObject.value;
+        this.fieldObject.value = typeof params.value === 'undefined' ? this.defaultObject.value : params.value;
         this.fieldObject.params = params.params || this.defaultObject.params;
+        this.fieldObject.params.valueType = this.fieldObject.params.valueType || this.defaultObject.params.valueType;
         this.fieldObject.events = params.events || this.defaultObject.events;
         this.isConstructor = !!params.isConstructor;
     }

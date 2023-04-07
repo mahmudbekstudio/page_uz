@@ -142,6 +142,11 @@ export default {
                 return '';
             }
         },
+        routeCallback: {
+            default() {
+                return null;
+            }
+        },
         routeNeedToken: {
             type: Boolean,
             default() {
@@ -238,13 +243,17 @@ export default {
             this.params.items = [];
             const apiRoute = {
                 ...route.get(this.params.route),
-                callback: function(data) {
+                callback: function(data, routeCallback) {
                     this.params(data);
+
+                    if (typeof routeCallback === 'function') {
+                        routeCallback(this);
+                    }
                 },
                 token: this.params.routeNeedToken
             };
             http(apiRoute)
-                .callback(this.params.options)
+                .callback(this.params.options, this.routeCallback)
                 .send()
                 .then(response => {
                     this.params.items = response.data.data.data;

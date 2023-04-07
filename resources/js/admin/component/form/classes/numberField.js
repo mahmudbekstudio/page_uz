@@ -21,6 +21,9 @@ export default class numberField extends field {
 
     constructor(params) {
         super(params);
+        this.fieldObject.params.valueType = 'int';
+        this.defaultObject.value = 0;
+        this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
     }
 
     get value() {

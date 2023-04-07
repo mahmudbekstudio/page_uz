@@ -10,6 +10,7 @@ export default class selectField extends field {
         {
             type: 'switch',
             name: 'multiple',
+            value: false,
             params: {label: 'Multiple'}
         },
         {
@@ -20,5 +21,11 @@ export default class selectField extends field {
     ]
     constructor(params) {
         super(params);
+
+        if (params?.params?.multiple) {
+            this.fieldObject.params.valueType = 'array';
+            this.defaultObject.value = [];
+            this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
+        }
     }
 }

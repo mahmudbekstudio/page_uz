@@ -51,6 +51,6 @@ class TypeController extends Controller
 
     public function getNotUsedCategories(TypeRepository $repository)
     {
-        return responseJsonData(true, ['list' => $repository->notUsedCategories()]);
+        return responseJsonData(true, ['list' => $repository->notUsedCategories(request()->get('id', 0))]);
     }
 }

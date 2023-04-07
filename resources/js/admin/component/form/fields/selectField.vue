@@ -3,8 +3,10 @@
         :items="listItems"
         v-bind="params"
         v-on="events"
-        v-model="selectedValues"
+        v-model="dataValue"
         :disabled="disabled"
+        clearable
+        @click:clear="clear"
     ></v-select>
 </template>
 <script>
@@ -20,15 +22,19 @@
                     const item = this.optionsParam[key];
 
                     if(typeof item === 'object') {
-                        if(!isFirst) {
-                            result.push({divider: true});
-                        }
+                        if(typeof item.text !== 'undefined' && typeof item.value !== 'undefined') {
+                            result.push({...item});
+                        } else {
+                            if(!isFirst) {
+                                result.push({divider: true});
+                            }
 
-                        isFirst = false;
-                        result.push({header: key});
+                            isFirst = false;
+                            result.push({header: key});
 
-                        for(let subKey in item) {
-                            result.push({text: item[subKey], value: subKey});
+                            for(let subKey in item) {
+                                result.push({text: item[subKey], value: subKey});
+                            }
                         }
                     } else {
                         result.push({text: item, value: key});
@@ -53,17 +59,25 @@
 
                 return this.params['options'];
             },
-            selectedValues: {
+            dataValue: {
                 get: function () {
-                    if (this.params.multiple && typeof this.dataValue === 'string') {
-                        return this.dataValue.split(',').map(item => item.trim());
+                    if (this.params.multiple && typeof this.value === 'string') {
+                        return this.value.split(',').map(item => item.trim());
                     }
-                    return this.dataValue;
+
+                    return String(this.value);
                 },
                 set: function (newValue) {
-                    this.dataValue = newValue;
+                    this.$emit('input', newValue);
                 }
             }
         },
+        methods: {
+            clear() {
+                this.$nextTick(() => {
+                    this.dataValue = this.params.defaultObject.value;
+                });
+            },
+        }
     }
 </script>

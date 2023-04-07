@@ -10,5 +10,8 @@ export default class dateRangeField extends field {
     ]
     constructor(params) {
         super(params);
+        this.fieldObject.params.valueType = 'array';
+        this.defaultObject.value = [];
+        this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
     }
 }

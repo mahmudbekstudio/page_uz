@@ -8,7 +8,7 @@ const route = {
     children: [
         {path: '', redirect: {name: 'category.list'}},
         {
-            path: 'category/:typeId',
+            path: 'list/:typeId',
             name: 'category.list',
             component: CategoryList,
             meta: {

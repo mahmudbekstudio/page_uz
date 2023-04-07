@@ -13,4 +13,5 @@ return [
     'app.status',
     'app.timeFormat',
     'app.userRoles',
+    'app.parentPageDeepLimit'
 ];

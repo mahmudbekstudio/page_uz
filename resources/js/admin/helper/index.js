@@ -67,3 +67,19 @@ export let temporaryCache = function (key, value = null) {
         return window[cacheKeyPrefix][key];
     }
 }
+
+export let listToTree = function (list, parentId = 0, prefix = '', deep = 1, ids = []) {
+    let result = [];
+
+    for (const item of list) {
+        const itemParentId = parseInt(item['parent_id']);
+        if(itemParentId === parentId) {
+            item['name'] = prefix + item['name'];
+            item['deep'] = deep;
+            item['ids'] = [...ids, parseInt(item['id'])];
+            result = [...result, item, ...listToTree(list, parseInt(item['id']), prefix + '- | -', deep + 1, item['ids'])];
+        }
+    }
+
+    return result;
+}

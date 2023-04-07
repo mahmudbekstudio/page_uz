@@ -5,28 +5,67 @@ export default {
     required: function(field = '') {
         return v => !!v || (field ? i18n.t('validation.field_is_required', {field}) : i18n.t('validation.this_field_is_required'));
     },
-    requiredIfNotEmpty: function(field, value) {
+    requiredIfNotEmpty: function(field, value, form) {
+        let formKey = '';
+        if (typeof value === 'string') {
+            if (!form) {
+                return false;
+            } else {
+                formKey = value;
+                value = () => form[formKey];
+            }
+        }
+
         return v => !value() || !!v || i18n.t('validation.field_is_required', {field});
     },
     max: function(field, maxLength) {
+        maxLength = parseFloat(maxLength);
         return v => (v && v.length <= maxLength) || i18n.t('validation.field_must_be_less_than_maxlength_character', {field, maxLength});
     },
     min: function (field, minLength) {
+        minLength = parseFloat(minLength);
         return v => (v && v.length >= minLength) || i18n.t('validation.field_must_be_more_than_minlength_character', {field, minLength});
     },
     minIfNotEmpty: function (field, minLength) {
+        minLength = parseFloat(minLength);
         return v => (!v || v.length >= minLength) || i18n.t('validation.field_must_be_more_than_minlength_character', {field, minLength});
     },
     isEmail: function(field) {
         return v => constants.VALIDATION_EMAIL.test(v) || i18n.t('validation.field_must_be_valid', {field})
     },
     in: function (field, list) {
+        if(typeof list === 'string') {
+            if (list[0] === '[' || list[0] === '{') {
+                list = JSON.parse(list);
+            } else {
+                list = list.split("\n");
+            }
+        }
+
         return v => (v && list.indexOf(v) > -1) || i18n.t('validation.field_must_be_in_the_list', {field, list: list.join('", "')})
     },
     notIn: function(field, list) {
-        return v => (v && list.indexOf(v) == -1) || i18n.t('validation.field_must_not_be_in_the_list', {field, list: list.join('", "')})
+        if(typeof list === 'string') {
+            if (list[0] === '[' || list[0] === '{') {
+                list = JSON.parse(list);
+            } else {
+                list = list.split("\n");
+            }
+        }
+
+        return v => (v && list.indexOf(v) === -1) || i18n.t('validation.field_must_not_be_in_the_list', {field, list: list.join('", "')})
     },
-    confirmation: function (field, value) {
+    confirmation: function (field, value, form) {
+        let formKey = '';
+        if (typeof value === 'string') {
+            if (!form) {
+                return false;
+            } else {
+                formKey = value;
+                value = () => form[formKey];
+            }
+        }
+
         return v => {
             return ((!v && !value()) || v === value()) || i18n.t('validation.confirmation', {field});
         }

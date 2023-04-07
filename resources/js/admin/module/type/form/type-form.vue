@@ -138,7 +138,7 @@
             createTypeForm (values) {
                 this.typeForm = new FormClass();
                 const routeName = this.typeForm.addField({type: 'requiredRouteName', name: 'name', value: values?.name || '', params: {label: 'Type name'}});
-                const status = this.typeForm.addField({type: 'switch', name: 'status', value: values?.status || true, params: {label: 'Status'}});
+                const status = this.typeForm.addField({type: 'switch', name: 'status', value: (typeof values?.status === 'undefined' ? true : values?.status), params: {label: 'Status'}});
             },
             saveForm() {
                 this.formValidate();

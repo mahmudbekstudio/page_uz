@@ -5,8 +5,10 @@ export default class requiredStatusField extends field {
     constructor(params) {
         super(params);
 
+        this.fieldObject.params.valueType = 'bool';
+        this.defaultObject.value = true;
         this.fieldObject.params.label = 'Status';
         this.fieldObject.name = 'status';
-        this.fieldObject.value = true;
+        this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
     }
 }

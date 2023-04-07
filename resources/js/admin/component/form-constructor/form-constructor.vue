@@ -237,7 +237,14 @@
                 ]
             },
             elementDialogTitle () {
-                return this.elementDialog.actionType === 'add' ? 'Add' : 'Edit';
+                const fieldType = this.selectedElement?.item?.field?.constructor?.name;
+                let title = this.elementDialog.actionType === 'add' ? 'Add' : 'Edit';
+
+                if(fieldType) {
+                    title += '(' + fieldType.substr(0, fieldType.length - 5) + ')';
+                }
+
+                return title;
             }
         },
         methods: {

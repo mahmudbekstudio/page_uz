@@ -59,7 +59,7 @@ class TypeRepository extends BaseRepository {
 
     /**
      * @param int $id
-     * @return Website|null
+     * @return Type|null
      */
     public function getById(int $id)
     {
@@ -83,11 +83,14 @@ class TypeRepository extends BaseRepository {
         return $this->findWhere(['status' => 1, 'type' => Type::TYPE_CATEGORY], ['id', 'name']);
     }
 
-    public function notUsedCategories()
+    public function notUsedCategories($id = 0)
     {
         $usedCategories = $this
             ->findWhere([['child_of', '<>', 0], 'type' => Type::TYPE_POST], ['child_of'])
             ->pluck('child_of')
+            ->filter(function ($childOf) use ($id) {
+                return $childOf != $id;
+            })
             ->toArray();
         return $this
             ->whereNotIn('id', $usedCategories)

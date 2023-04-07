@@ -89,11 +89,11 @@ export class Form {
     }
 
     getFields() {
-        const result = [];
+        let result = [];
 
         _.forEach(
             this.children,
-            tab => _.forEach(
+            tab => result = [...result, ...tab.getFields()]/*_.forEach(
                 tab.children,
                 row => _.forEach(
                     row.children,
@@ -102,7 +102,7 @@ export class Form {
                         field => result.push(field)
                     )
                 )
-            )
+            )*/
         );
 
         return result;
@@ -112,7 +112,9 @@ export class Form {
         const fields = this.getFields();
         const result = {};
 
-        _.forEach(fields, item => result[item.name] = item.value);
+        _.forEach(fields, item => {
+            result[item.name] = item.value;
+        });
 
         return result;
     }
@@ -139,6 +141,7 @@ export class Tab {
     type = 'tab';
     title = '';
     isConstructor = false;
+    hasError = false;
 
     constructor(params, isConstructor = false) {
         this.isConstructor = isConstructor;
@@ -163,6 +166,23 @@ export class Tab {
 
     addField(fieldObj, row = 0, col = 0) {
         return this.getChild(row).getChild(col).addField(fieldObj);
+    }
+
+    getFields() {
+        const result = [];
+
+        _.forEach(
+            this.children,
+            row => _.forEach(
+                row.children,
+                col => _.forEach(
+                    col.children,
+                    field => result.push(field)
+                )
+            )
+        );
+
+        return result;
     }
 
     set json(val) {

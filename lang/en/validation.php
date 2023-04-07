@@ -169,4 +169,7 @@ return [
     'confirmation' => 'The {field} confirmation does not match.',
     'old_password_incorrect' => 'Old password incorrect',
     'typename_exist' => 'Type name exist',
+    'routename_exist' => 'Route name exist',
+    'parent_deep_limit_exceed' => 'Parent deep limit exceed',
+    'parent_loop' => 'Parent loop',
 ];

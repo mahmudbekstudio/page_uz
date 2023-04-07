@@ -74,5 +74,7 @@ return [
     'create_post' => 'Create post type',
     'basic' => 'Basic',
     'advanced' => 'Advanced',
-    'required' => 'Required'
+    'required' => 'Required',
+    'post' => 'Post',
+    'category' => 'Category',
 ];

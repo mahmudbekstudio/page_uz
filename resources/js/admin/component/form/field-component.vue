@@ -1,5 +1,12 @@
 <template>
-    <component :is="typeComponent" :params="params" :events="events" :disabled="disabled" :value="value" @input="changed"></component>
+    <component
+        :is="typeComponent"
+        :params="{...params, rules}"
+        :events="events"
+        :disabled="disabled"
+        :value="value"
+        @input="changed"
+    ></component>
 </template>
 <script>
     import textField from './fields/textField';
@@ -30,6 +37,8 @@
     import requiredTemplateField from './fields/required/requiredTemplateField';
     import requiredTitleField from './fields/required/requiredTitleField';
 
+    import validation from "../../config/validation";
+
     export default {
         props: {
             params: {
@@ -50,6 +59,7 @@
             },
             value: null,
             fieldKey: null,
+            form: null,
             disabled: {
                 type: Boolean,
                 default: false
@@ -58,6 +68,19 @@
         computed: {
             typeComponent() {
                 return this.type + 'Field';
+            },
+            rules() {
+                if (this.params.validation && this.form) {
+                    const result = [];
+
+                    for (const rule in this.params.validation) {
+                        result.push(validation[rule](this.params.label, this.params.validation[rule], this.form.getFieldValues()));
+                    }
+
+                    return result;
+                }
+
+                return this.params.rules || [];
             }
         },
         methods: {

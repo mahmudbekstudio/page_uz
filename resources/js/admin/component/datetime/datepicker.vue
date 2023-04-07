@@ -72,7 +72,7 @@ export default {
     },
     methods: {
         appendClick () {
-            this.picker = '';
+            this.picker = typeof this.picker === 'string' ? '' : [];
         }
     },
     components: {

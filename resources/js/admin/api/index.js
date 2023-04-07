@@ -1,5 +1,6 @@
 import Route from "./route";
 import auth from '../service/auth';
+import route from "./route";
 
 const defaultApi = {
     settings: {
@@ -22,7 +23,32 @@ const userApi = {
     }
 };
 
+const components = {
+    notUsedCategories: {
+        ...route.admin('type.not-used-categories'),
+        callback: function(id) {
+            this.params({id});
+        },
+        token: true
+    },
+    postActiveList: {
+        ...route.admin('post.active-list'),
+        callback: function(typeId) {
+            this.urlParam('{type}', typeId);
+        },
+        token: true
+    },
+    categoryActiveList: {
+        ...route.admin('category.active-list'),
+        callback: function(typeId) {
+            this.urlParam('{type}', typeId);
+        },
+        token: true
+    },
+}
+
 export default {
     default: defaultApi,
-    user: userApi
+    user: userApi,
+    components,
 };

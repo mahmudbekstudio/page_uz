@@ -5,6 +5,7 @@ export default class requiredTitleField extends field {
     constructor(params) {
         super(params);
 
+        this.fieldObject.params.validation = {required: null, ...(this.fieldObject.params.validation || {})};
         this.fieldObject.params.label = 'Title';
         this.fieldObject.name = 'title';
     }

@@ -34,10 +34,6 @@ const api = {
         ...route.admin('type.categories'),
         token: true
     },
-    notUsedCategories: {
-        ...route.admin('type.not-used-categories'),
-        token: true
-    },
 };
 
 export default api;

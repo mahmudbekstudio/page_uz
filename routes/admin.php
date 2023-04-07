@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\WebsiteController;
+use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\CategoryController;
 
 Route::group(['middleware' => ['auth:api']], function() {
     Route::get('settings', [MainController::class, 'settings'])->name('settings');
@@ -44,6 +46,26 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::post('upload-file/{id}', [FolderFileController::class, 'uploadFile'])->name('upload-file');
                 Route::post('rename-file', [FolderFileController::class, 'renameFile'])->name('rename-file');
                 Route::delete('delete-file/{id}', [FolderFileController::class, 'deleteFile'])->name('delete-file');
+            });
+
+            Route::group(['prefix' => 'post/{type}', 'as' => 'post.'], function () {
+                Route::get('list', [PostController::class, 'list'])->name('list');
+                Route::post('create', [PostController::class, 'create'])->name('create');
+                Route::put('edit/{post}', [PostController::class, 'edit'])->name('edit');
+                Route::get('get/{post}', [PostController::class, 'get'])->name('get');
+                Route::delete('delete/{post}', [PostController::class, 'delete'])->name('delete');
+
+                Route::get('active-list', [PostController::class, 'activeList'])->name('active-list');
+            });
+
+            Route::group(['prefix' => 'category/{type}', 'as' => 'category.'], function () {
+                Route::get('list', [CategoryController::class, 'list'])->name('list');
+                Route::post('create', [CategoryController::class, 'create'])->name('create');
+                Route::put('edit/{category}', [CategoryController::class, 'edit'])->name('edit');
+                Route::get('get/{category}', [CategoryController::class, 'get'])->name('get');
+                Route::delete('delete/{category}', [CategoryController::class, 'delete'])->name('delete');
+
+                Route::get('active-list', [CategoryController::class, 'activeList'])->name('active-list');
             });
 
             Route::group(['prefix' => 'user', 'as' => 'user.'], function () {

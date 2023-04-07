@@ -12,6 +12,42 @@
             @click:row="clickRow"
             @reloadCallback="listReload($event)"
         >
+            <template v-slot:filter="props">
+                <v-container class="grey lighten-5">
+                    <v-row no-gutters>
+                        <v-col
+                            cols="12"
+                            sm="4"
+                        >
+                            <v-select
+                                :items="statusOptions"
+                                v-model="filter.status.value"
+                                label="Status"
+                            ></v-select>
+                        </v-col>
+                        <v-col
+                            cols="12"
+                            sm="4"
+                        >
+                            <v-select
+                                :items="typeOptions"
+                                v-model="filter.type.value"
+                                label="Type"
+                            ></v-select>
+                        </v-col>
+                        <v-col
+                            cols="12"
+                            sm="4"
+                        >
+                            <v-select
+                                :items="parentOptions"
+                                v-model="filter.has_parent.value"
+                                label="Has parent"
+                            ></v-select>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </template>
             <template v-slot:item.status="props">
                 <v-chip
                     :color="props.value ? 'green' : 'red'"
@@ -56,6 +92,7 @@
                 filter: {
                     status: {condition: '=', value: ''},
                     type: {condition: '=', value: ''},
+                    has_parent: {condition: '=', value: ''},
                 },
                 listReloadCallback: null,
                 mainConfig: mainConfig,
@@ -80,6 +117,29 @@
                 { text: 'Actions', value: 'actions' },
             ];
         },
+        computed: {
+            statusOptions () {
+                return [
+                    {text: 'Show all status', value: ''},
+                    {text: this.$t('words.active'), value: 1},
+                    {text: this.$t('words.not_active'), value: 0}
+                ];
+            },
+            parentOptions () {
+                return [
+                    {text: 'Show all', value: ''},
+                    {text: this.$t('words.yes'), value: 1},
+                    {text: this.$t('words.no'), value: 0}
+                ];
+            },
+            typeOptions () {
+                return [
+                    {text: 'Show all', value: ''},
+                    {text: this.$t('words.post'), value: 'post'},
+                    {text: this.$t('words.category'), value: 'category'}
+                ];
+            }
+        },
         methods: {
             clickRow (row) {
                 this.$router.push({name: 'type.edit', params: {id: row.id}})
@@ -88,7 +148,7 @@
                 this.listReloadCallback = listReloadCallback;
             },
             clickDelete (item) {
-                app.openConfirm('Do you realy want to delete type "' + item.name + '"', () => {
+                app.openConfirm('Do you really want to delete type "' + item.name + '"', () => {
                     this.$options.service.delete(item.id, response => {
                         if (response.result) {
                             this.listReloadCallback();

@@ -60,7 +60,7 @@
                             v-for="child in item.children"
                             :key="getKeyByRoute(child.route)"
                             @click="listItemClick(child.route)"
-                            :class="{'v-list-item--active': (checkForActive(child.route) || (child.active && child.active.indexOf($route.name) > -1))}"
+                            :class="{'v-list-item--active': (checkForActive(child.route) || isActive(child))}"
                             link
                     >
                         <v-list-item-action v-if="child.icon">
@@ -75,7 +75,7 @@
                         v-else
                         :key="getKeyByRoute(item.route)"
                         @click="listItemClick(item.route)"
-                        :class="{'v-list-item--active': (checkForActive(item.route) || (item.active && item.active.indexOf($route.name) > -1))}"
+                        :class="{'v-list-item--active': (checkForActive(item.route) || isActive(item))}"
                         link
                 >
                     <v-list-item-action v-if="item.icon">
@@ -97,7 +97,6 @@
     export default {
         data() {
             return {
-                //activeNav: null,
                 websites: [
                     { title: 'Click Me' },
                     { title: 'Click Me' },
@@ -133,16 +132,21 @@
             }),
             isActiveExist(list) {
                 for(let i = 0; i < list.length; i++) {
-                    if(this.$route.name === list[i].route.name && this.isEqual(this.$route.params, list[i].route.params)) {
+                    if(this.isActive(list[i])) {
                         return true;
                     }
                 }
 
                 return false;
             },
+            isActive(item) {
+                const isActive = item.active && item.active.indexOf(this.$route.name) > -1;
+
+                return (this.$route.name === item.route.name || isActive) &&
+                    this.isExistEqual(item.route.params, this.$route.params);
+            },
             listItemClick(route) {
                 if(this.$route.name !== route.name || !this.isEqual(this.$route.params, route.params)) {
-                    //this.activeNav = route.name;
                     this.$router.push(route);
                 }
             },
@@ -168,6 +172,15 @@
                 const obj2Values = Object.values(obj2 || {}).map(item => item.toString()).join(',');
 
                 return obj1Keys === obj2Keys && obj1Values === obj2Values;
+            },
+            isExistEqual(obj1, obj2) {
+                for (const obj1Key in obj1) {
+                    if(!obj2[obj1Key] || String(obj2[obj1Key]) !== String(obj1[obj1Key])) {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
     }

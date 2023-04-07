@@ -17,6 +17,7 @@
                 <v-tab
                         v-for="(tab, index) in formObject.children"
                         :key="'tab' + index"
+                        :class="{'tab-has-error': tab.hasError}"
                 >
                     {{ tab.title }}
                 </v-tab>
@@ -25,6 +26,7 @@
                 <v-tab-item
                         v-for="(tab, index) in formObject.children"
                         :key="'tab' + index"
+                        eager
                 >
                     <v-container :fluid="fluid">
                         <v-row
@@ -46,8 +48,9 @@
                                             :disabled="!!field.disabled"
                                             :value="field.value"
                                             @input="fieldChanged"
-                                            :params="{...field.params}"
+                                            :params="{...field.params, fieldObject: field.field.fieldObject, defaultObject: field.field.defaultObject}"
                                             :events="{...field.events}"
+                                            :form="formObject"
                                     />
                                 </div>
                             </v-col>
@@ -91,7 +94,10 @@
             }
         },
         created() {
-            this.$emit('validate', () => this.$refs.form.validate());
+            this.$emit('validate', () => {
+                this.validateTab();
+                return this.$refs.form.validate();
+            });
             this.$emit('resetValidation', () => this.$refs.form.resetValidation());
             this.initFormObject(this.value);
         },
@@ -105,10 +111,18 @@
                 this.initFormObject(val);
             },
             valid(val) {
+                this.validateTab();
                 this.$emit('valid', val);
             }
         },
         methods: {
+            validateTab() {
+                const errors = this.$refs.form.inputs.filter(e => (e.hasError && e.$attrs.fieldObject && (e.hasFocused || e.hasInput))).map(e => e.$attrs.fieldObject.name);
+
+                for (const tab of this.formObject.children) {
+                    tab.hasError = !!tab.getFields().filter(field => errors.indexOf(field.field.fieldObject.name) > -1).length;
+                }
+            },
             fieldChanged(key, val) {
                 this.formObject.setFieldValue(key, val);
                 this.$emit('input', this.formObject)
@@ -126,3 +140,8 @@
         }
     }
 </script>
+<style lang="scss" scoped>
+.tab-has-error {
+    color: red !important;
+}
+</style>

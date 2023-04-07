@@ -1,8 +1,9 @@
 import field from '../mainField';
 import validation from "../../../../config/validation";
-import typeApi from '../../../../module/type/form/api';
+import api from '../../../../api';
 import http from '../../../../service/http';
-import {temporaryCache} from "../../../../helper";
+import { listToTree } from '../../../../helper';
+import mainConfig from "../../../../config/main";
 
 export default class advancedChildOfField extends field {
     fillable = [
@@ -17,7 +18,7 @@ export default class advancedChildOfField extends field {
             type: 'text',
             name: 'label',
             disabled: true,
-            value: 'Child of',
+            value: 'Category',
             params: {label: 'Label', rules: [validation.required('Label')]}
         },
         {
@@ -39,13 +40,19 @@ export default class advancedChildOfField extends field {
     constructor(params) {
         super(params);
 
+        this.fieldObject.params.valueType = 'int';
+        this.defaultObject.value = 0;
+        this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
+
         if (typeof params.isConstructor !== 'undefined') {
             if (this.isConstructor) {
                 const categoryType = this.fillable.find(item => item.name === 'child_of');
-                http(typeApi.notUsedCategories)
+                http(api.components.notUsedCategories)
+                    .callback(params.params.child_of)
                     .send()
                     .then(response => {
-                        for (const item of response.data.data.list) {
+                        const tree = listToTree(response.data.data.list);
+                        for (const item of tree) {
                             categoryType.params.options[item.id] = item.name;
                         }
 
@@ -55,7 +62,24 @@ export default class advancedChildOfField extends field {
                         console.log(error);
                     });
             } else {
-                console.log('load categories list');
+                this.setParam('label', 'Category');
+                this.setParam('options', {});
+                http(api.components.categoryActiveList)
+                    .callback(params.params.child_of)
+                    .send()
+                    .then(response => {
+                        const result = [];
+                        const tree = listToTree(response.data.data.categories);
+
+                        for (const item of tree) {
+                            result.push({text: item.name, value: String(item.id), disabled: mainConfig.app.parentPageDeepLimit < item.deep});
+                        }
+
+                        this.setParam('options', result);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
             }
         }
     }

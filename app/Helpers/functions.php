@@ -248,6 +248,7 @@ if (! function_exists('typeNavigation')) {
                             'text' => 'List',
                             'icon' => 'subject',
                             'route' => ['name' => 'post.list', 'params' => ['typeId' => $item->id]],
+                            'active' => ['post.edit'],
                         ],
                         [
                             'text' => 'Add new',
@@ -260,7 +261,8 @@ if (! function_exists('typeNavigation')) {
                 $categories[$item->id] = [
                     'text' => $item->name,
                     'icon' => 'view_list',
-                    'route' => ['name' => 'category.list', 'params' => ['typeId' => $item->id]]
+                    'route' => ['name' => 'category.list', 'params' => ['typeId' => $item->id]],
+                    'active' => ['category.edit', 'category.create'],
                 ];
             }
         });
