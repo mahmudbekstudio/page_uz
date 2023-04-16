@@ -18,7 +18,7 @@ class RouteNameExist implements Rule
 
     public function passes($attribute, $value): bool
     {
-        $route = app(RouteRepository::class)->getByTypeAndName($this->typeId, $value);
+        $route = app(RouteRepository::class)->getByName($value);
 
         if($route && $route->parent_id == $this->id) {
             return true;

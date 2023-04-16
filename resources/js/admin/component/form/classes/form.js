@@ -285,8 +285,8 @@ export class Col {
             this.children.push(new Field({...val.children[i], isConstructor: this.isConstructor}));
         }
 
-        this.type = this.type || 'col';
-        this.size = this.size || '12';
+        this.type = val.type || 'col';
+        this.size = val.size || '12';
     }
 
     get json() {

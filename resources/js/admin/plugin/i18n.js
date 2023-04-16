@@ -3,6 +3,7 @@ import VueI18n from 'vue-i18n'
 import {set as setVal} from 'lodash';
 import config from '../config/main';
 import translations from 'Static/translations';
+import store from './store';
 
 Vue.use(VueI18n);
 
@@ -27,7 +28,7 @@ function loadLocaleMessages() {
 }
 
 export default new VueI18n({
-    locale: config.lang.locale,
+    locale: store.getters['view/website']?.lang || config.lang.locale,
     messages: loadLocaleMessages(),
     fallbackLocale: config.lang.fallback_locale
 });

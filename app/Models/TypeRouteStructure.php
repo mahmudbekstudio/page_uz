@@ -7,13 +7,17 @@ use App\Models\Traits\WebsiteAddScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Route extends Model
+class TypeRouteStructure extends Model
 {
     use BelongsToWebsite, HasFactory, WebsiteAddScopeTrait;
 
-    protected $fillable = ['website_id', 'name', 'parent_id', 'type_id'];
+    protected $fillable = ['website_id', 'type_id', 'parent_id', 'params', 'structure'];
+
+    protected $casts = [
+        'structure' => 'array',
+        'params' => 'array',
+    ];
 
     protected static function booted()
     {

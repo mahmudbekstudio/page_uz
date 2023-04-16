@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
+use App\Models\Traits\BelongsToUser;
 use App\Models\Traits\BelongsToWebsite;
+use App\Models\Traits\UserAddScopeTrait;
 use App\Models\Traits\WebsiteAddScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Route extends Model
+class Menu extends Model
 {
-    use BelongsToWebsite, HasFactory, WebsiteAddScopeTrait;
+    use BelongsToWebsite, BelongsToUser, HasFactory, WebsiteAddScopeTrait, UserAddScopeTrait;
 
-    protected $fillable = ['website_id', 'name', 'parent_id', 'type_id'];
+    protected $fillable = ['website_id', 'user_id', 'name', 'items'];
+
+    protected $casts = [
+        'items' => 'array',
+    ];
 
     protected static function booted()
     {
@@ -25,10 +29,6 @@ class Route extends Model
     {
         parent::boot();
         static::setWebsiteAttr();
-    }
-
-    public function type(): BelongsTo
-    {
-        return $this->belongsTo(Type::class);
+        static::setUserAttr();
     }
 }

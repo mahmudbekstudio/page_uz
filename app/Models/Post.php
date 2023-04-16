@@ -16,7 +16,7 @@ class Post extends Model
 {
     use BelongsToWebsite, BelongsToUser, HasFactory, WebsiteAddScopeTrait, UserAddScopeTrait;
 
-    protected $fillable = ['user_id', 'website_id', 'category_id', 'template_id', 'status', 'parent_id', 'type_id'];
+    protected $fillable = ['user_id', 'website_id', 'category_id', 'template_id', 'status', 'parent_id', 'type_id', 'url'];
 
     protected $casts = [
         'status' => 'boolean',

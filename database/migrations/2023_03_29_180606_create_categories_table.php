@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('status')->default(0)->index('status');
             $table->unsignedBigInteger('parent_id')->default(0)->index('parent_id');
             $table->unsignedBigInteger('type_id')->default(0)->index('type_id');
+            $table->string('url')->index('url');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

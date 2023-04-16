@@ -16,7 +16,7 @@ class Category extends Model
 {
     use BelongsToWebsite, BelongsToUser, HasFactory, WebsiteAddScopeTrait, UserAddScopeTrait;
 
-    protected $fillable = ['website_id', 'user_id', 'template_id', 'status', 'parent_id', 'type_id'];
+    protected $fillable = ['website_id', 'user_id', 'template_id', 'status', 'parent_id', 'type_id', 'url'];
 
     protected $casts = [
         'status' => 'boolean',

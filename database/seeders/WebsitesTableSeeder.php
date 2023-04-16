@@ -2,11 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\DataFormat;
+use App\Models\Post;
+use App\Models\PostMeta;
+use App\Models\Route;
+use App\Models\Type;
+use App\Models\TypeRouteStructure;
 use Illuminate\Database\Seeder;
 use App\Models\Website;
 use App\Models\WebsiteMeta;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Str;
 
 class WebsitesTableSeeder extends Seeder
 {
@@ -39,6 +44,94 @@ class WebsitesTableSeeder extends Seeder
             WebsiteMeta::firstOrCreate([
                 'meta_key' => 'root-folder-path',
                 'meta_value' => generateRootFolderName($website->id),
+                'user_id' => 0,
+                'website_id' => $website->id,
+            ]);
+
+            $type = Type::firstOrCreate([
+                'user_id' => 0,
+                'website_id' => $website->id,
+                'status' => 1,
+                'name' => config('app.main_page.name'),
+                'type' => Type::TYPE_POST,
+                'has_parent' => 1,
+                'child_of' => 0,
+                'structure' => json_decode(config('app.main_page.structure'), true),
+                'fields' => json_decode(config('app.main_page.fields'), true),
+            ]);
+            $pageHome = Post::firstOrCreate([
+                'user_id' => 0,
+                'website_id' => $website->id,
+                'category_id' => 0,
+                'template_id' => 0,
+                'status' => 1,
+                'parent_id' => 0,
+                'type_id' => $type->id,
+                'url' => 'page/home',
+            ]);
+            Route::firstOrCreate([
+                'website_id' => $website->id,
+                'name' => 'home',
+                'parent_id' => $pageHome->id,
+                'type_id' => $type->id,
+            ]);
+            TypeRouteStructure::firstOrCreate([
+                'website_id' => $website->id,
+                'type_id' => $type->id,
+                'parent_id' => $pageHome->id,
+                'params' => [],
+                'structure' => []
+            ]);
+            PostMeta::firstOrCreate([
+                'user_id' => 0,
+                'website_id' => $website->id,
+                'post_id' => $pageHome->id,
+                'meta_format' => DataFormat::FORMAT_STRING,
+                'meta_key' => 'title',
+                'meta_value' => 'Home'
+            ]);
+            WebsiteMeta::firstOrCreate([
+                'meta_key' => 'pageHome',
+                'meta_value' => $pageHome->id,
+                'meta_format' => DataFormat::FORMAT_INT,
+                'user_id' => 0,
+                'website_id' => $website->id,
+            ]);
+            $page404 = Post::firstOrCreate([
+                'user_id' => 0,
+                'website_id' => $website->id,
+                'category_id' => 0,
+                'template_id' => 0,
+                'status' => 1,
+                'parent_id' => 0,
+                'type_id' => $type->id,
+                'url' => 'page/404',
+            ]);
+            Route::firstOrCreate([
+                'website_id' => $website->id,
+                'name' => '404',
+                'parent_id' => $page404->id,
+                'type_id' => $type->id,
+            ]);
+            TypeRouteStructure::firstOrCreate([
+                'website_id' => $website->id,
+                'type_id' => $type->id,
+                'parent_id' => $page404->id,
+                'params' => [],
+                'structure' => []
+            ]);
+            PostMeta::firstOrCreate([
+                'user_id' => 0,
+                'website_id' => $website->id,
+                'post_id' => $page404->id,
+                'meta_format' => DataFormat::FORMAT_STRING,
+                'meta_key' => 'title',
+                'meta_value' => '404'
+            ]);
+            WebsiteMeta::firstOrCreate([
+                'meta_key' => 'page404',
+                'meta_value' => $page404->id,
+                'meta_format' => DataFormat::FORMAT_INT,
                 'user_id' => 0,
                 'website_id' => $website->id,
             ]);

@@ -51,8 +51,7 @@ export default class advancedChildOfField extends field {
                     .callback(params.params.child_of)
                     .send()
                     .then(response => {
-                        const tree = listToTree(response.data.data.list);
-                        for (const item of tree) {
+                        for (const item of response.data.data.list) {
                             categoryType.params.options[item.id] = item.name;
                         }
 

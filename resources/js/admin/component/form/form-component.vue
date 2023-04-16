@@ -36,6 +36,8 @@
                             <v-col
                                     v-for="(col, colIndex) in row.children"
                                     :key="'col' + colIndex"
+                                    cols="12"
+                                    :md="col.size"
                             >
                                 <div
                                         v-for="(field, fieldIndex) in col.children"

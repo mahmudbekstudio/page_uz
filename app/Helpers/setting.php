@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Arr;
+
 if (!function_exists('isProd')) {
     /**
      * Check if environment is prod return true
@@ -83,5 +85,13 @@ if (!function_exists('isLang')) {
     function isLang(string $lang = ''): string
     {
         return in_array($lang, config('app.locale_list'));
+    }
+}
+
+if (!function_exists('getCurrentLang')) {
+    function getCurrentLang(): string
+    {
+        $currentLang = Arr::get($_COOKIE, 'current-lang') ?? Arr::get($_GET, 'current-lang');
+        return $currentLang ?? getLang();
     }
 }

@@ -1,14 +1,14 @@
+import route from "../../../plugin/route";
 import http from '../../../service/http';
-import app from '../../../service/app';
-import store from './store';
 import api from './api';
-import logger from '../../../service/logger';
+import app from "../../../service/app";
+import logger from "../../../service/logger";
 
 export default class Service {
-    get(id, successCallback, errorCallback) {
+    get(successCallback, errorCallback) {
         this.loading(true);
         http(api.get)
-            .callback(id)
+            .callback(this.id)
             .send()
             .then(response => {
                 if (typeof successCallback === 'function') {
@@ -19,8 +19,8 @@ export default class Service {
                 if (typeof errorCallback === 'function') {
                     errorCallback(error);
                 } else {
-                    logger.error('type get', error);
-                    app.errorMessage('Error');
+                    logger.error('post submit', error);
+                    app.errors(error);
                 }
             })
             .then(() => {
@@ -28,12 +28,12 @@ export default class Service {
             })
     }
 
-    submit(id, form, successCallback, errorCallback) {
+    submit(form, successCallback, errorCallback) {
         this.loading(true);
         let request = null;
 
-        if (id) {
-            request = http(api.edit).callback(id, form);
+        if (this.id) {
+            request = http(api.edit).callback(this.id, form);
         } else {
             request = http(api.create).callback(form);
         }
@@ -49,12 +49,13 @@ export default class Service {
                 if (typeof errorCallback === 'function') {
                     errorCallback(error);
                 } else {
-                    logger.error('type submit', error);
+                    logger.error('post submit', error);
                     app.errors(error);
                 }
-            }).then(() => {
+            })
+            .then(() => {
                 this.loading(false);
-            });
+            })
     }
 
     delete(id, successCallback, errorCallback) {
@@ -70,7 +71,7 @@ export default class Service {
                 }
             })
             .catch(error => {
-                logger.error('type delete', error);
+                logger.error('menu delete', error);
                 if (typeof errorCallback === 'function') {
                     errorCallback(error);
                 } else {
@@ -81,8 +82,31 @@ export default class Service {
             });
     }
 
+    links(successCallback, errorCallback) {
+        this.loading(true);
+        http(api.links)
+            .send()
+            .then(response => {
+                if (typeof successCallback === 'function') {
+                    successCallback(response.data);
+                }
+            })
+            .catch(error => {
+                if (typeof errorCallback === 'function') {
+                    errorCallback(error);
+                } else {
+                    app.errorMessage('Error');
+                }
+            }).then(() => {
+            this.loading(false);
+        });
+    }
+
     loading(isStart) {
         app.loading(isStart);
-        store.dispatch('type-form/changeIsLoading', isStart)
+    }
+
+    get id() {
+        return route.currentRoute?.params?.menu;
     }
 }

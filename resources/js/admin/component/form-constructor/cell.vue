@@ -7,6 +7,7 @@
         v-if="col"
     >
         <cell-action
+            v-if="row.children.length > 1"
             :col="col"
             :row="row"
         />

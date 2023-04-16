@@ -45,12 +45,7 @@ class PostController extends Controller
 
     public function delete(int $type, Post $post)
     {
-        if ($post->type_id == $type) {
-            $post->route->delete();
-            $post->delete();
-        }
-
-        return responseJsonData(true, ['post' => $post]);
+        return responseJsonData(true, ['post' => $this->postService->delete($type, $post)]);
     }
 
     public function activeList(int $type, PostRepository $postRepository)

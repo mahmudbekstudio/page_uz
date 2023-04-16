@@ -14,11 +14,45 @@
         </v-toolbar-title>
 
         <div class="flex-grow-1"></div>
-        <v-btn icon>
+        <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    v-bind="attrs"
+                    v-on="on"
+                    text
+                >
+                    {{ selectedLangName }}
+                    <v-icon right>
+                        mdi-menu-down
+                    </v-icon>
+                </v-btn>
+            </template>
+            <v-list>
+                <v-list-item-group
+                    v-model="selectedLang"
+                    color="primary"
+                >
+                    <v-list-item
+                        v-for="item in languagesList"
+                        :key="item.code"
+                        :value="item.code"
+                    >
+                        <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    </v-list-item>
+                </v-list-item-group>
+            </v-list>
+        </v-menu>
+        <!--v-btn icon>
             <v-icon>mdi-apps</v-icon>
         </v-btn>
-        <!--v-btn icon>
-            <v-icon>mdi-bell</v-icon>
+        <v-btn icon>
+            <v-badge
+                color="green"
+                content="6"
+                overlap
+            >
+                <v-icon>mdi-bell</v-icon>
+            </v-badge>
         </v-btn>
         <v-btn
                 icon
@@ -72,19 +106,41 @@
     import {mapActions, mapGetters} from 'vuex';
     import auth from '../../service/auth';
     import viewSettings from '../../config/view';
+    import {cache} from '../../helper';
 
     export default {
         data: function () {
             return {
                 menuIsOpen: false,
-                panelTitle: viewSettings.title
+                panelTitle: viewSettings.title,
+                languages: viewSettings.languages,
+                selectedLang: '',
             }
+        },
+        created() {
+            this.selectedLang = cache('current-lang') || this.website.lang;
         },
         computed: {
             ...mapGetters({
                 user: 'storage/user',
-                title: 'view/websiteTitle'
+                title: 'view/websiteTitle',
+                website: 'view/website',
             }),
+            selectedLangName () {
+                return this.languages[this.selectedLang] || this.selectedLang;
+            },
+            languagesList () {
+                const result = [];
+
+                for (const langCode in this.languages) {
+                    result.push({
+                        code: langCode,
+                        name: this.languages[langCode],
+                    });
+                }
+
+                return result;
+            },
             fullname() {
                 return this.user.meta.first_name + ' ' + this.user.meta.last_name;
             },
@@ -92,9 +148,15 @@
                 return !this.menuIsOpen ? 'mdi-arrow-down-drop-circle-outline' : 'mdi-arrow-up-drop-circle-outline';
             }
         },
+        watch: {
+            selectedLang(val) {
+                this.setCurrentLang(val);
+            }
+        },
         methods: {
             ...mapActions({
-                'toggleDrawer': 'view/toggleDrawer'
+                'toggleDrawer': 'view/toggleDrawer',
+                setCurrentLang: 'view/setCurrentLang',
             }),
             clickLogout() {
                 auth.logout();

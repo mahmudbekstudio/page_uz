@@ -8,6 +8,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
 use App\Repositories\TypeRepository;
+use App\Repositories\RouteRepository;
 
 if (! function_exists('route')) {
     /**
@@ -227,6 +228,7 @@ if (! function_exists('websiteData')) {
             'created' => $website->created_at,
             'metas' => $instance->getMetas(),
             'fileBaseUrl' => $storageUrl,
+            'lang' => getCurrentLang(),
         ];
         return $isJson ? json_encode($data) : $data;
     }
@@ -307,5 +309,20 @@ if (! function_exists('generateRootFolderName')) {
     function generateRootFolderName($websiteId)
     {
         return $websiteId . 'p' . md5($websiteId);
+    }
+}
+
+if (! function_exists('generateRouteUrl')) {
+    function generateRouteUrl($typeId, $ids): array
+    {
+        $result = [];
+        $routeRepository = app(RouteRepository::class);
+
+        foreach ($ids as $id) {
+            $route = $routeRepository->getByTypeParentId($typeId, $id);
+            $result[] = $route->name;
+        }
+
+        return $result;
     }
 }

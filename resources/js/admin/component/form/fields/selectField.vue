@@ -5,7 +5,7 @@
         v-on="events"
         v-model="dataValue"
         :disabled="disabled"
-        clearable
+        :clearable="clearable"
         @click:clear="clear"
     ></v-select>
 </template>
@@ -15,6 +15,9 @@
     export default {
         mixins: [mixins.get('formField')],
         computed: {
+            clearable () {
+                return typeof this.params.clearable !== 'undefined' ? !!this.params.clearable : true;
+            },
             listItems() {
                 const result = [];
                 let isFirst = true;
@@ -65,7 +68,7 @@
                         return this.value.split(',').map(item => item.trim());
                     }
 
-                    return String(this.value);
+                    return this.value !== null && !this.params.multiple ? String(this.value) : this.value;
                 },
                 set: function (newValue) {
                     this.$emit('input', newValue);

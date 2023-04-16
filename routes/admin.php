@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\WebsiteController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\MenuController;
 
 Route::group(['middleware' => ['auth:api']], function() {
     Route::get('settings', [MainController::class, 'settings'])->name('settings');
@@ -74,6 +75,16 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::post('create', [UserController::class, 'create'])->name('create');
                 Route::put('update/{user}', [UserController::class, 'update'])->name('update');
                 Route::delete('delete/{user}', [UserController::class, 'delete'])->name('delete');
+            });
+
+            Route::group(['prefix' => 'menu', 'as' => 'menu.'], function () {
+                Route::get('list', [MenuController::class, 'list'])->name('list');
+                Route::get('get/{menu}', [MenuController::class, 'get'])->name('get');
+                Route::post('create', [MenuController::class, 'create'])->name('create');
+                Route::put('edit/{menu}', [MenuController::class, 'edit'])->name('edit');
+                Route::delete('delete/{menu}', [MenuController::class, 'delete'])->name('delete');
+
+                Route::get('links', [MenuController::class, 'links'])->name('links');
             });
 
             Route::group(['middleware' => [

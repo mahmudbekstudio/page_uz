@@ -26,7 +26,6 @@ return new class extends Migration
 
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
             $table->foreign('website_id')->references('id')->on('websites');
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

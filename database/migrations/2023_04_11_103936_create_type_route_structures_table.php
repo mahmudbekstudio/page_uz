@@ -13,16 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('type_route_structures', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->default(0)->index('user_id');
             $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
-            $table->unsignedBigInteger('category_id')->default(0)->index('category_id');
-            $table->unsignedBigInteger('template_id')->default(0)->index('template_id');
-            $table->unsignedTinyInteger('status')->default(0)->index('status');
-            $table->unsignedBigInteger('parent_id')->default(0)->index('parent_id');
-            $table->unsignedBigInteger('type_id')->default(0)->index('type_id');
-            $table->string('url')->index('url');
+            $table->unsignedBigInteger('type_id')->index('type_id');
+            $table->unsignedBigInteger('parent_id')->index('parent_id');
+            $table->json('params');
+            $table->json('structure');
             $table->timestamps();
 
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
@@ -37,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('type_route_structures');
     }
 };

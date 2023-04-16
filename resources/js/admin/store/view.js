@@ -1,5 +1,7 @@
 import viewSettings from '../config/view';
 import * as constants from '../constants';
+import {cache} from '../helper';
+import i18n from "../plugin/i18n";
 
 const defaultStates = {
     website: null,
@@ -91,6 +93,9 @@ export default {
             commit('changeDrawer', !state.drawer);
         },
         changeWebsite({commit}, val) {
+            if (!val.lang) {
+                val.lang = cache('current-lang') || i18n.locale;
+            }
             commit('changeWebsite', val);
         },
         changeTypeNavigation({commit}, val) {
@@ -142,6 +147,11 @@ export default {
                 yesCallback: val.yesCallback,
                 noCallback: val.noCallback
             })
+        },
+        setCurrentLang({commit, state}, val) {
+            cache('current-lang', val);
+            i18n.locale = val;
+            commit('changeWebsite', {...state.website, lang: val});
         }
     },
 

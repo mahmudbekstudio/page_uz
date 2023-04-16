@@ -55,7 +55,7 @@
                 dotsClicked: false,
                 editActions: [],
                 showEdit: false,
-                editFieldParams: {}
+                editFieldParams: {clearable: false}
             }
         },
         props: {

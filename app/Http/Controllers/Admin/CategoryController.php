@@ -45,12 +45,7 @@ class CategoryController extends Controller
 
     public function delete(int $type, Category $category)
     {
-        if ($category->type_id == $type) {
-            $category->route->delete();
-            $category->delete();
-        }
-
-        return responseJsonData(true, ['category' => $category]);
+        return responseJsonData(true, ['category' => $this->categoryService->delete($type, $category)]);
     }
 
     public function activeList(int $type, CategoryRepository $categoryRepository)

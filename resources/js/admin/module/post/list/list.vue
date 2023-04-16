@@ -33,6 +33,7 @@
                     depressed
                     color="error"
                     @click.stop="clickDelete(props.item)"
+                    v-if="canDelete(props.item)"
                 >
                     {{ $t('words.delete') }}
                 </v-btn>
@@ -68,26 +69,28 @@ export default {
     computed: {
         ...mapGetters({
             typeNavigation: "view/typeNavigation",
+            website: 'view/website',
         }),
         typeId() {
             return parseInt(this.$route.params.typeId);
+        },
+        cannotDeleteIds() {
+            return [this.website.metas.page404, this.website.metas.pageHome];
         }
     },
     watch: {
         typeId() {
             this.init();
+        },
+        'website.lang'(newLang, oldLang) {
+            this.currentLangChanged(newLang, oldLang);
         }
     },
     methods: {
-        init() {
-            this.actions = [];
-            this.actions.push(getPageBoxAction(this.$t('words.create'), '', {color: 'primary'}, {
-                click: () => this.$router.push({name: 'post.create', params: {typeId: this.typeId}})
-            }));
-
+        currentLangChanged(newLang, oldLang) {
             this.headers = [
                 { text: 'Id', value: 'id' },
-                { text: 'Title', value: 'title' },
+                { text: this.$t('words.title'), value: 'title' },
                 { text: 'Status', value: 'status' },
                 { text: 'Parent', value: 'parent' },
                 { text: 'Category', value: 'category' },
@@ -95,6 +98,14 @@ export default {
                 { text: 'Created', value: 'created_at' },
                 { text: 'Actions', value: 'actions' },
             ].filter(item => this.hasCategory() || item.value !== 'category');
+        },
+        init() {
+            this.actions = [];
+            this.actions.push(getPageBoxAction(this.$t('words.create'), '', {color: 'primary'}, {
+                click: () => this.$router.push({name: 'post.create', params: {typeId: this.typeId}})
+            }));
+
+            this.currentLangChanged();
 
             this.listReloadCallback && this.listReloadCallback();
         },
@@ -126,6 +137,9 @@ export default {
         clickRow (row) {
             this.$router.push({name: 'post.edit', params: {typeId: this.typeId, id: row.id}})
         },
+        canDelete(item) {
+            return this.cannotDeleteIds.indexOf(parseInt(item.id)) === -1
+        }
     },
     components: {
         dataTable,

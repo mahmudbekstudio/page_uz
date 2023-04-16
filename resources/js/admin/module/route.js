@@ -9,6 +9,7 @@ import TypeRoute from './type/route';
 import WebsiteRoute from './website/route';
 import PostRoute from './post/route';
 import CategoryRoute from './category/route';
+import MenuRoute from './menu/route';
 
 const route = [
     {
@@ -25,6 +26,7 @@ const route = [
             WebsiteRoute,
             PostRoute,
             CategoryRoute,
+            MenuRoute,
             {path: '*', redirect: {name: viewConfig.page.notFound}}
         ]
     }

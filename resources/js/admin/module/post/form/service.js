@@ -77,7 +77,7 @@ export default class Service {
             })
             .catch(error => {
                 logger.error('post delete', error);
-                if (typeof successCallback === 'function') {
+                if (typeof errorCallback === 'function') {
                     errorCallback(error);
                 } else {
                     app.errorMessage('Error');

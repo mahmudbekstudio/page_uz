@@ -35,6 +35,7 @@ export default {
     computed: {
         ...mapGetters({
             loading: 'view/loading',
+            website: 'view/website',
         }),
     },
     watch: {
@@ -50,18 +51,23 @@ export default {
         loading(val) {
             this.actions.forEach(item => item.bind.disabled = val);
         },
+        'website.lang'(newLang, oldLang) {
+            this.currentLangChanged(newLang, oldLang);
+        },
     },
     methods: {
-        init() {
+        currentLangChanged() {
             this.actions = [];
-            this.formValue = null;
             this.actions.push(getPageBoxAction(this.$t('words.back'), '', {color: 'default', disabled: false}, {
                 click: this.back
             }));
             this.actions.push(getPageBoxAction(this.$t('words.' + (this.$options.service.isEdit ? 'update' : 'create')), '', {color: 'primary', disabled: false}, {
                 click: this.save
             }));
-
+        },
+        init() {
+            this.formValue = null;
+            this.currentLangChanged();
             this.loadType();
         },
         loadType() {

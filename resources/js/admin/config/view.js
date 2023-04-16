@@ -49,4 +49,9 @@ export default {
         navigationIsOpened: false,
         temporary: true*/
     },
+    languages: {
+        ru: 'Русский',
+        en: 'English',
+        uz: 'O\'zbek',
+    }
 };
