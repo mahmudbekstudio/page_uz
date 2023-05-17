@@ -2,6 +2,8 @@
     <div class="file-field">
         <v-input
             v-bind="params"
+            :hint="params?.hint ? $t(params.hint) : null"
+            :label="labelText"
         >
             <div>
                 <file-select

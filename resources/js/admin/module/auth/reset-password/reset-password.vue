@@ -82,23 +82,22 @@
             minPasswordLength: constants.VALIDATION_MIN_PASSWORD_LENGTH,
             rules: {
                 password: [
-                    validation.required('Password'),
-                    validation.min('Password', constants.VALIDATION_MIN_PASSWORD_LENGTH)
+                    validation.required('words.password'),
+                    validation.min('words.password', constants.VALIDATION_MIN_PASSWORD_LENGTH)
                 ],
                 password_confirmation: [
-                    validation.required('Password'),
-                    validation.min('Password', constants.VALIDATION_MIN_PASSWORD_LENGTH)
+                    validation.required('words.confirm_password'),
+                    validation.min('words.confirm_password', constants.VALIDATION_MIN_PASSWORD_LENGTH)
                 ]
             }
         }),
         created() {
-            console.log('constants', constants);
             if(!this.$route.params.token || !this.$route.query.email) {
                 app.redirectToLogin();
                 return ;
             }
 
-            this.rules.password_confirmation.push(validation.confirmation('Password confirmation', () => {
+            this.rules.password_confirmation.push(validation.confirmation('words.confirm_password', () => {
                 return this.form.password;
             }));
 

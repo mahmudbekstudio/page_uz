@@ -7,19 +7,19 @@ export default class fileField extends field {
         {
             type: 'file',
             name: 'value',
-            params: {label: 'Default value', multiple: false, fileType: FILE_DEFAULT_TYPE}
+            params: {label: 'words.default_value', multiple: false, fileType: FILE_DEFAULT_TYPE}
         },
         {
             type: 'switch',
             name: 'multiple',
-            params: {label: 'Multiple'},
+            params: {label: 'words.multiple'},
             events: {change: e => this.fillable[0].params.multiple = e}
         },
         {
             type: 'select',
             name: 'fileType',
             value: FILE_DEFAULT_TYPE,
-            params: {label: 'Type', options: _.zipObject(FILE_TYPE_LIST, FILE_TYPE_LIST)},
+            params: {label: 'words.type', options: _.zipObject(FILE_TYPE_LIST, FILE_TYPE_LIST)},
             events: {change: e => this.fillable[0].params.fileType = e}
         },
     ]

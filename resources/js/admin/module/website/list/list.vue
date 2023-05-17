@@ -42,7 +42,7 @@ export default {
                 this.openDialog(response);
             });*/
         }
-        const saveButton = getPageBoxAction(this.$t('words.create'), '', {color: 'primary'}, {
+        const saveButton = getPageBoxAction('words.create', '', {color: 'primary'}, {
             click: () => {
                 //this.openDialog();
             }
@@ -51,10 +51,10 @@ export default {
 
         this.headers = [
             { text: 'Id', value: 'id' },
-            { text: 'Name', value: 'name' },
-            { text: 'Status', value: 'status' },
-            { text: 'Domain', value: 'domain' },
-            { text: 'Created', value: 'created_at' },
+            { text: 'words.name', value: 'name' },
+            { text: 'words.status', value: 'status' },
+            { text: 'words.domain', value: 'domain' },
+            { text: 'words.created', value: 'created_at' },
         ];
     },
     methods: {

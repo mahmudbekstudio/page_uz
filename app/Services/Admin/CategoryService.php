@@ -72,7 +72,6 @@ class CategoryService extends BaseService
                 'meta_format' => $format,
                 'meta_key' => $name,
                 'meta_value' => DataFormat::toString($value, $format),
-                'lang' => ''
             ];
             $this->categoryMetaRepository->create($categoryMetaAttributes);
         }
@@ -221,7 +220,6 @@ class CategoryService extends BaseService
                 'meta_format' => $format,
                 'meta_key' => $name,
                 'meta_value' => DataFormat::toString($value, $format),
-                'lang' => ''
             ];
             $this->categoryMetaRepository->create($categoryMetaAttributes);
         }

@@ -12,7 +12,7 @@ export default class advancedParentField extends field {
 
         this.fieldObject.params.valueType = 'int';
         this.defaultObject.value = 0;
-        this.fieldObject.params.label = 'Select parent';
+        this.fieldObject.params.label = 'words.select_parent';
         this.fieldObject.name = 'parent';
         this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
 

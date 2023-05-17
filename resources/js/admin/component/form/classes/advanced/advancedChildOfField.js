@@ -4,6 +4,8 @@ import api from '../../../../api';
 import http from '../../../../service/http';
 import { listToTree } from '../../../../helper';
 import mainConfig from "../../../../config/main";
+import store from "../../../../plugin/store";
+import i18n from "../../../../plugin/i18n";
 
 export default class advancedChildOfField extends field {
     fillable = [
@@ -12,14 +14,14 @@ export default class advancedChildOfField extends field {
             name: 'name',
             disabled: true,
             value: 'childOf',
-            params: {label: 'Name', rules: [validation.required('Name')]}
+            params: {label: 'words.name', rules: [validation.required('words.name')]}
         },
         {
             type: 'text',
             name: 'label',
             disabled: true,
             value: 'Category',
-            params: {label: 'Label', rules: [validation.required('Label')]}
+            params: {label: 'words.label', rules: [validation.required('words.label')]}
         },
         {
             type: 'validation',
@@ -34,7 +36,7 @@ export default class advancedChildOfField extends field {
         {
             type: 'select',
             name: 'child_of',
-            params: {label: 'Category type', options: {}, rules: [validation.required('Category type')]}
+            params: {label: 'words.category_type', options: {}, rules: [validation.required('words.category_type')]}
         },
     ];
     constructor(params) {
@@ -43,6 +45,15 @@ export default class advancedChildOfField extends field {
         this.fieldObject.params.valueType = 'int';
         this.defaultObject.value = 0;
         this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
+        const languagesList = store.getters['view/website'].metas.languages_list;
+        const labelType = this.fillable.find(item => item.name === 'label');
+
+        if (languagesList.length) {
+            labelType.value = {};
+            for (const langCode of languagesList) {
+                labelType.value[langCode] = i18n.t('words.category', langCode);
+            }
+        }
 
         if (typeof params.isConstructor !== 'undefined') {
             if (this.isConstructor) {
@@ -52,7 +63,7 @@ export default class advancedChildOfField extends field {
                     .send()
                     .then(response => {
                         for (const item of response.data.data.list) {
-                            categoryType.params.options[item.id] = item.name;
+                            categoryType.params.options[item.id] = item.title;
                         }
 
                         categoryType.params.options = {...categoryType.params.options};
@@ -61,7 +72,7 @@ export default class advancedChildOfField extends field {
                         console.log(error);
                     });
             } else {
-                this.setParam('label', 'Category');
+                this.setParam('label', 'words.category');
                 this.setParam('options', {});
                 http(api.components.categoryActiveList)
                     .callback(params.params.child_of)
@@ -71,7 +82,7 @@ export default class advancedChildOfField extends field {
                         const tree = listToTree(response.data.data.categories);
 
                         for (const item of tree) {
-                            result.push({text: item.name, value: String(item.id), disabled: mainConfig.app.parentPageDeepLimit < item.deep});
+                            result.push({text: item.title, value: String(item.id), disabled: mainConfig.app.parentPageDeepLimit < item.deep});
                         }
 
                         this.setParam('options', result);

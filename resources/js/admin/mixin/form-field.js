@@ -22,6 +22,15 @@ export default {
             set: function (newValue) {
                 this.$emit('input', newValue);
             }
+        },
+        labelText() {
+            let label = this.params?.label ? this.$t(this.params.label) : null;
+
+            if (label && this.params?.validation?.hasOwnProperty('required')) {
+                label += ' *';
+            }
+
+            return label;
         }
     }
 }

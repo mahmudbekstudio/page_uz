@@ -22,17 +22,17 @@ import * as constants from '../constants';
 };*/
 export default {
     [constants.ROLES.super_admin]: [
-        {text: 'Dashboard', icon: 'dashboard', route: {name: 'dashboard'}},
-        {text: 'Type', icon: 'mdi-format-list-bulleted-type', route: {name: 'type.list'}, active: ['type.list', 'type.create', 'type.edit']},
-        {text: 'Menus', icon: 'mdi-menu', route: {name: 'menu.list'}, active: ['menu.list', 'menu.create', 'menu.edit']},
-        {text: 'Users', icon: 'mdi-account-group', route: {name: 'user.list'}},
-        {text: 'Websites', icon: 'mdi-account-group', route: {name: 'website.list'}},
+        {text: 'words.pages.dashboard', icon: 'dashboard', route: {name: 'dashboard'}},
+        {text: 'words.pages.type', icon: 'mdi-format-list-bulleted-type', route: {name: 'type.list'}, active: ['type.list', 'type.create', 'type.edit']},
+        {text: 'words.menus', icon: 'mdi-menu', route: {name: 'menu.list'}, active: ['menu.list', 'menu.create', 'menu.edit']},
+        {text: 'words.users', icon: 'mdi-account-group', route: {name: 'user.list'}},
+        {text: 'words.websites', icon: 'mdi-account-group', route: {name: 'website.list'}},
         {
             icon: 'settings',
-            text: 'Setting',
+            text: 'words.setting',
             children: [
-                {text: 'Main', icon: 'settings', route: {name: 'setting.main'}},
-                {text: 'Domain', icon: 'settings', route: {name: 'setting.domain'}},
+                {text: 'words.main', icon: 'settings', route: {name: 'setting.main'}},
+                {text: 'words.domain', icon: 'settings', route: {name: 'setting.domain'}},
             ],
         },
 

@@ -14,7 +14,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Profile'
+                title: 'words.profile'
             }
         },
         {
@@ -24,7 +24,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Users'
+                title: 'words.users'
             }
         }
     ]

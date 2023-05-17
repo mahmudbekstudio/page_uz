@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Localization;
 use App\Models\Website;
 use Gecche\Multidomain\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Contracts\Foundation\Application;
@@ -78,6 +79,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        Localization::class,
     ];
 
     /**

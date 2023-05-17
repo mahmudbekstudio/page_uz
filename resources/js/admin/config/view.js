@@ -17,7 +17,7 @@ export default {
 
     isDark: false,
     isMini: false,
-    title: 'Admin Panel',
+    title: 'words.admin_panel',
 
     footerInset: true,
 

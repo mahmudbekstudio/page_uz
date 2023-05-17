@@ -55,26 +55,36 @@ class DataFormat
     /**
      * Change value format
      *
-     * @param string $val
+     * @param $val
      * @param string $format
      * @return mixed
      */
-    public static function toFormat(string $val, string $format)
+    public static function toFormat($val, string $format)
     {
+        $val = self::getVal($val);
+        $isArray = gettype($val) === 'array';
         switch ($format) {
             case self::FORMAT_ARRAY:
-                return json_decode($val, true);
+                return $isArray? array_map(function ($item) {return json_decode($item, true);}, $val) : json_decode($val, true);
             case self::FORMAT_JSON:
-                return json_decode($val);
+                return $isArray? array_map(function ($item) {return json_decode($item);}, $val) : json_decode($val);
             case self::FORMAT_INT:
-                return (int)$val;
+                return $isArray? array_map(function ($item) {return (int)$item;}, $val) : (int)$val;
             case self::FORMAT_DOUBLE:
-                return (double)$val;
+                return $isArray? array_map(function ($item) {return (double)$item;}, $val) : (double)$val;
             case self::FORMAT_BOOL:
-                return $val === self::VALUE_TRUE;
+                return $isArray? array_map(function ($item) {return $item === self::VALUE_TRUE;}, $val) : $val === self::VALUE_TRUE;
             default:
-                return (string)$val;
+                return $isArray? array_map(function ($item) {return (string)$item;}, $val) : (string)$val;
         }
+    }
+
+    private static function getVal($val)
+    {
+        if (gettype($val) === 'string' && str_starts_with($val, '{') && str_ends_with($val, '}')) {
+            $val = json_decode($val, true);
+        }
+        return $val;
     }
 
     /**
@@ -86,6 +96,7 @@ class DataFormat
      */
     public static function toString($val, string $format): string
     {
+        $isArray = gettype($val) === 'array';
         switch ($format) {
             case self::FORMAT_ARRAY:
             case self::FORMAT_JSON:
@@ -93,9 +104,9 @@ class DataFormat
             case self::FORMAT_STRING:
             case self::FORMAT_INT:
             case self::FORMAT_DOUBLE:
-                return (string)$val;
+                return $isArray ? json_encode(array_map(function ($item) {return (string)$item;}, $val)) : (string)$val;
             case self::FORMAT_BOOL:
-                return $val ? self::VALUE_TRUE : self::VALUE_FALSE;
+                return $isArray ? json_encode(array_map(function ($item) {return $item ? self::VALUE_TRUE : self::VALUE_FALSE;}, $val)) : ($val ? self::VALUE_TRUE : self::VALUE_FALSE);
         }
     }
 }

@@ -3,7 +3,7 @@
         <v-select
             v-model="selectedList"
             :items="items"
-            label="Validation"
+            :label="$t('words.validation')"
             multiple
         ></v-select>
         <v-list-item
@@ -47,9 +47,9 @@ export default {
                         type: 'text',
                         name: 'fieldName',
                         params: {
-                            label: 'Field name',
-                            hint: 'Enter field name',
-                            rules: [validation.required('Field name')]
+                            label: 'words.field_name',
+                            hint: 'words.enter_field_name',
+                            rules: [validation.required('words.field_name')]
                         }
                     }
                 },
@@ -59,9 +59,9 @@ export default {
                         type: 'number',
                         name: 'maxLength',
                         params: {
-                            label: 'Max length',
-                            hint: 'Enter max length',
-                            rules: [validation.required('Max length')]
+                            label: 'words.max_length',
+                            hint: 'words.enter_max_length',
+                            rules: [validation.required('words.max_length')]
                         }
                     }
                 },
@@ -71,9 +71,9 @@ export default {
                         type: 'number',
                         name: 'minLength',
                         params: {
-                            label: 'Min length',
-                            hint: 'Enter min length',
-                            rules: [validation.required('Min length')]
+                            label: 'words.min_length',
+                            hint: 'words.enter_min_length',
+                            rules: [validation.required('words.min_length')]
                         }
                     }
                 },
@@ -83,9 +83,9 @@ export default {
                         type: 'number',
                         name: 'minLength',
                         params: {
-                            label: 'Min length',
-                            hint: 'Enter min length if not field empty',
-                            rules: [validation.required('Min length')]
+                            label: 'words.min_length',
+                            hint: 'words.enter_min_length_if_not_empty',
+                            rules: [validation.required('words.min_length')]
                         }
                     }
                 },
@@ -98,9 +98,9 @@ export default {
                         type: 'textarea',
                         name: 'list',
                         params: {
-                            label: 'List',
-                            hint: 'Enter item every line',
-                            rules: [validation.required('List')]
+                            label: 'words.list',
+                            hint: 'words.enter_item_every_line',
+                            rules: [validation.required('words.list')]
                         }
                     }
                 },
@@ -110,9 +110,9 @@ export default {
                         type: 'textarea',
                         name: 'list',
                         params: {
-                            label: 'List',
-                            hint: 'Enter item every line',
-                            rules: [validation.required('List')]
+                            label: 'words.list',
+                            hint: 'words.enter_item_every_line',
+                            rules: [validation.required('words.list')]
                         }
                     }
                 },
@@ -122,9 +122,9 @@ export default {
                         type: 'text',
                         name: 'fieldName',
                         params: {
-                            label: 'Field name',
-                            hint: 'Enter field name',
-                            rules: [validation.required('Field name')]
+                            label: 'words.field_name',
+                            hint: 'words.enter_field_name',
+                            rules: [validation.required('words.field_name')]
                         }
                     }
                 },

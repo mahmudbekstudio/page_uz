@@ -3,6 +3,7 @@ import app from '../../../service/app';
 import store from './store';
 import api from './api';
 import logger from '../../../service/logger';
+import i18n from "../../../plugin/i18n";
 
 export default class Service {
     get(id, successCallback, errorCallback) {
@@ -20,7 +21,7 @@ export default class Service {
                     errorCallback(error);
                 } else {
                     logger.error('type get', error);
-                    app.errorMessage('Error');
+                    app.errorMessage(i18n.t('words.error'));
                 }
             })
             .then(() => {
@@ -66,7 +67,7 @@ export default class Service {
                 if (typeof successCallback === 'function') {
                     successCallback(response.data);
                 } else {
-                    app.successMessage('Success');
+                    app.successMessage(i18n.t('words.success'));
                 }
             })
             .catch(error => {
@@ -74,7 +75,7 @@ export default class Service {
                 if (typeof errorCallback === 'function') {
                     errorCallback(error);
                 } else {
-                    app.errorMessage('Error');
+                    app.errorMessage(i18n.t('words.error'));
                 }
             }).then(() => {
                 this.loading(false);

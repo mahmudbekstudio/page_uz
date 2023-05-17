@@ -10,11 +10,14 @@
                 class="ml-0"
         >
             <v-app-bar-nav-icon @click.stop="toggleDrawer"></v-app-bar-nav-icon>
-            <span class="hidden-sm-and-down">{{ title }} {{panelTitle}}</span>
+            <span class="hidden-sm-and-down">{{ $t(title) }} {{$t(panelTitle)}}</span>
         </v-toolbar-title>
 
         <div class="flex-grow-1"></div>
-        <v-menu offset-y>
+        <v-menu
+            v-if="website.metas.languages_list.length > 1"
+            offset-y
+        >
             <template v-slot:activator="{ on, attrs }">
                 <v-btn
                     v-bind="attrs"
@@ -118,12 +121,13 @@
             }
         },
         created() {
-            this.selectedLang = cache('current-lang') || this.website.lang;
+            this.selectedLang = this.language;
         },
         computed: {
             ...mapGetters({
                 user: 'storage/user',
                 title: 'view/websiteTitle',
+                language: 'view/language',
                 website: 'view/website',
             }),
             selectedLangName () {
@@ -132,7 +136,7 @@
             languagesList () {
                 const result = [];
 
-                for (const langCode in this.languages) {
+                for (const langCode of this.website.metas.languages_list) {
                     result.push({
                         code: langCode,
                         name: this.languages[langCode],
@@ -150,13 +154,13 @@
         },
         watch: {
             selectedLang(val) {
-                this.setCurrentLang(val);
+                this.changeLanguage(val);
             }
         },
         methods: {
             ...mapActions({
                 'toggleDrawer': 'view/toggleDrawer',
-                setCurrentLang: 'view/setCurrentLang',
+                changeLanguage: 'view/changeLanguage',
             }),
             clickLogout() {
                 auth.logout();

@@ -40,6 +40,24 @@ class WebsitesTableSeeder extends Seeder
                     WebsiteMeta::firstOrCreate($meta);
                 }
             }
+            $lang = [
+                [
+                    'meta_key' => 'languages_list',
+                    'meta_value' => DataFormat::toString(config('app.locale_list'), DataFormat::FORMAT_ARRAY),
+                    'meta_format' => DataFormat::FORMAT_ARRAY,
+                    'user_id' => 0
+                ],
+                [
+                    'meta_key' => 'language',
+                    'meta_value' => config('app.default_locale'),
+                    'user_id' => 0
+                ],
+            ];
+
+            foreach($lang as $meta) {
+                $meta['website_id'] = $website->id;
+                WebsiteMeta::firstOrCreate($meta);
+            }
 
             WebsiteMeta::firstOrCreate([
                 'meta_key' => 'root-folder-path',
@@ -52,10 +70,12 @@ class WebsitesTableSeeder extends Seeder
                 'user_id' => 0,
                 'website_id' => $website->id,
                 'status' => 1,
-                'name' => config('app.main_page.name'),
                 'type' => Type::TYPE_POST,
                 'has_parent' => 1,
                 'child_of' => 0,
+            ], [
+                'title' => json_encode(['en' => 'Page', 'ru' =>  'Страница', 'uz' => 'Sahifa']),
+                'name' => config('app.main_page.name'),
                 'structure' => json_decode(config('app.main_page.structure'), true),
                 'fields' => json_decode(config('app.main_page.fields'), true),
             ]);
@@ -79,6 +99,7 @@ class WebsitesTableSeeder extends Seeder
                 'website_id' => $website->id,
                 'type_id' => $type->id,
                 'parent_id' => $pageHome->id,
+            ], [
                 'params' => [],
                 'structure' => []
             ]);
@@ -88,7 +109,8 @@ class WebsitesTableSeeder extends Seeder
                 'post_id' => $pageHome->id,
                 'meta_format' => DataFormat::FORMAT_STRING,
                 'meta_key' => 'title',
-                'meta_value' => 'Home'
+            ], [
+                'meta_value' => json_encode(['en' => 'Home', 'ru' => 'Главная', 'uz' => 'Bosh sahifa']),
             ]);
             WebsiteMeta::firstOrCreate([
                 'meta_key' => 'pageHome',
@@ -117,6 +139,7 @@ class WebsitesTableSeeder extends Seeder
                 'website_id' => $website->id,
                 'type_id' => $type->id,
                 'parent_id' => $page404->id,
+            ], [
                 'params' => [],
                 'structure' => []
             ]);

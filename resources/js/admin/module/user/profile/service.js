@@ -3,6 +3,7 @@ import app from '../../../service/app';
 import store from './store';
 import api from './api';
 import logger from '../../../service/logger';
+import i18n from "../../../plugin/i18n";
 
 export default class Service {
     getProfile(successCallback, failCallback) {
@@ -18,7 +19,7 @@ export default class Service {
             })
             .catch(error => {
                 logger.error('user.profile', error);
-                app.errorMessage('Error');
+                app.errorMessage(i18n.t('words.error'));
                 if (typeof failCallback === 'function') {
                     failCallback();
                 }
@@ -41,7 +42,7 @@ export default class Service {
                     const storageUser = store.getters['storage/user'];
                     storageUser.meta = Object.assign({}, data.data.meta);
                     store.dispatch('storage/changeUser', storageUser);
-                    app.openMessage('Updated');
+                    app.openMessage(i18n.t('words.updated'));
                 } else {
                     let errorMsgs = [];
 
@@ -63,7 +64,7 @@ export default class Service {
                 }
             }).catch(error => {
                 logger.error('updateProfile', error);
-                app.errorMessage('Error');
+                app.errorMessage(i18n.t('words.error'));
             }).then(() => {
                 this.loading(false);
         })

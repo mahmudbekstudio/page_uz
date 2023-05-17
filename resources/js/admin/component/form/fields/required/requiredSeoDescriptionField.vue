@@ -4,6 +4,9 @@
         v-on="events"
         v-model="dataValue"
         :disabled="disabled"
+        :hint="params?.hint ? $t(params.hint) : null"
+        :label="labelText"
+        :placeholder="params?.placeholder ? $t(params.placeholder) : null"
     ></v-text-field>
 </template>
 <script>

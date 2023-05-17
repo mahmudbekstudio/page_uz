@@ -14,7 +14,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Types list'
+                title: 'words.type_list'
             }
         },
         {
@@ -24,7 +24,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Type create'
+                title: 'words.type_create'
             }
         },
         {
@@ -34,7 +34,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Type edit'
+                title: 'words.type_edit'
             }
         },
     ]

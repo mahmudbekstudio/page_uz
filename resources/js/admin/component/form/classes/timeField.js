@@ -5,7 +5,7 @@ export default class datetimeField extends field {
         {
             type: 'time',
             name: 'value',
-            params: {label: 'Default value'}
+            params: {label: 'words.default_value'}
         },
     ]
     constructor(params) {

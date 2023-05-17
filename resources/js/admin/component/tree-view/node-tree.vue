@@ -3,7 +3,7 @@
         <span class="label" @click="clicked" :class="{'active-node': node.active}">
             <v-icon v-show="!node.loading">{{ getIcon(node) }}</v-icon>
             <v-progress-circular v-show="node.loading" indeterminate size="16" :width="2"></v-progress-circular>
-            {{ node.label }}
+            {{ $t(node.label) }}
         </span>
         <ul class="sub-tree-view" v-if="node.children && node.children.length && node.opened">
             <node v-for="(child, key) in node.children" :key="key" :node="child" @onClick="subItemClicked" :default-icon="defaultIcon" :opened-icon="openedIcon"></node>

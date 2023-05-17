@@ -31,7 +31,6 @@ import dataTable from '../../../component/table/data-table';
 import mainConfig from '../../../config/main';
 import Service from "../form/service";
 import app from '../../../service/app';
-import {mapGetters} from "vuex";
 
 export default {
     service: new Service(),
@@ -44,46 +43,32 @@ export default {
         }
     },
     created() {
-        this.currentLangChanged();
-    },
-    computed: {
-        ...mapGetters({
-            website: 'view/website',
-        }),
-    },
-    watch: {
-        'website.lang'(newLang, oldLang) {
-            this.currentLangChanged(newLang, oldLang);
-        }
+        this.actions.push(getPageBoxAction('words.create', '', {color: 'primary'}, {
+            click: () => this.$router.push({name: 'menu.create'})
+        }));
+
+        this.headers = [
+            { text: 'Id', value: 'id' },
+            { text: 'words.name', value: 'name' },
+            { text: 'words.created', value: 'created_at' },
+            { text: 'words.actions', value: 'actions' },
+        ];
     },
     methods: {
         clickRow (row) {
             this.$router.push({name: 'menu.edit', params: {menu: row.id}})
         },
         clickDelete (item) {
-            app.openConfirm('Do you really want to delete menu "' + item.name + '"', () => {
+            app.openConfirm(this.$('words.do_you_really_want_to_delete_menu') + ' "' + item.name + '"', () => {
                 this.$options.service.delete(item.id, response => {
                     if (response.result) {
                         this.listReloadCallback();
-                        app.successMessage('Deleted');
+                        app.successMessage(this.$t('words.deleted'));
                     } else {
-                        app.errorMessage('Error');
+                        app.errorMessage(this.$t('words.error'));
                     }
                 });
             });
-        },
-        currentLangChanged(newLang, oldLang) {
-            this.actions = [];
-            this.actions.push(getPageBoxAction(this.$t('words.create'), '', {color: 'primary'}, {
-                click: () => this.$router.push({name: 'menu.create'})
-            }));
-
-            this.headers = [
-                { text: 'Id', value: 'id' },
-                { text: this.$t('words.name'), value: 'name' },
-                { text: 'Created', value: 'created_at' },
-                { text: 'Actions', value: 'actions' },
-            ];
         },
     },
     components: {

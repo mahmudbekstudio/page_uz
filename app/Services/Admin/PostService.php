@@ -74,7 +74,6 @@ class PostService extends BaseService
                 'meta_format' => $format,
                 'meta_key' => $name,
                 'meta_value' => DataFormat::toString($value, $format),
-                'lang' => ''
             ];
             $this->postMetaRepository->create($postMetaAttributes);
         }
@@ -88,8 +87,12 @@ class PostService extends BaseService
         $newParentTypeRoute = $this->typeRouteStructure->getItem($post->type_id, $parent);
         $oldParentTypeRoute = $this->typeRouteStructure->getItem($post->type_id, $post->parent_id);
 
-        $structure = $newParentTypeRoute->structure;
-        $structure[] = $newParentTypeRoute->parent_id;
+        $structure = $newParentTypeRoute ? $newParentTypeRoute->structure : [];
+
+        if ($newParentTypeRoute) {
+            $structure[] = $newParentTypeRoute->parent_id;
+        }
+
         $typeRoute->structure = $structure;
         $typeRoute->save();
         foreach ($typeRoute->params as $id) {
@@ -103,21 +106,26 @@ class PostService extends BaseService
         $typeRouteParams[] = $typeRoute->parent_id;
         $params = [];
 
-        foreach ($oldParentTypeRoute->params as $id) {
-            if (!in_array($id, $typeRouteParams)) {
-                $params[] = $id;
+        if ($oldParentTypeRoute) {
+            foreach ($oldParentTypeRoute->params as $id) {
+                if (!in_array($id, $typeRouteParams)) {
+                    $params[] = $id;
+                }
             }
+
+            $oldParentTypeRoute->params = $params;
+            $oldParentTypeRoute->save();
         }
 
-        $oldParentTypeRoute->params = $params;
-        $oldParentTypeRoute->save();
-        $newParentTypeRoute->params = array_unique(array_merge($newParentTypeRoute->params, $typeRouteParams));
-        $newParentTypeRoute->save();
+        if ($newParentTypeRoute) {
+            $newParentTypeRoute->params = array_unique(array_merge($newParentTypeRoute->params, $typeRouteParams));
+            $newParentTypeRoute->save();
 
-        foreach ($newParentTypeRoute->structure as $id) {
-            $newParentTypeRouteItem = $this->typeRouteStructure->getItem($post->type_id, $id);
-            $newParentTypeRouteItem->params = array_unique(array_merge($newParentTypeRouteItem->params, $typeRouteParams));
-            $newParentTypeRouteItem->save();
+            foreach ($newParentTypeRoute->structure as $id) {
+                $newParentTypeRouteItem = $this->typeRouteStructure->getItem($post->type_id, $id);
+                $newParentTypeRouteItem->params = array_unique(array_merge($newParentTypeRouteItem->params, $typeRouteParams));
+                $newParentTypeRouteItem->save();
+            }
         }
 
         /*
@@ -242,7 +250,6 @@ class PostService extends BaseService
                 'meta_format' => $format,
                 'meta_key' => $name,
                 'meta_value' => DataFormat::toString($value, $format),
-                'lang' => ''
             ];
             $this->postMetaRepository->create($postMetaAttributes);
         }

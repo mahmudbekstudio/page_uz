@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('meta_key')->index('meta_key');
             $table->longText('meta_value');
             $table->string('meta_format', 100)->default(\App\Helpers\DataFormat::getDefault());
-            $table->string('lang', 2)->default('')->index('lang');
+            //$table->string('lang', 2)->default('')->index('lang');
             $table->timestamps();
 
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');

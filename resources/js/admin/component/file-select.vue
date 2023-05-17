@@ -30,7 +30,7 @@
                 <v-icon v-if="multiple">mdi-file-multiple</v-icon>
                 <v-icon v-else>mdi-file</v-icon>
             </div>
-            <div class="item-name">{{title || defaultTitleText}}</div>
+            <div class="item-name">{{$t(title || defaultTitleText)}}</div>
         </div>
         <dialog-component
                 title=""
@@ -108,7 +108,7 @@
                 website: 'view/website',
             }),
             defaultTitleText () {
-                return this.multiple ? this.$t('filemanager.select_files') : this.$t('filemanager.select_file');
+                return this.multiple ? 'filemanager.select_files' : 'filemanager.select_file';
             },
             showSelectBtn() {
                 if(this.multiple && (!this.count || this.count > this.value.length)) {
@@ -120,7 +120,6 @@
         },
         methods: {
             removeItem(selectedItem) {
-                console.log('removeItem', selectedItem);
                 this.$emit('input', this.value.filter(item => item.id !== selectedItem.id));
             },
             itemIco(ext) {
@@ -128,7 +127,6 @@
                 return constants.FILE_ICONS[type];
             },
             saveSelected(files) {
-                console.log('files', files);
                 this.showDialog = false;
                 this.$emit('input', files);
             },

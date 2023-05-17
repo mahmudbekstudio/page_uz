@@ -22,7 +22,7 @@
                             v-for="link in links"
                             :key="link.type"
                         >
-                            <v-expansion-panel-header>{{ link.title }}</v-expansion-panel-header>
+                            <v-expansion-panel-header>{{ $t(link.title) }}</v-expansion-panel-header>
                             <v-expansion-panel-content>
                                 <draggable
                                     v-model="link.children"
@@ -34,7 +34,7 @@
                                             v-for="item in link.children"
                                             :key="item.id"
                                             class="link-item"
-                                        >{{item.title}}</div>
+                                        >{{$t(item.title)}}</div>
                                     </transition-group>
                                 </draggable>
                             </v-expansion-panel-content>
@@ -127,7 +127,7 @@ export default {
                 actions: [
                     {
                         color: 'default',
-                        text: 'Cancel',
+                        text: 'words.cancel',
                         click: () => {
                             if (this.elementDialog.actionType === 'add') {
                                 this.deleteListItem(this.selectedElement, this.selectedIndexes);
@@ -140,7 +140,7 @@ export default {
                     },
                     {
                         color: 'primary',
-                        text: 'Save',
+                        text: 'words.save',
                         click: () => {
                             if (this.selectedFormValidation()) {
                                 for (const fieldKey in this.selectedElementForm) {
@@ -177,6 +177,7 @@ export default {
         ...mapGetters({
             loading: 'view/loading',
             website: 'view/website',
+            language: 'view/language',
         }),
         dragOptions() {
             return {
@@ -197,7 +198,7 @@ export default {
                 type: 'text',
                 value: this.selectedElement?.title,
                 name: 'title',
-                params: {label: 'Title', rules: [validation.required('Title')]}
+                params: {label: 'words.title', rules: [validation.required('words.title')]}
             });
 
             if (this.selectedElement?.id === 'custom') {
@@ -216,7 +217,7 @@ export default {
         loading(val) {
             this.actions.forEach(item => item.bind.disabled = val);
         },
-        'website.lang'(newLang, oldLang) {
+        'language'(newLang, oldLang) {
             this.currentLangChanged(newLang, oldLang);
         },
     },
@@ -225,8 +226,8 @@ export default {
             changeTitle: 'view/changeTitle',
         }),
         currentLangChanged () {
-            this.actions.push(getPageBoxAction(this.$t('words.back'), '', {color: 'default'}, {click: this.backClick}));
-            this.actions.push(getPageBoxAction(this.$t('words.' + (this.$options.service.id ? 'update' : 'create')), '', {color: 'primary'}, {click: this.saveForm}));
+            this.actions.push(getPageBoxAction('words.back', '', {color: 'default'}, {click: this.backClick}));
+            this.actions.push(getPageBoxAction('words.' + (this.$options.service.id ? 'update' : 'create'), '', {color: 'primary'}, {click: this.saveForm}));
         },
         addElement (e) {
             const item = _.get(this.list, e.indexes.join('.'));
@@ -250,13 +251,13 @@ export default {
                 type: 'text',
                 name: 'name',
                 value: values?.name || '',
-                params: {label: 'Menu name', rules: [validation.required('Menu name')]}
+                params: {label: 'words.menu_name', rules: [validation.required('words.menu_name')]}
             });
         },
         saveForm() {
             this.formValidate();
             if (!this.formValidate()) {
-                app.errorMessage('Please, fill all required fields');
+                app.errorMessage(this.$t('words.please_fill_all_required_fields'));
                 return false;
             }
 
@@ -265,14 +266,14 @@ export default {
                 if (!this.$options.service.id) {
                     this.backClick();
                 }
-                app.successMessage('Saved');
+                app.successMessage(this.$t('words.saved'));
             });
         },
         dragEnd (e) {
             this.elementDialog.actionType = 'add';
         },
         clickDelete(item, indexes) {
-            app.openConfirm("Do you really want to delete menu item \"" + item.title + '"', () => {
+            app.openConfirm(this.$t('words.do_you_really_want_to_delete_menu_item') + " \"" + item.title + '"', () => {
                 this.deleteListItem(item, indexes);
             })
         },

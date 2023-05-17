@@ -6,6 +6,7 @@
     >
         <formComponent
             :value="typeForm"
+            @input="typeFormChanged"
             :disabled="isLoading"
             @validate="formValidateFunc($event)"
             @valid="formValid($event)"
@@ -27,6 +28,7 @@
     import { mapActions, mapGetters } from 'vuex';
     import app from "../../../service/app";
     import formComponent from '../../../component/form/form-component';
+    import validation from "../../../config/validation";
 
     export default {
         service: new Service(),
@@ -40,16 +42,13 @@
                 formValue: [],
                 actions: [],
                 advanced: {},
-                required: {}
+                required: {},
+                typeFormValues: null,
             }
         },
         created() {
             this.type = this.$route.params?.type;
             this.id = this.$route.params?.id;
-
-            if (this.type) {
-                this.changeTitle(this.$t('words.create_' + this.type));
-            }
 
             this.advanced = {
                 parent: new Field({type: 'advancedParent'}),
@@ -67,9 +66,6 @@
 
             this.initAdvanced();
 
-            this.actions.push(getPageBoxAction(this.$t('words.back'), '', {color: 'default'}, {click: this.backClick}));
-            this.actions.push(getPageBoxAction(this.$t('words.' + (this.id ? 'update' : 'create')), '', {color: 'primary'}, {click: this.saveForm}));
-
             if (this.id) {
                 this.$options.service.get(
                     this.id,
@@ -77,7 +73,8 @@
                         this.formValue = new FormClass(response.data.type.structure, true);
                         this.type = response.data.type.type;
                         this.initAdvanced();
-                        this.createTypeForm(response.data.type);
+                        this.typeFormValues = response.data.type;
+                        this.createTypeForm();
                     }
                 );
             } else {
@@ -86,20 +83,28 @@
                 mainTab.addField({type: 'requiredTitle'});
                 mainTab.addField({type: 'requiredRouteName'});
                 mainTab.addField({type: 'requiredStatus'});
-                const seoTab = this.formValue.addTab({title: 'SEO'});
+                const seoTab = this.formValue.addTab({title: 'words.seo'});
                 seoTab.addField({type: 'requiredSeoKeyword'});
                 seoTab.addField({type: 'requiredSeoDescription'});
-                const advancedTab = this.formValue.addTab({title: 'Advanced'});
+                const advancedTab = this.formValue.addTab({title: 'words.advanced'});
                 advancedTab.addField({type: 'requiredTemplate'});
                 advancedTab.addField({type: 'requiredPublishEnd'});
                 advancedTab.addField({type: 'requiredPublishStart'});
-
-                this.createTypeForm();
             }
+
+            if (this.type) {
+                this.changeTitle('words.create_' + this.type);
+            }
+
+            this.actions.push(getPageBoxAction('words.back', '', {color: 'default'}, {click: this.backClick}));
+            this.actions.push(getPageBoxAction('words.' + (this.id ? 'update' : 'create'), '', {color: 'primary'}, {click: this.saveForm}));
+
+            this.currentLangChanged();
         },
         computed: {
             ...mapGetters({
-                isLoading: 'type-form/isLoading'
+                isLoading: 'type-form/isLoading',
+                language: 'view/language',
             }),
             formIsValid () {
                 let result = true;
@@ -121,12 +126,25 @@
                     //
                 },
                 deep: true
-            }
+            },
+            language(newLang, oldLang) {
+                this.currentLangChanged(newLang, oldLang);
+            },
         },
         methods: {
             ...mapActions({
                 changeTitle: 'view/changeTitle',
             }),
+            typeFormChanged(form) {
+                this.typeFormValues = {...this.typeFormValues, ...form.getFieldValues()};
+            },
+            currentLangChanged() {
+                this.createTypeForm();
+
+                if (this.formValue && this.formValue.json) {
+                    this.formValue = new FormClass(this.formValue.json, true);
+                }
+            },
             initAdvanced() {
                 if (this.type === 'post') {
                     this.advanced['childOf'] = new Field({type: 'advancedChildOf'});
@@ -135,20 +153,20 @@
             backClick () {
                 this.$router.push({name: 'type.list'});
             },
-            createTypeForm (values) {
+            createTypeForm () {
                 this.typeForm = new FormClass();
-                const routeName = this.typeForm.addField({type: 'requiredRouteName', name: 'name', value: values?.name || '', params: {label: 'Type name'}});
-                const status = this.typeForm.addField({type: 'switch', name: 'status', value: (typeof values?.status === 'undefined' ? true : values?.status), params: {label: 'Status'}});
+                const typeTitle = this.typeForm.addField({type: 'text', name: 'title', value: this.typeFormValues?.title || '', params: {label: 'words.title', rules: [validation.required('words.title')]}});
+                const routeName = this.typeForm.addField({type: 'requiredRouteName', name: 'name', value: this.typeFormValues?.name || '', params: {label: 'words.type_name'}});
+                const status = this.typeForm.addField({type: 'switch', name: 'status', value: (typeof this.typeFormValues?.status === 'undefined' ? true : this.typeFormValues?.status), params: {label: 'words.status'}});
             },
             saveForm() {
-                this.formValidate();
-                if (!this.formIsValidValue) {
-                    app.errorMessage('Please, fill all required fields');
+                if (!this.formValidate() || !this.formIsValidValue) {
+                    app.errorMessage(this.$t('words.please_fill_all_required_fields'));
                     return false;
                 }
 
                 if (!this.formIsValid) {
-                    app.errorMessage('Please, add all required fields from required tab');
+                    app.errorMessage(this.$t('words.please_add_all_required_field'));
                     return false;
                 }
 
@@ -167,7 +185,7 @@
                     if (!this.id) {
                         this.backClick();
                     }
-                    app.successMessage('Saved');
+                    app.successMessage(this.$t('words.saved'));
                 });
             },
             formValidateFunc(formValidate) {

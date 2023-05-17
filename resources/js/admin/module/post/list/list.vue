@@ -13,6 +13,9 @@
             @click:row="clickRow"
             @reloadCallback="listReloadCallback = $event"
         >
+            <template v-slot:item.title="props">
+                {{ $t(props.value) }}
+            </template>
             <template v-slot:item.status="props">
                 <v-chip
                     :color="props.value ? 'green' : 'red'"
@@ -22,10 +25,10 @@
                 </v-chip>
             </template>
             <template v-slot:item.parent="props">
-                {{ props.value || '-' }}
+                {{ $t(props.value) || '-' }}
             </template>
             <template v-slot:item.category="props">
-                {{ props.value || '-' }}
+                {{ $t(props.value) || '-' }}
             </template>
             <template v-slot:item.created_at="props">{{ $moment(props.value).format(mainConfig.app.timeFormat.full) }}</template>
             <template v-slot:item.actions="props">
@@ -82,30 +85,24 @@ export default {
         typeId() {
             this.init();
         },
-        'website.lang'(newLang, oldLang) {
-            this.currentLangChanged(newLang, oldLang);
-        }
     },
     methods: {
-        currentLangChanged(newLang, oldLang) {
-            this.headers = [
-                { text: 'Id', value: 'id' },
-                { text: this.$t('words.title'), value: 'title' },
-                { text: 'Status', value: 'status' },
-                { text: 'Parent', value: 'parent' },
-                { text: 'Category', value: 'category' },
-                { text: 'Template', value: 'template' },
-                { text: 'Created', value: 'created_at' },
-                { text: 'Actions', value: 'actions' },
-            ].filter(item => this.hasCategory() || item.value !== 'category');
-        },
         init() {
             this.actions = [];
-            this.actions.push(getPageBoxAction(this.$t('words.create'), '', {color: 'primary'}, {
+            this.actions.push(getPageBoxAction('words.create', '', {color: 'primary'}, {
                 click: () => this.$router.push({name: 'post.create', params: {typeId: this.typeId}})
             }));
 
-            this.currentLangChanged();
+            this.headers = [
+                { text: 'Id', value: 'id' },
+                { text: 'words.title', value: 'title' },
+                { text: 'words.status', value: 'status' },
+                { text: 'words.parent', value: 'parent' },
+                { text: 'words.category', value: 'category' },
+                { text: 'words.template', value: 'template' },
+                { text: 'words.created', value: 'created_at' },
+                { text: 'words.actions', value: 'actions' },
+            ].filter(item => this.hasCategory() || item.value !== 'category');
 
             this.listReloadCallback && this.listReloadCallback();
         },
@@ -120,13 +117,13 @@ export default {
             return false;
         },
         clickDelete (item) {
-            app.openConfirm('Do you really want to delete post "' + item.title + '"', () => {
+            app.openConfirm(this.$t('words.do_you_really_want_to_delete_post') + ' "' + item.title + '"', () => {
                 this.$options.service.delete(item.id, response => {
                     if (response.result) {
                         this.listReloadCallback();
-                        app.successMessage('Deleted');
+                        app.successMessage(this.$t('words.deleted'));
                     } else {
-                        app.errorMessage('Error');
+                        app.errorMessage(this.$t('words.error'));
                     }
                 });
             });

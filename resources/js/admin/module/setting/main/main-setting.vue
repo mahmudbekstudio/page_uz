@@ -31,6 +31,8 @@
                 footerActionsList: [],
                 settingForm: null,
                 formValidate: null,
+                formReset: null,
+                initialFormValues: null,
             };
         },
         created() {
@@ -41,7 +43,7 @@
             });
             const resetButton = getPageBoxAction(this.$t('words.reset'), '', {color: 'default', disabled: true}, {
                 click: () => {
-                    //this.submit();
+                    this.initForm();
                 }
             });
             this.actionsList.push(resetButton);
@@ -49,68 +51,9 @@
             this.footerActionsList.push(resetButton);
             this.footerActionsList.push(saveButton);
 
-            this.$options.service.getSettings(() => {
-                this.settingForm = new FormClass();
-                const tabMain = this.settingForm.getTab();
-                tabMain.title = this.$t('words.main');
-                const tabSeo = this.settingForm.addTab({title: this.$t('words.seo')});
-                const tabImage = this.settingForm.addTab({title: this.$t('words.image')});
-                const tabSocial = this.settingForm.addTab({title: this.$t('words.social')});
-
-                const nameField = tabMain.addField({type: 'text'});
-                nameField.setParams('label', this.$t('words.name'));
-                nameField.name = 'name';
-                nameField.value = this.form.name;
-
-                const logoField = tabMain.addField({type: 'file'});
-                logoField.setParams('label', this.$t('words.logo'));
-                logoField.setParams('fileType', constants.FILE_IMAGE_TYPE);
-                logoField.name = 'logo';
-                logoField.value = this.form.logo;/*[
-                    {
-                        "extension": "docx",
-                        "folderId": 0,
-                        "id": 2,
-                        "name": "перечин платформи янги",
-                        "size": 13510
-                    }
-                ];*/
-
-                const languageField = tabMain.addField({type: 'select', params: {options: this.languages}});
-                languageField.setParams('label', this.$t('words.language'));
-                languageField.name = 'language';
-                languageField.value = this.form.language;
-
-                const languagesListField = tabMain.addField({type: 'select', params: {options: this.languages, multiple: true}});
-                languagesListField.setParams('label', this.$t('words.languages'));
-                languagesListField.name = 'languages_list';
-                languagesListField.value = this.form.languages_list;
-
-                const statusField = tabMain.addField({type: 'switch'});
-                statusField.setParams('label', this.$t('words.status'));
-                statusField.name = 'status';
-                statusField.value = this.form.status;
-
-                const nameField1 = tabSeo.addField({type: 'text'});
-                nameField1.setParams('label', this.$t('words.name'));
-                nameField1.name = 'name1';
-                nameField1.value = this.form.name;
-
-                const nameField2 = tabImage.addField({type: 'text'});
-                nameField2.setParams('label', this.$t('words.name'));
-                nameField2.name = 'name2';
-                nameField2.value = this.form.name;
-
-                const nameField3 = tabSocial.addField({type: 'text'});
-                nameField3.setParams('label', this.$t('words.name'));
-                nameField3.name = 'name3';
-                nameField3.value = this.form.name;
-                /*const nameField = this.settingForm.addField({type: 'text'});
-                nameField.setParams('label', this.$t('words.name'));
-                nameField.name = 'name';
-                nameField.value = this.form.name;
-
-                console.log('==', this.settingForm.json);*/
+            this.$options.service.getSettings(response => {
+                this.initialFormValues = response;
+                this.initForm();
             }, () => {
                 app.openMessage(this.$t('words.error'), constants.SNACKBAR_COLORS.error);
             });
@@ -124,6 +67,19 @@
         },
         methods: {
             ...mapActions('main-setting', ['changeForm']),
+            initForm() {
+                this.settingForm = new FormClass();
+                this.settingForm.children = [];
+                for (const item of this.initialFormValues) {
+                    const tab = this.settingForm.addTab({title: this.$t(item.title)});
+                    for (const field of item.children) {
+                        if (field?.params?.label) {
+                            field.params.label = this.$t(field.params.label);
+                        }
+                        tab.addField(field);
+                    }
+                }
+            },
             submit() {
                 this.$options.service.submit();
             },

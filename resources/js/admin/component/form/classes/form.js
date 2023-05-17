@@ -29,6 +29,7 @@ import { FORM } from '../../../constants';
 import * as _ from 'lodash';
 import i18n from "../../../plugin/i18n";
 import validation from "../../../config/validation";
+import store from "../../../plugin/store";
 
 export class Form {
     children = [];
@@ -38,7 +39,7 @@ export class Form {
         this.isConstructor = isConstructor;
 
         if(!Object.keys(params).length) {
-            this.addTab({title: i18n.t('words.main')}, {}, {});
+            this.addTab({title: 'words.main'}, {}, {});
         } else {
             this.json = params;
         }
@@ -79,13 +80,26 @@ export class Form {
         return this.getCol(col, row, tab).addField(fieldObj);
     }
 
-    setFieldValue(key, val) {
+    getFieldBykey(key) {
         const keys = key.split(FORM.fieldKeySplitter);
-        const field = keys.length === 4 ? this.getField(keys[3], keys[2], keys[1], keys[0]) : null;
+        return keys.length === 4 ? this.getField(keys[3], keys[2], keys[1], keys[0]) : null;
+    }
+
+    setFieldValue(key, val, lang) {
+        const field = this.getFieldBykey(key);
 
         if(field) {
-            field.value = val;
+            if(lang) {
+                if (JSON.stringify(field.value)[0] !== '{')  {
+                    field.value = {};
+                }
+                field.value[lang] = val;
+            } else {
+                field.value = val;
+            }
         }
+
+        return field;
     }
 
     getFields() {
@@ -313,22 +327,23 @@ export class Field {
         {
             type: 'text',
             name: 'name',
-            params: {label: 'Name', rules: [validation.required('Name')]}
+            hasLang: false,
+            params: {label: 'words.name', rules: [validation.required('words.name')]}
         },
         {
             type: 'text',
             name: 'label',
-            params: {label: 'Label', rules: [validation.required('Label')]}
+            params: {label: 'words.label', rules: [validation.required('Label')]}
         },
         {
             type: 'text',
             name: 'value',
-            params: {label: 'Default value'}
+            params: {label: 'words.default_value'}
         },
         {
             type: 'validation',
             name: 'validation',
-            params: {label: 'Validation'}
+            params: {label: 'words.validation'}
         }
     ];
 
@@ -422,6 +437,9 @@ export class Field {
         const mergeObj = {};
 
         for (const item of this.fillable) {
+            if(item.name === 'value') {
+                item.hasLang = this.field.hasLang;
+            }
             mergeObj[item.name] = item;
         }
 
@@ -478,7 +496,13 @@ export class Field {
     }
 
     get value() {
-        return typeof this.field.value !== 'undefined' ? this.field.value : null;
+        let value = typeof this.field.value !== 'undefined' ? this.field.value : null;
+
+        if (typeof value === 'string' && value.length && value[0] === '{' && value[value.length - 1] === '}') {
+            value = JSON.parse(value);
+        }
+
+        return value;
     }
 
     set value(val) {
@@ -532,4 +556,9 @@ export class Field {
     get json() {
         return this.field.json;
     }
+}
+
+export function hasTypeLang(type) {
+    const fieldObj = new Field({type});
+    return fieldObj.field.hasLang;
 }

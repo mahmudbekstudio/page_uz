@@ -5,7 +5,7 @@ const route = {
     name: 'dashboard',
     component: Dashboard,
     meta: {
-        title: 'Dashboard',
+        title: 'words.pages.dashboard',
         layout: 'main',
         requiresAuth: true
     }

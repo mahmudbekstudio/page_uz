@@ -71,7 +71,6 @@ class UsersTableSeeder extends Seeder
                             'meta_key' => 'first_name',
                             'meta_value' => 'First Name ' . $user->id . ' ' . $websiteId . '_' . $status . '_' . $role,
                             'meta_format' => DataFormat::FORMAT_STRING,
-                            'lang' => ''
                         ]);
 
                         UserMeta::firstOrCreate([
@@ -80,7 +79,6 @@ class UsersTableSeeder extends Seeder
                             'meta_key' => 'last_name',
                             'meta_value' => 'Last Name ' . $user->id,
                             'meta_format' => DataFormat::FORMAT_STRING,
-                            'lang' => ''
                         ]);
                     }
                 }

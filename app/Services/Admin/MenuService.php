@@ -77,7 +77,7 @@ class MenuService extends BaseService
             ->postRepository
             ->with(['metas' => function (Builder $query) {
                 $query
-                    ->select(['post_id', 'meta_format', 'meta_key', 'meta_value', 'lang'])
+                    ->select(['post_id', 'meta_format', 'meta_key', 'meta_value'])
                     ->where('meta_key', '=', 'title');
             }])
             ->findWhere(['status' => 1, ['type_id', 'in', $postTypeIds]], ['id', 'type_id', 'url']);
@@ -105,10 +105,10 @@ class MenuService extends BaseService
             ->categoryRepository
             ->with(['metas' => function (Builder $query) {
                 $query
-                    ->select(['category_id', 'meta_format', 'meta_key', 'meta_value', 'lang'])
+                    ->select(['category_id', 'meta_format', 'meta_key', 'meta_value'])
                     ->where('meta_key', '=', 'title');
             }])
-            ->findWhere(['status' => 1, ['type_id', 'in', $categoryTypeIds]], ['id', 'type_id']);
+            ->findWhere(['status' => 1, ['type_id', 'in', $categoryTypeIds]], ['id', 'type_id', 'url']);
         $categoriesList = [];
         foreach ($categories as $category) {
             if (!isset($categoriesList[$category->type_id]))

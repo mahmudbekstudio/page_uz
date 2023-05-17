@@ -12,6 +12,9 @@
             @click:row="clickRow"
             @reloadCallback="listReload($event)"
         >
+            <template v-for="col in headers" v-slot:[getHeaderSlotName(col)]="prop">
+                {{$t(prop.text)}}
+            </template>
             <template v-slot:filter="props">
                 <v-container class="grey lighten-5">
                     <v-row no-gutters>
@@ -22,7 +25,7 @@
                             <v-select
                                 :items="statusOptions"
                                 v-model="filter.status.value"
-                                label="Status"
+                                :label="$t('words.status')"
                             ></v-select>
                         </v-col>
                         <v-col
@@ -32,7 +35,7 @@
                             <v-select
                                 :items="typeOptions"
                                 v-model="filter.type.value"
-                                label="Type"
+                                :label="$t('words.type')"
                             ></v-select>
                         </v-col>
                         <v-col
@@ -42,11 +45,14 @@
                             <v-select
                                 :items="parentOptions"
                                 v-model="filter.has_parent.value"
-                                label="Has parent"
+                                :label="$t('words.has_parent')"
                             ></v-select>
                         </v-col>
                     </v-row>
                 </v-container>
+            </template>
+            <template v-slot:item.title="props">
+                {{ $t(props.value) }}
             </template>
             <template v-slot:item.status="props">
                 <v-chip
@@ -99,48 +105,52 @@
             }
         },
         created() {
-            this.actions.push(getPageBoxAction(this.$t('words.create_category'), '', {color: 'primary'}, {
+            this.actions.push(getPageBoxAction('words.create_category', '', {color: 'primary'}, {
                 click: () => this.$router.push({name: 'type.create', params: {type: 'category'}})
             }));
-            this.actions.push(getPageBoxAction(this.$t('words.create_post'), '', {color: 'primary'}, {
+            this.actions.push(getPageBoxAction('words.create_post', '', {color: 'primary'}, {
                 click: () => this.$router.push({name: 'type.create', params: {type: 'post'}})
             }));
 
             this.headers = [
                 { text: 'Id', value: 'id' },
-                { text: 'Status', value: 'status' },
-                { text: 'Name', value: 'name' },
-                { text: 'Type', value: 'type' },
-                { text: 'Has parent', value: 'has_parent' },
-                { text: 'Child of', value: 'child_of' },
-                { text: 'Created', value: 'created_at' },
-                { text: 'Actions', value: 'actions' },
+                { text: 'words.title', value: 'title' },
+                { text: 'words.status', value: 'status' },
+                { text: 'words.name', value: 'name' },
+                { text: 'words.type', value: 'type' },
+                { text: 'words.has_parent', value: 'has_parent' },
+                { text: 'words.child_of', value: 'child_of' },
+                { text: 'words.created', value: 'created_at' },
+                { text: 'words.actions', value: 'actions' },
             ];
         },
         computed: {
             statusOptions () {
                 return [
-                    {text: 'Show all status', value: ''},
+                    {text: this.$t('words.show_all'), value: ''},
                     {text: this.$t('words.active'), value: 1},
                     {text: this.$t('words.not_active'), value: 0}
                 ];
             },
             parentOptions () {
                 return [
-                    {text: 'Show all', value: ''},
+                    {text: this.$t('words.show_all'), value: ''},
                     {text: this.$t('words.yes'), value: 1},
                     {text: this.$t('words.no'), value: 0}
                 ];
             },
             typeOptions () {
                 return [
-                    {text: 'Show all', value: ''},
+                    {text: this.$t('words.show_all'), value: ''},
                     {text: this.$t('words.post'), value: 'post'},
                     {text: this.$t('words.category'), value: 'category'}
                 ];
             }
         },
         methods: {
+            getHeaderSlotName(item) {
+                return 'header.' + item.value;
+            },
             clickRow (row) {
                 this.$router.push({name: 'type.edit', params: {id: row.id}})
             },
@@ -148,13 +158,13 @@
                 this.listReloadCallback = listReloadCallback;
             },
             clickDelete (item) {
-                app.openConfirm('Do you really want to delete type "' + item.name + '"', () => {
+                app.openConfirm(this.$t('words.do_you_really_want_to_delete_type') + ' "' + this.$t(item.title) + '"', () => {
                     this.$options.service.delete(item.id, response => {
                         if (response.result) {
                             this.listReloadCallback();
-                            app.successMessage('Deleted');
+                            app.successMessage(this.$t('words.deleted'));
                         } else {
-                            app.errorMessage('Error');
+                            app.errorMessage(this.$t('words.error'));
                         }
                     });
                 });

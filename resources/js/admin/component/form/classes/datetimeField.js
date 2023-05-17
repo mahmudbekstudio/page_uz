@@ -5,7 +5,7 @@ export default class datetimeField extends field {
         {
             type: 'datetime',
             name: 'value',
-            params: {label: 'date picker,time picker', hint: 'split by comma'}
+            params: {label: ['words.date_picker', 'words.time_picker'], hint: 'words.split_by_comma'}
         },
     ]
     constructor(params) {

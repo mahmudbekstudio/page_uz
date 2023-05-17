@@ -11,18 +11,27 @@
             :show-select="params.showSelect"
             :item-key="params.itemKey"
             :page="params.page"
-            :footer-props="{itemsPerPageOptions}"
+            :footer-props="footerProps"
             @input="inputChange($event)"
             @click:row="rowClick($event)"
             @dblclick:row="rowDblclick($event)"
             class="elevation-3"
             :class="{'row-clickable': rowClickable}"
+            :no-data-text="$t('words.no_data_available')"
+            :loading-text="$t('words.loading_items')"
         >
             <template v-slot:top>
                 <slot name="filter" v-bind="params" />
             </template>
             <template v-for="col in params.headers" v-slot:[getSlotName(col)]="props">
-                <slot :name="getSlotName(col)" v-bind="props">{{props.value}}</slot>
+                <slot :name="getSlotName(col)" v-bind="props">{{$t(props.value)}}</slot>
+            </template>
+            <template v-for="col in params.headers" v-slot:[getHeaderSlotName(col)]="props">
+                <slot :name="getHeaderSlotName(col)" v-bind="props.header">{{$t(props.header.text)}}</slot>
+            </template>
+
+            <template v-slot:footer.page-text="items">
+                {{ items.pageStart }} - {{ items.pageStop }} {{ $t('words.of') }} {{ items.itemsLength }}
             </template>
         </v-data-table>
     </div>
@@ -32,13 +41,17 @@ import app from "../../service/app";
 import http from "../../service/http";
 import route from "../../api/route";
 import viewSettings from '../../config/view';
+import {mapGetters} from "vuex";
 
 export default {
     name: 'data-table',
     data() {
         return {
             tableCreated: false,
-            itemsPerPageOptions: viewSettings.dataTable.itemsPerPageOptions,
+            footerProps: {
+                itemsPerPageOptions: viewSettings.dataTable.itemsPerPageOptions,
+                itemsPerPageText: this.$t('words.items_per_page'),
+            },
             params: {
                 route: '',
                 routeNeedToken: false,
@@ -108,7 +121,10 @@ export default {
         },
         page(val) {
             this.params.page = val;
-        }
+        },
+        language(newLang, oldLang) {
+            this.currentLangChanged(newLang, oldLang);
+        },
     },
     created() {
         this.params = {
@@ -128,6 +144,11 @@ export default {
 
         this.$nextTick(() => this.tableCreated = true);
         this.$emit('reloadCallback', () => this.loadItems());
+    },
+    computed: {
+        ...mapGetters({
+            language: 'view/language',
+        })
     },
     props: {
         rowClickable: {
@@ -221,6 +242,12 @@ export default {
         },
     },
     methods: {
+        currentLangChanged(newLang, oldLang) {
+            this.footerProps.itemsPerPageText = this.$t('words.items_per_page');
+        },
+        getHeaderSlotName(item) {
+            return 'header.' + item.value;
+        },
         getSlotName (col) {
             return 'item.' + col.value
         },
@@ -261,7 +288,7 @@ export default {
                 })
                 .catch(error => {
                     this.$logger.error('data-table route:', this.params.route, error);
-                    app.errorMessage('Error');
+                    app.errorMessage(this.$t('words.error'));
                 }).then(() => this.params.loading = false);
         }
     }

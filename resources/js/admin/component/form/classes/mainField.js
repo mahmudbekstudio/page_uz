@@ -1,4 +1,5 @@
 export default class field {
+    hasLang = false;
     fieldObject = {};
     id = null;
     isConstructor = false;

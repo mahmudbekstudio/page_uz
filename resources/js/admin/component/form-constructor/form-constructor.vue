@@ -48,6 +48,7 @@
                 v-if="elementDialog.show"
                 :value="elementForm"
                 @input="elementFormChanged"
+                @fieldChange="fieldChanged"
                 @resetValidation="selectedFormResetValidation = $event"
                 @validate="selectedFormValidation = $event"
             />
@@ -101,7 +102,7 @@
                     actions: [
                         {
                             color: 'default',
-                            text: 'Cancel',
+                            text: 'words.cancel',
                             click: () => {
                                 this.closeElementForm();
                                 this.selectedElement = null;
@@ -110,16 +111,16 @@
                         },
                         {
                             color: 'primary',
-                            text: 'Save',
+                            text: 'words.save',
                             click: () => {
                                 if (this.selectedFormValidation()) {
                                     if (this.checkAdvanced()) {
-                                        app.errorMessage('Field with special name ' + this.selectedElementForm.name + ' must be added from advanced tab');
+                                        app.errorMessage(this.$t('words.field_with_special_name') + ' ' + this.selectedElementForm.name + ' ' + this.$t('words.must_added_advanced_tab'));
                                         return false;
                                     }
 
                                     if (this.checkRequired()) {
-                                        app.errorMessage('Field with special name ' + this.selectedElementForm.name + ' must be added from required tab');
+                                        app.errorMessage(this.$t('words.field_with_special_name') + ' ' + this.selectedElementForm.name + ' ' + this.$t('words.must_added_required_tab'));
                                         return false;
                                     }
                                     const fieldValues = Object.keys(this.formObject.getFieldValues());
@@ -136,10 +137,12 @@
                                     }
 
                                     if (nameExist) {
-                                        app.errorMessage('Field with name ' + this.selectedElementForm.name + ' exist');
+                                        app.errorMessage(this.$t('words.field_with_name') + ' ' + this.selectedElementForm.name + ' ' + this.$t('words.exist'));
                                         return false;
                                     }
 
+                                    /*console.log(this.selectedElementForm, this.selectedElement);
+                                    return false;*/
                                     this.selectedElement.item.field.fill = this.selectedElementForm;
                                     this.selectedElement.col.children = [...this.selectedElement.col.children];
                                     this.selectedElement = null;
@@ -206,7 +209,28 @@
         computed: {
             elementForm () {
                 const elements = this.selectedElement?.item?.fillableFields || [];
+                const elementHasLang = !!this.selectedElement?.item?.field?.hasLang;
+                let hasLangObj = null;
+
+                if (elementHasLang) {
+                    hasLangObj = {
+                        type: 'switch',
+                        name: 'hasLang',
+                        value: true,
+                        params: {
+                            label: 'words.has_lang',
+                            valueType: 'bool'
+                        }
+                    };
+                }
+
+                let valueObj = null;
                 if (this.elementDialog.actionType === 'edit') {
+                    if (elementHasLang && hasLangObj) {
+                        const fieldHasLang = this.selectedElement.item.field.fill.hasLang;
+                        hasLangObj.value = typeof fieldHasLang === 'undefined' ? true : !!fieldHasLang;
+                    }
+
                     for (const element of elements) {
                         if (typeof this.selectedElement.item.field.fill[element.name] !== 'undefined') {
                             if (element.name === 'validation') {
@@ -214,8 +238,29 @@
                             } else {
                                 element.value = this.selectedElement.item.field.fill[element.name];
                             }
+
+                            if (elementHasLang && element.name === 'value') {
+                                element.hasLang = element.hasLang || true;
+                                valueObj = element;
+                            } else if (element.name === 'value') {
+                                element.hasLang = false;
+                            }
                         }
                     }
+                } else {
+                    for (const element of elements) {
+                        if (elementHasLang && element.name === 'value') {
+                            element.hasLang = element.hasLang || true;
+                            valueObj = element;
+                        } else if (element.name === 'value') {
+                            element.hasLang = false;
+                        }
+                    }
+                }
+
+                if (elementHasLang && hasLangObj && valueObj) {
+                    valueObj.hasLang = hasLangObj.value;
+                    elements.unshift(hasLangObj);
                 }
 
                 return [
@@ -238,10 +283,10 @@
             },
             elementDialogTitle () {
                 const fieldType = this.selectedElement?.item?.field?.constructor?.name;
-                let title = this.elementDialog.actionType === 'add' ? 'Add' : 'Edit';
+                let title = this.elementDialog.actionType === 'add' ? this.$t('words.add') : this.$t('words.edit');
 
                 if(fieldType) {
-                    title += '(' + fieldType.substr(0, fieldType.length - 5) + ')';
+                    title += ' - ' + fieldType.substr(0, fieldType.length - 5);
                 }
 
                 return title;
@@ -261,6 +306,17 @@
             },
             elementFormChanged(form)  {
                 this.selectedElementForm = form.getFieldValues();
+            },
+            fieldChanged(params) {
+                if (params.field.name === 'hasLang') {
+                    const fields = params.form.getFields();
+                    for (const field of fields) {
+                        if (field.name === 'value') {
+                            field.field.hasLang = params.value;
+                            break;
+                        }
+                    }
+                }
             },
             setForm(val) {
                 this.formObject = val instanceof FormClass ? val : new FormClass(val);

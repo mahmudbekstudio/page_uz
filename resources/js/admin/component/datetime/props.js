@@ -3,7 +3,7 @@ export default {
         label: {
             type: String,
             default () {
-                return 'Date';
+                return 'words.components.date';
             }
         },
         value: {
@@ -104,7 +104,7 @@ export default {
         label: {
             type: String,
             default () {
-                return 'Time';
+                return 'words.components.time';
             }
         },
         value: {

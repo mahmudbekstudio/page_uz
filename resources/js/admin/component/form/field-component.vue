@@ -1,12 +1,40 @@
 <template>
-    <component
-        :is="typeComponent"
-        :params="{...params, rules}"
-        :events="events"
-        :disabled="disabled"
-        :value="value"
-        @input="changed"
-    ></component>
+    <div class="field-component">
+        <div class="lang-list" v-if="hasLang && (website.metas.languages_list.length > 1)">
+            <v-btn-toggle v-model="langToggle">
+                <v-btn
+                    plain
+                    x-small
+                    v-for="(lang, index) of website.metas.languages_list"
+                    :key="lang"
+                    :class="{'v-item--active v-btn--active': index === langToggle}"
+                >
+                    {{ lang }}
+                </v-btn>
+            </v-btn-toggle>
+        </div>
+        <component
+            v-for="(lang, index) of website.metas.languages_list"
+            :key="lang"
+            v-if="hasLang && index===langToggle"
+            :is="typeComponent"
+            :params="{...params, rules}"
+            :events="events"
+            :disabled="disabled"
+            :value="getValue(lang)"
+            @input="changed($event, hasLang ? lang : null)"
+            :class="{'has-lang': hasLang && (website.metas.languages_list.length > 1)}"
+        ></component>
+        <component
+            v-if="!hasLang"
+            :is="typeComponent"
+            :params="{...params, rules}"
+            :events="events"
+            :disabled="disabled"
+            :value="getValue()"
+            @input="changed($event)"
+        ></component>
+    </div>
 </template>
 <script>
     import textField from './fields/textField';
@@ -38,8 +66,14 @@
     import requiredTitleField from './fields/required/requiredTitleField';
 
     import validation from "../../config/validation";
+    import {mapGetters} from "vuex";
 
     export default {
+        data () {
+            return {
+                langToggle: 0,
+            }
+        },
         props: {
             params: {
                 type: Object,
@@ -63,11 +97,29 @@
             disabled: {
                 type: Boolean,
                 default: false
-            }
+            },
+            hasLang: {
+                type: Boolean,
+                default() {
+                    return false
+                }
+            },
         },
         computed: {
+            ...mapGetters({
+                website: 'view/website',
+            }),
             typeComponent() {
                 return this.type + 'Field';
+            },
+            fieldValue() {
+                let result = this.value;
+
+                if (result && result[0] === '{' && result[result.length - 1] === '}') {
+                    result = JSON.parse(result);
+                }
+
+                return result;
             },
             rules() {
                 if (this.params.validation && this.form) {
@@ -83,9 +135,29 @@
                 return this.params.rules || [];
             }
         },
+        watch: {
+            langToggle(newVal, oldVal) {
+                if (typeof newVal !== 'number') {
+                    this.langToggle = oldVal;
+                }
+            }
+        },
         methods: {
-            changed(value) {
-                this.$emit('input', this.fieldKey, value);
+            changed(value, lang=null) {
+                if (this.hasLang && typeof this.value === 'string' && this.value[0] === '{' && this.value[this.value.length - 1] === '}') {
+                    const newVal = {...this.fieldValue};
+                    newVal[lang] = value;
+                    this.$emit('input', this.fieldKey, newVal);
+                } else {
+                    this.$emit('input', this.fieldKey, value, lang);
+                }
+            },
+            getValue(lang) {
+                if (this.hasLang && this.fieldValue && typeof this.fieldValue === 'object' && !this.fieldValue[lang]) {
+                    return Object.values(this.fieldValue)[0];
+                }
+
+                return this.hasLang && this.fieldValue && this.fieldValue[lang] ? this.fieldValue[lang] : this.fieldValue;
             }
         },
         components: {
@@ -119,3 +191,31 @@
         }
     }
 </script>
+<style lang="scss">
+.field-component {
+    position: relative;
+    .lang-list {
+        position: absolute;
+        bottom: 16px;
+        left: 0;
+        z-index: 1;
+    }
+    .v-item--active {
+        background-color: #757575;
+        color: #FFF !important;
+    }
+
+    .v-btn-toggle {
+        border-radius: 0 0 4px 4px
+    }
+
+    .has-lang {
+        .v-text-field__details {
+            margin-top: 15px;
+        }
+        &.editor-field > div {
+            padding-bottom: 35px
+        }
+    }
+}
+</style>

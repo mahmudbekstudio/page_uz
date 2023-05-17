@@ -82,18 +82,18 @@
             }
         },
         mounted() {
-            this.editFieldParams['label'] = 'Select type';
+            this.editFieldParams['label'] = 'words.select_type';
             this.editFieldParams['options'] = this.columnTypes;
 
             this.editActions.push({
                 color: 'default',
-                text: this.$t('words.close'),
+                text: 'words.close',
                 click: () => this.editClose()
             });
             this.editActions.push(
                 {
                     color: 'primary',
-                    text: this.$t('words.save'),
+                    text: 'words.save',
                     click: () => this.editSave()
                 }
             );

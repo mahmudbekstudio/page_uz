@@ -20,8 +20,8 @@ export default class Service {
         emailField.value = userData?.email;
 
         const statusField = userForm.addField({type: 'select'});
-        statusField.setParams('label', 'Status');
-        statusField.setParams('rules', [validation.required('Status')]);
+        statusField.setParams('label', 'words.status');
+        statusField.setParams('rules', [validation.required('words.status')]);
         const statusOptions = {};
         for (let statusId in mainConfig.app.status.user) {
             statusOptions[statusId] = i18n.t('words.' + mainConfig.app.status.user[statusId]);
@@ -31,8 +31,8 @@ export default class Service {
         statusField.value = typeof userData?.status === 'undefined' ? null : userData.status + '';
 
         const roleField = userForm.addField({type: 'select'});
-        roleField.setParams('label', 'Role');
-        roleField.setParams('rules', [validation.required('Role')]);
+        roleField.setParams('label', 'words.role');
+        roleField.setParams('rules', [validation.required('words.role')]);
         const roleOptions = {};
         for(let role of mainConfig.app.userRoles) {
             roleOptions[role] = i18n.t('words.' + role);
@@ -42,31 +42,31 @@ export default class Service {
         roleField.value = typeof userData?.role === 'undefined' ? null : userData.role + '';
 
         const firstName = userForm.addField({type: 'text'});
-        firstName.setParams('label', 'First name');
-        firstName.setParams('rules', [validation.required('First name')]);
+        firstName.setParams('label', 'words.first_name');
+        firstName.setParams('rules', [validation.required('words.first_name')]);
         firstName.name = 'first_name';
         firstName.value = userData?.first_name;
 
         const lastName = userForm.addField({type: 'text'});
-        lastName.setParams('label', 'Last name');
-        lastName.setParams('rules', [validation.required('Last name')]);
+        lastName.setParams('label', 'words.last_name');
+        lastName.setParams('rules', [validation.required('words.last_name')]);
         lastName.name = 'last_name';
         lastName.value = userData?.last_name;
 
         const password = userForm.addField({type: 'password'});
-        password.setParams('label', 'Password');
-        const passwordRules = [validation.minIfNotEmpty('Password', mainConfig.app.min_password_length)];
+        password.setParams('label', 'words.password');
+        const passwordRules = [validation.minIfNotEmpty('words.password', mainConfig.app.min_password_length)];
         if (!userData?.id) {
-            passwordRules.push(validation.required('Password'));
+            passwordRules.push(validation.required('words.password'));
         }
         password.setParams('rules', passwordRules);
         password.name = 'password';
 
         const passwordConfirmation = userForm.addField({type: 'password'});
-        passwordConfirmation.setParams('label', 'Password Confirmation');
-        const passwordConfirmationRules = [validation.confirmation('Password Confirmation', () => password.value)];
+        passwordConfirmation.setParams('label', 'words.confirm_password');
+        const passwordConfirmationRules = [validation.confirmation('words.confirm_password', () => password.value)];
         if (!userData?.id) {
-            passwordConfirmationRules.push(validation.required('Password Confirmation'));
+            passwordConfirmationRules.push(validation.required('words.confirm_password'));
         }
         passwordConfirmation.setParams('rules', passwordConfirmationRules);
         passwordConfirmation.name = 'password_confirmation';

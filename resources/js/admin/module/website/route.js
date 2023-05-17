@@ -13,7 +13,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Websites'
+                title: 'words.websites'
             }
         },
     ]

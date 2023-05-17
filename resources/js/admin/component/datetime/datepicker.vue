@@ -12,13 +12,15 @@
         <template v-slot:activator="{ on, attrs }">
             <v-text-field
                 v-model="picker"
-                :label="label"
                 prepend-icon="mdi-calendar"
                 readonly
                 v-bind="attrs"
                 v-on="on"
                 :append-icon="appendIcon"
                 @click:append="appendClick"
+                :hint="$props?.hint ? $t($props.hint) : null"
+                :label="$props?.label ? $t($props.label) : null"
+                :placeholder="$props?.placeholder ? $t($props.placeholder) : null"
             ></v-text-field>
         </template>
         <calendar
@@ -32,14 +34,14 @@
                 color="primary"
                 @click="menu = false"
             >
-                Cancel
+                {{ $t('words.cancel') }}
             </v-btn>
             <v-btn
                 text
                 color="primary"
                 @click="$refs.menu.save(picker)"
             >
-                OK
+                {{ $t('words.ok') }}
             </v-btn>
         </calendar>
     </v-menu>

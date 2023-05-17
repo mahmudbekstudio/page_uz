@@ -13,7 +13,7 @@
         <template v-slot:activator="{ on, attrs }">
             <v-text-field
                 v-model="picker"
-                :label="label"
+                :label="$t(label)"
                 prepend-icon="mdi-clock-time-four-outline"
                 readonly
                 v-bind="attrs"
@@ -34,14 +34,14 @@
                 color="primary"
                 @click="menu = false"
             >
-                Cancel
+                {{$t('words.cancel')}}
             </v-btn>
             <v-btn
                 text
                 color="primary"
                 @click="$refs.menu.save(picker)"
             >
-                OK
+                {{$t('words.ok')}}
             </v-btn>
         </clock>
     </v-menu>

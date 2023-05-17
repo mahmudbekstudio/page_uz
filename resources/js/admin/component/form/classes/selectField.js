@@ -5,18 +5,19 @@ export default class selectField extends field {
         {
             type: 'text',
             name: 'value',
-            params: {label: 'Default value', hint: 'Multiple value with comma'}
+            params: {label: 'words.default_value', hint: 'words.multiple_value_with_comma'}
         },
         {
             type: 'switch',
             name: 'multiple',
             value: false,
-            params: {label: 'Multiple'}
+            params: {label: 'words.multiple'}
         },
         {
             type: 'textarea',
             name: 'options',
-            params: {label: 'Options list', hint: 'Every item in line, key:value'}
+            hasLang: false,
+            params: {label: 'words.options_list', hint: 'words.every_item_in_line'}
         },
     ]
     constructor(params) {

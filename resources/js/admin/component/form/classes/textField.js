@@ -2,20 +2,24 @@ import field from './mainField';
 import validation from "../../../config/validation";
 
 export default class textField extends field {
+    hasLang = true;
     fillable = [
         {
             type: 'text',
             name: 'hint',
-            params: {label: 'Hint'}
+            params: {label: 'words.hint'}
         },
         {
             type: 'text',
             name: 'placeholder',
-            params: {label: 'Placeholder'}
+            params: {label: 'words.placeholder'}
         },
     ]
     constructor(params) {
         super(params);
+        if (typeof params.hasLang !== 'undefined') {
+            this.hasLang = params.hasLang;
+        }
     }
 
     get hint() {

@@ -5,17 +5,17 @@ export default class numberField extends field {
         {
             type: 'number',
             name: 'value',
-            params: {label: 'Default value'}
+            params: {label: 'words.default_value'}
         },
         {
             type: 'text',
             name: 'hint',
-            params: {label: 'Hint'}
+            params: {label: 'words.hint'}
         },
         {
             type: 'text',
             name: 'placeholder',
-            params: {label: 'Placeholder'}
+            params: {label: 'words.placeholder'}
         },
     ]
 

@@ -1,3 +1,3 @@
 <template>
-    <div>{{ $t('error.not-found.text') }}111</div>
+    <div>{{ $t('error.not-found.text') }}</div>
 </template>

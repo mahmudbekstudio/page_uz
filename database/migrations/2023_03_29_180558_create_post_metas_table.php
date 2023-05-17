@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('meta_format', 100)->default(\App\Helpers\DataFormat::getDefault());
             $table->string('meta_key')->index('meta_key');
             $table->longText('meta_value')->nullable();
-            $table->string('lang', 2)->default('')->index('lang');
+            //$table->string('lang', 2)->default('')->index('lang');
             $table->timestamps();
 
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');

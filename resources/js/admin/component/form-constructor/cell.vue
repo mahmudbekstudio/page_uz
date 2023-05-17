@@ -88,7 +88,7 @@ export default {
             this.col.children.splice(itemIndex, 0, new Field(newItem));*/
         },
         elementDelete (item) {
-            app.openConfirm('Do you really want to delete?', () => {
+            app.openConfirm(this.$t('words.do_you_really_want_to_delete'), () => {
                 const itemIndex = this.col.children.indexOf(item);
                 this.col.children.splice(itemIndex, 1);
             })

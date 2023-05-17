@@ -11,7 +11,7 @@
                 :key="'tab' + index"
                 class="constructor-tab-header"
         >
-            {{ tabItem.title }}
+            {{ $t(tabItem.title) }}
             <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
                     <v-icon
@@ -49,7 +49,14 @@
                 size="small"
         >
             <v-form ref="editTabForm" v-model="tabForm.valid">
-                <FormField :value="tabForm.name" :params="tabNameParams" :events="{'change' : tabFormNameChanged, 'keyup': tabFormNameKeyup}"></FormField>
+                <FieldComponent
+                    :value="tabForm.name"
+                    @input="tabFormNameChanged"
+                    has-lang
+                    :params="tabNameParams"
+                    :events="{'keyup': tabFormNameKeyup}"
+                ></FieldComponent>
+                <!--FormField :value="tabForm.name" :params="tabNameParams" :events="{'change' : tabFormNameChanged, 'keyup': tabFormNameKeyup}"></FormField-->
             </v-form>
         </dialog-component>
     </v-tabs>
@@ -66,7 +73,8 @@
         iconLeft,
         iconRight
     } from '../icons';
-    import FormField from '../form/field-component';
+    //import FormField from '../form/field-component';
+    import FieldComponent from "../form/field-component";
     import validation from '../../config/validation';
     export default {
         name: 'tabs-list',
@@ -79,10 +87,10 @@
                     action: '',
                 },
                 tabNameParams: {
-                    label: 'Name *',
-                    placeholder: 'Enter Tab Name',
+                    label: 'words.name',
+                    placeholder: 'words.enter_tab_name',
                     rules: [
-                        validation.required('Name')
+                        validation.required('words.name')
                     ]
                 },
                 tab: 0,
@@ -115,18 +123,30 @@
             this.tab = this.value;
             this.editActions.push({
                 color: 'default',
-                text: this.$t('words.close'),
+                text: 'words.close',
                 click: () => this.tabFormClose()
             });
             this.editActions.push(
                 {
                     color: 'primary',
-                    text: this.$t('words.save'),
+                    text: 'words.save',
                     click: () => this.editSave()
                 }
             );
         },
         methods: {
+            tabFormNameChanged: function (key, val, lang) {
+                if (lang) {
+                    if (typeof this.tabForm.name === 'string') {
+                        this.tabForm.name = {};
+                    }
+
+                    this.tabForm.name[lang] = val;
+                } else {
+                    this.tabForm.name = val;
+                }
+                console.log(key, val, lang, this.tabForm.name);
+            },
             addNewTab() {
                 this.openTabFormDialog(this.form.addTab({}), 'create');
             },
@@ -138,9 +158,9 @@
                 this.form.children.splice(toIndex, 0, tabItem);
             },
             deleteTab(tabItem) {
-                app.openConfirm('Do you really want to delete tab ' + tabItem.title + '?', () => {
+                app.openConfirm(this.$t('words.do_you_really_want_to_delete_tab') + ' ' + tabItem.title + '?', () => {
                     if(this.form.children.length === 1) {
-                        app.errorMessage('You can not delete last tab');
+                        app.errorMessage(this.$t('words.you_can_not_delete_last_tab'));
                     } else {
                         this.deleteTabItem(tabItem);
                     }
@@ -155,9 +175,6 @@
                 this.tabForm.show = true;
                 this.tabForm.action = action;
                 this.tabForm.name = tabItem.title;
-            },
-            tabFormNameChanged: function (val) {
-                this.tabForm.name = val;
             },
             tabFormNameKeyup: function(e) {
                 let key = e.which || e.keyCode || 0;
@@ -179,7 +196,7 @@
             editSave() {
                 this.$refs.editTabForm.validate();
                 if(!this.tabForm.valid) {
-                    app.errorMessage('Form is not valid');
+                    app.errorMessage(this.$t('words.form_is_not_valid'));
                     return false;
                 }
                 this.selectedTab.title = this.tabForm.name;
@@ -201,7 +218,8 @@
             iconRightPlus,
             iconLeft,
             iconRight,
-            FormField
+            FieldComponent,
+            //FormField
         }
     }
 </script>

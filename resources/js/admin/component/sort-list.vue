@@ -22,7 +22,7 @@
                             <v-btn-toggle mandatory slot="append">
                                 <slot name="actions" :item="item" :index="index" :indexes="[...indexes, index]" />
                             </v-btn-toggle>
-                            <slot name="title" :item="item">{{ item.title }}</slot>
+                            <slot name="title" :item="item">{{ $t(item.title) }}</slot>
                         </v-input>
                     </div>
                     <sort-list

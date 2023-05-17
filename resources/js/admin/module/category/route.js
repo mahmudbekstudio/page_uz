@@ -14,7 +14,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Category list'
+                title: 'words.category_list'
             }
         },
         {
@@ -24,7 +24,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Category create'
+                title: 'words.category_create'
             }
         },
         {
@@ -34,7 +34,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Category edit'
+                title: 'words.category_edit'
             }
         },
     ]

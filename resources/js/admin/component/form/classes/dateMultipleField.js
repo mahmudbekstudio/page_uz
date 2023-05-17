@@ -5,7 +5,7 @@ export default class dateRangeField extends field {
         {
             type: 'dateMultiple',
             name: 'value',
-            params: {label: 'Default value'}
+            params: {label: 'words.default_value'}
         },
     ]
     constructor(params) {

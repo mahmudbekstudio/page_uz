@@ -8,7 +8,7 @@
                 <datepicker
                     v-bind="$props"
                     v-model="date"
-                    :label="label[0]"
+                    :label="$t(label[0])"
                 />
             </v-col>
             <v-col
@@ -18,7 +18,7 @@
                 <timepicker
                     v-bind="$props"
                     v-model="time"
-                    :label="label[1]"
+                    :label="$t(label[1])"
                 />
             </v-col>
         </v-row>
@@ -43,8 +43,8 @@ export default {
             type: Array,
             default () {
                 return [
-                    'Date',
-                    'Time'
+                    'words.components.date',
+                    'words.components.time'
                 ];
             }
         }

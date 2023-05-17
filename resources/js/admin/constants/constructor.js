@@ -1,6 +1,6 @@
 export const CONSTRUCTOR_COLUMN_TYPES = [
     {
-        label: 'One column',
+        label: 'words.one_column',
         children: [
             {
                 value: '12',
@@ -9,7 +9,7 @@ export const CONSTRUCTOR_COLUMN_TYPES = [
         ]
     },
     {
-        label: 'Two columns',
+        label: 'words.two_columns',
         children: [
             {
                 value: '6_6',
@@ -34,7 +34,7 @@ export const CONSTRUCTOR_COLUMN_TYPES = [
         ]
     },
     {
-        label: 'Three columns',
+        label: 'words.three_columns',
         children: [
             {
                 value: '4_4_4',
@@ -55,7 +55,7 @@ export const CONSTRUCTOR_COLUMN_TYPES = [
         ]
     },
     {
-        label: 'Four columns',
+        label: 'words.four_columns',
         children: [
             {
                 value: '3_3_3_3',

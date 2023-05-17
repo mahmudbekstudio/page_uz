@@ -1,12 +1,12 @@
 <template>
     <div class="confirm-component">
         <dialog-component
-                :title="title"
+                :title="title || $t('words.confirmation')"
                 :actions="actions"
                 v-model="show"
                 size="small"
         >
-            <div class="confirmation-question">{{question}}</div>
+            <div class="confirmation-question">{{question || $t('words.do_you_really_want')}}</div>
         </dialog-component>
     </div>
 </template>
@@ -30,13 +30,13 @@
             title: {
                 type: String,
                 default() {
-                    return 'Confirmation';
+                    return '';
                 }
             },
             question: {
                 type: String,
                 default() {
-                    return 'Do you really want?';
+                    return '';
                 }
             }
         },

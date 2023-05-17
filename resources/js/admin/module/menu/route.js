@@ -14,7 +14,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Menus list'
+                title: 'words.menu_list'
             }
         },
         {
@@ -24,7 +24,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Menu create'
+                title: 'words.menu_create'
             }
         },
         {
@@ -34,7 +34,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Menu edit'
+                title: 'words.menu_edit'
             }
         },
     ]

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Arr;
+use App\Repositories\WebsiteRepository;
 
 if (!function_exists('isProd')) {
     /**
@@ -71,7 +72,11 @@ if (!function_exists('getLang')) {
      */
     function getLang(string $lang = ''): string
     {
-        return isLang($lang) ? $lang : app()->getLocale();
+        $instance = WebsiteRepository::getInstance();
+        $metas = $instance->getMetas();
+        $defaultLang = Arr::get($metas, 'language', app()->getLocale());
+
+        return isLang($lang) ? $lang : $defaultLang;
     }
 }
 

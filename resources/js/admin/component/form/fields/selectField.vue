@@ -7,6 +7,10 @@
         :disabled="disabled"
         :clearable="clearable"
         @click:clear="clear"
+        :hint="params?.hint ? $t(params.hint) : null"
+        :label="labelText"
+        :placeholder="params?.placeholder ? $t(params.placeholder) : null"
+        :no-data-text="$t('words.no-data-available')"
     ></v-select>
 </template>
 <script>
@@ -26,7 +30,7 @@
 
                     if(typeof item === 'object') {
                         if(typeof item.text !== 'undefined' && typeof item.value !== 'undefined') {
-                            result.push({...item});
+                            result.push({text: this.$t(item.text), value: item.value});
                         } else {
                             if(!isFirst) {
                                 result.push({divider: true});
@@ -36,11 +40,11 @@
                             result.push({header: key});
 
                             for(let subKey in item) {
-                                result.push({text: item[subKey], value: subKey});
+                                result.push({text: this.$t(item[subKey]), value: subKey});
                             }
                         }
                     } else {
-                        result.push({text: item, value: key});
+                        result.push({text: this.$t(item), value: key});
                     }
                 }
                 return result;

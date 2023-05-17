@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Post;
 
+use App\Repositories\RouteRepository;
 use App\Rules\CheckPostParentDeepLimit;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -32,6 +33,30 @@ class CreatePostRequest extends FormRequest
 
         if(Arr::has($rules, 'parent')) {
             $rules['parent'][] = new CheckPostParentDeepLimit($typeId, $postId);
+        }
+
+        if (!$this->request->has('routeName') || empty($this->request->get('routeName', ''))) {
+            $title = Arr::get($this->request->all(), 'title');
+            $isArray = gettype($title) === 'array';
+            $val = $isArray ? reset($title) : $title;
+            $routeName = convertStringToRouteName($val);
+            $routePrefix = [];
+            while (true) {
+                $route = app(RouteRepository::class)->getByName($routeName . implode('', $routePrefix));
+
+                if(!$route || $route->parent_id == $postId) {
+                    $routeName = $routeName . implode('', $routePrefix);
+                    break;
+                }
+
+                if (empty($routePrefix)) {
+                    $routePrefix = ['-', 1];
+                } else {
+                    $routePrefix[1]++;
+                }
+            }
+
+            $this->merge(['routeName' => $routeName]);
         }
 
         return $rules;

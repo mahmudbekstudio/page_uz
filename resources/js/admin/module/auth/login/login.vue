@@ -74,8 +74,8 @@
                     validation.isEmail(i18n.t('words.email'))
                 ],
                 password: [
-                    validation.required('Password'),
-                    validation.min('Password', constants.VALIDATION_MIN_PASSWORD_LENGTH)
+                    validation.required('words.password'),
+                    validation.min('words.password', constants.VALIDATION_MIN_PASSWORD_LENGTH)
                 ]
             }
         }),

@@ -1,26 +1,30 @@
 import field from './mainField';
 
 export default class textareaField extends field {
+    hasLang = true;
     fillable = [
         {
             type: 'number',
             name: 'rows',
             value: 5,
-            params: {label: 'Rows'}
+            params: {label: 'words.rows'}
         },
         {
             type: 'text',
             name: 'hint',
-            params: {label: 'Hint'}
+            params: {label: 'words.hint'}
         },
         {
             type: 'text',
             name: 'placeholder',
-            params: {label: 'Placeholder'}
+            params: {label: 'words.placeholder'}
         },
     ]
 
     constructor(params) {
         super(params);
+        if (typeof params.hasLang !== 'undefined') {
+            this.hasLang = params.hasLang;
+        }
     }
 }

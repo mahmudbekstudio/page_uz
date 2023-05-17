@@ -12,7 +12,7 @@ export default class Service {
             .send()
             .then(response => {
                 const data = response.data.data;
-                store.dispatch('main-setting/changeForm', data.metas);
+                /*store.dispatch('main-setting/changeForm', data.metas);
                 store.dispatch('main-setting/changeData', {
                     languages: data.languages,
                     timezones: data.timezones,
@@ -20,9 +20,9 @@ export default class Service {
                     time_formats: data.time_formats,
                     pages: data.pages,
                     images_sizes: data.images_sizes
-                })
+                })*/
                 if (typeof successCallback === 'function') {
-                    successCallback();
+                    successCallback(data);
                 }
             })
             .catch(error => {
@@ -39,8 +39,27 @@ export default class Service {
     }
 
     submit() {
-        const form = store.getters['main-setting/form'];
-        console.log(form)
+        this.loading(true);
+        http(api.updateSettings)
+            .callback(store.getters['main-setting/form'])
+            .send()
+            .then(response => {
+                const data = response.data.data;
+                if (typeof successCallback === 'function') {
+                    successCallback(data);
+                }
+            })
+            .catch(error => {
+                logger.error('main-settings', error);
+                app.errorMessage(i18n.t('words.error'));
+                if (typeof failCallback === 'function') {
+                    failCallback();
+                }
+            })
+            .then(() => {
+                this.loading(false);
+                store.dispatch('main-setting/changeIsFormChanged', false);
+            });
     }
 
     loading(isStart) {

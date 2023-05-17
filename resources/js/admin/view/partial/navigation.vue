@@ -53,7 +53,7 @@
                 >
                     <template v-slot:activator>
                         <v-list-item-content>
-                            <v-list-item-title v-text="item.text"></v-list-item-title>
+                            <v-list-item-title>{{$t(item.text)}}</v-list-item-title>
                         </v-list-item-content>
                     </template>
                     <v-list-item
@@ -67,7 +67,7 @@
                             <v-icon>{{ child.icon }}</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
-                            <v-list-item-title v-text="child.text"></v-list-item-title>
+                            <v-list-item-title>{{$t(child.text)}}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list-group>
@@ -82,7 +82,7 @@
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title v-text="item.text"></v-list-item-title>
+                        <v-list-item-title>{{$t(item.text)}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </template>
@@ -114,7 +114,12 @@
                 typeNavigation: 'view/typeNavigation',
             }),
             items() {
-                return [navigationList[this.user.role][0], ...this.typeNavigation, ...navigationList[this.user.role].slice(1)];
+                return [navigationList[this.user.role][0], ...this.typeNavigation.map(item => {
+                    if (['string', 'number'].indexOf(typeof item.text) === -1) {
+                        item.text = JSON.stringify(item.text);
+                    }
+                    return item;
+                }), ...navigationList[this.user.role].slice(1)];
             },
             drawer: {
                 get() {

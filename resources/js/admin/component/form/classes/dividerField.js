@@ -5,7 +5,7 @@ export default class dividerField extends field {
     constructor(params) {
         super(params);
 
-        this.fieldObject.params.label = 'Divider';
+        this.fieldObject.params.label = 'words.divider';
         this.fieldObject.name = 'divider_' + (new Date()).getTime();
     }
 }

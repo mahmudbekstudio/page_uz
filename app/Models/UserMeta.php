@@ -16,7 +16,7 @@ class UserMeta extends Model
     /**
      * @var array
      */
-    protected $fillable = ['website_id', 'user_id', 'meta_key', 'meta_value', 'meta_format', 'lang'];
+    protected $fillable = ['website_id', 'user_id', 'meta_key', 'meta_value', 'meta_format'];
 
     protected static function booted()
     {

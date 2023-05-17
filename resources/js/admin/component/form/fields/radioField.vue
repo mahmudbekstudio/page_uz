@@ -4,11 +4,13 @@
         v-on="events"
         v-model="dataValue"
         :disabled="disabled"
+        :hint="params?.hint ? $t(params.hint) : null"
+        :label="labelText"
     >
         <v-radio
             v-for="(item, key) in list"
             :key="key"
-            :label="item"
+            :label="$t(item)"
             :value="key"
         ></v-radio>
     </v-radio-group>

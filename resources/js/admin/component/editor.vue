@@ -86,6 +86,7 @@ export default {
             this.init.menubar = '';
             this.init.plugins = this.plugins;
             this.init.toolbar = this.toolbar;
+            this.init.language = this.$i18n.locale;
             this.init.file_picker_callback = (callback, value, meta) => {
                 this.showDialog = true;
                 this.filePickerCallback = callback;

@@ -42,12 +42,12 @@
                 dialogActions: [
                     {
                         color: 'default',
-                        text: 'Cancel',
+                        text: 'words.cancel',
                         click: () => this.showDialog = false
                     },
                     {
                         color: 'primary',
-                        text: 'Save',
+                        text: 'words.save',
                         click: () => this.showDialog = false
                     },
                 ]

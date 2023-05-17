@@ -4,6 +4,8 @@
         v-on="events"
         v-model="dataValue"
         :disabled="disabled"
+        :hint="labelText"
+        :label="params?.label ? $t(params.label) : null"
     ></v-switch>
 </template>
 <script>

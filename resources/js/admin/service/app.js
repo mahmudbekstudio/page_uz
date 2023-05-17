@@ -5,6 +5,7 @@ import viewConfig from '../config/view';
 import http from './http';
 import logger from './logger';
 import * as constants from '../constants';
+import i18n from "../plugin/i18n";
 
 class App {
     install(Vue) {
@@ -95,16 +96,16 @@ class App {
         errors = errors?.response?.data?.errors;
 
         if (!errors) {
-            this.errorMessage('Error');
+            this.errorMessage(i18n.t('words.error'));
             return false;
         }
 
         let messages = [];
         for (let errorKey in errors) {
-            messages.push(errors[errorKey].join("\n"));
+            messages.push(errors[errorKey].join("<br />"));
         }
 
-        this.errorMessage(messages.join("\n"));
+        this.errorMessage(messages.join("<br />"));
     }
 
     closeMessage() {

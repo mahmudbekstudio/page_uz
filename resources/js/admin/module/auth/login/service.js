@@ -4,6 +4,7 @@ import auth from '../../../service/auth';
 import store from './store';
 import api from './api';
 import logger from '../../../service/logger';
+import i18n from "../../../plugin/i18n";
 
 export default class Service {
     submit() {
@@ -40,7 +41,7 @@ export default class Service {
             }).catch(error => {
                 logger.error('api.login', error);
             console.log('errorMsgs2', error);
-                app.errorMessage('Error');
+                app.errorMessage(i18n.t('words.error'));
             }).then(() => {
                 this.loading(false);
         })

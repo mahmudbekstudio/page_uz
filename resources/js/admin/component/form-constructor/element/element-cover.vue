@@ -4,7 +4,7 @@
       <!--<div class="element-cover-icon">
         <elementIcon :name="element.icon" />
       </div>-->
-      <div class="element-cover-name">{{elementName}}</div>
+      <div class="element-cover-name">{{$t('words.components.' + elementName)}}</div>
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     elementName () {
-      return this.element.title || 'Element'
+      return this.element.title || 'element'
     }
   },
   components: {

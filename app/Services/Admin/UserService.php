@@ -39,13 +39,11 @@ class UserService extends BaseService
 
         $authedUser->metas()->updateOrCreate([
             'meta_key' => 'first_name',
-            'lang' => '',
         ], [
             'meta_value' => $data->first_name
         ]);
         $authedUser->metas()->updateOrCreate([
             'meta_key' => 'last_name',
-            'lang' => '',
         ], [
             'meta_value' => $data->last_name
         ]);
@@ -62,13 +60,11 @@ class UserService extends BaseService
             'meta_key' => 'first_name',
             'meta_value' => $data->first_name,
             'meta_format' => DataFormat::FORMAT_STRING,
-            'lang' => ''
         ]);
         $user->metas()->create([
             'meta_key' => 'last_name',
             'meta_value' => $data->last_name,
             'meta_format' => DataFormat::FORMAT_STRING,
-            'lang' => ''
         ]);
         return $user;
     }
@@ -90,13 +86,11 @@ class UserService extends BaseService
         $user->save();
         $user->metas()->updateOrCreate([
             'meta_key' => 'first_name',
-            'lang' => '',
         ], [
             'meta_value' => $data->first_name
         ]);
         $user->metas()->updateOrCreate([
             'meta_key' => 'last_name',
-            'lang' => '',
         ], [
             'meta_value' => $data->last_name
         ]);

@@ -28,6 +28,7 @@ class CreateTypeRequest extends FormRequest
     public function rules()
     {
         return [
+            'title' => ['required', 'array'],
             'name' => [
                 'required',
                 'string', 'regex:/^' . config('app.route_rules.name') . '$/i',

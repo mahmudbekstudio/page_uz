@@ -27,7 +27,7 @@
                         >
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
-                        <span class="text-h5">{{title}}</span>
+                        <span class="text-h5">{{$t(title)}}</span>
                         <div class="dialog-top"><slot name="top" /></div>
                         <v-spacer></v-spacer>
                         <v-toolbar-items>
@@ -40,7 +40,7 @@
                                     @click="btn.click"
                                     dark
                             >
-                                {{btn.text}}
+                                {{$t(btn.text)}}
                             </v-btn>
                         </v-toolbar-items>
                     </v-toolbar>
@@ -53,7 +53,7 @@
             </v-card>
             <v-card v-else>
                 <v-card-title v-if="title">
-                    <span class="text-h5">{{title}}</span>
+                    <span class="text-h5">{{$t(title)}}</span>
                     <v-spacer></v-spacer>
                     <v-btn
                             icon
@@ -79,7 +79,7 @@
                             @click="btn.click"
                             :disabled="btn.disabled"
                     >
-                        {{btn.text}}
+                        {{$t(btn.text)}}
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -125,7 +125,7 @@
                     return [
                         {
                             color: 'default',
-                            text: 'OK',
+                            text: 'words.ok',
                             disabled: false,
                             click: () => this.show = false
                         }

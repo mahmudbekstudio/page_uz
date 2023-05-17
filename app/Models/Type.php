@@ -16,9 +16,10 @@ class Type extends Model
     /**
      * @var array
      */
-    protected $fillable = ['status', 'name', 'type', 'has_parent', 'child_of', 'structure', 'fields'];
+    protected $fillable = ['status', 'title', 'name', 'type', 'has_parent', 'child_of', 'structure', 'fields'];
 
     protected $casts = [
+        'title' => 'array',
         'structure' => 'array',
         'fields' => 'array',
     ];

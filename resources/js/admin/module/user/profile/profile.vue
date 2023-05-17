@@ -55,12 +55,12 @@
             }
         },
         created() {
-            this.actionsList.push(getPageBoxAction('Save', '', {color: 'primary', disabled: false}, {
+            this.actionsList.push(getPageBoxAction('words.save', '', {color: 'primary', disabled: false}, {
                 click: () => {
                     this.submit();
                 }
             }));
-            this.footerActionsList.push(getPageBoxAction('Save', '', {color: 'primary'}, {
+            this.footerActionsList.push(getPageBoxAction('words.save', '', {color: 'primary'}, {
                 click: () => {
                     this.submit();
                 }
@@ -74,36 +74,36 @@
                 emailField.value = this.form.email;
 
                 const firstName = this.profileForm.addField({type: 'text'});
-                firstName.setParams('label', 'First name');
-                firstName.setParams('rules', [validation.required('First name')]);
+                firstName.setParams('label', 'words.first_name');
+                firstName.setParams('rules', [validation.required('words.first_name')]);
                 firstName.name = 'first_name';
                 firstName.value = this.form.first_name;
 
                 const lastName = this.profileForm.addField({type: 'text'});
-                lastName.setParams('label', 'Last name');
-                lastName.setParams('rules', [validation.required('Last name')]);
+                lastName.setParams('label', 'words.last_name');
+                lastName.setParams('rules', [validation.required('words.last_name')]);
                 lastName.name = 'last_name';
                 lastName.value = this.form.last_name;
 
                 const oldPassword = this.profileForm.addField({type: 'password'});
-                oldPassword.setParams('label', 'Old Password');
+                oldPassword.setParams('label', 'words.old_password');
                 oldPassword.setParams('rules', [
-                    validation.requiredIfNotEmpty('Old Password', () => this.form.password),
-                    validation.minIfNotEmpty('Old Password', mainConfig.app.min_password_length)
+                    validation.requiredIfNotEmpty('words.old_password', () => this.form.password),
+                    validation.minIfNotEmpty('words.old_password', mainConfig.app.min_password_length)
                 ]);
                 oldPassword.name = 'old_password';
 
                 const password = this.profileForm.addField({type: 'password'});
-                password.setParams('label', 'Password');
+                password.setParams('label', 'words.password');
                 password.setEvents('input', () => {
                     this.formValidate();
                 });
-                password.setParams('rules', [validation.minIfNotEmpty('Password', mainConfig.app.min_password_length)])
+                password.setParams('rules', [validation.minIfNotEmpty('words.password', mainConfig.app.min_password_length)])
                 password.name = 'password';
 
                 const passwordConfirmation = this.profileForm.addField({type: 'password'});
-                passwordConfirmation.setParams('label', 'Password Confirmation');
-                passwordConfirmation.setParams('rules', [validation.confirmation('Password Confirmation', () => this.form.password)]);
+                passwordConfirmation.setParams('label', 'words.confirm_password');
+                passwordConfirmation.setParams('rules', [validation.confirmation('words.confirm_password', () => this.form.password)]);
                 passwordConfirmation.name = 'password_confirmation';
             });
         },

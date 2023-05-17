@@ -14,7 +14,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Main Setting'
+                title: 'words.main_settings'
             }
         },
         {
@@ -24,7 +24,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Domain Setting'
+                title: 'words.domain_setting'
             }
         },
     ]

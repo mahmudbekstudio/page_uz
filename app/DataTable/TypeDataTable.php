@@ -13,6 +13,7 @@ class TypeDataTable extends DataTable
     protected array $columns = [
         'types.id' => 'id',
         'types.status' => 'status',
+        'types.title' => 'title',
         'types.name' => 'name',
         'types.type' => 'type',
         'types.has_parent' => 'has_parent',

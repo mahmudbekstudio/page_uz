@@ -3,6 +3,7 @@ import http from '../../../service/http';
 import api from './api';
 import app from "../../../service/app";
 import logger from "../../../service/logger";
+import i18n from "../../../plugin/i18n";
 
 export default class Service {
     get(successCallback, errorCallback) {
@@ -67,7 +68,7 @@ export default class Service {
                 if (typeof successCallback === 'function') {
                     successCallback(response.data);
                 } else {
-                    app.successMessage('Success');
+                    app.successMessage(i18n.t('words.success'));
                 }
             })
             .catch(error => {
@@ -75,7 +76,7 @@ export default class Service {
                 if (typeof errorCallback === 'function') {
                     errorCallback(error);
                 } else {
-                    app.errorMessage('Error');
+                    app.errorMessage(i18n.t('words.error'));
                 }
             }).then(() => {
                 this.loading(false);
@@ -95,7 +96,7 @@ export default class Service {
                 if (typeof errorCallback === 'function') {
                     errorCallback(error);
                 } else {
-                    app.errorMessage('Error');
+                    app.errorMessage(i18n.t('words.error'));
                 }
             }).then(() => {
             this.loading(false);

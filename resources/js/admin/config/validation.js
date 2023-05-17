@@ -3,7 +3,7 @@ import i18n from '../plugin/i18n';
 
 export default {
     required: function(field = '') {
-        return v => !!v || (field ? i18n.t('validation.field_is_required', {field}) : i18n.t('validation.this_field_is_required'));
+        return v => !!v || (field ? i18n.t('validation.field_is_required', {field: i18n.t(field)}) : i18n.t('validation.this_field_is_required'));
     },
     requiredIfNotEmpty: function(field, value, form) {
         let formKey = '';
@@ -16,22 +16,22 @@ export default {
             }
         }
 
-        return v => !value() || !!v || i18n.t('validation.field_is_required', {field});
+        return v => !value() || !!v || i18n.t('validation.field_is_required', {field: i18n.t(field)});
     },
     max: function(field, maxLength) {
         maxLength = parseFloat(maxLength);
-        return v => (v && v.length <= maxLength) || i18n.t('validation.field_must_be_less_than_maxlength_character', {field, maxLength});
+        return v => (v && v.length <= maxLength) || i18n.t('validation.field_must_be_less_than_maxlength_character', {field: i18n.t(field), maxLength});
     },
     min: function (field, minLength) {
         minLength = parseFloat(minLength);
-        return v => (v && v.length >= minLength) || i18n.t('validation.field_must_be_more_than_minlength_character', {field, minLength});
+        return v => (v && v.length >= minLength) || i18n.t('validation.field_must_be_more_than_minlength_character', {field: i18n.t(field), minLength});
     },
     minIfNotEmpty: function (field, minLength) {
         minLength = parseFloat(minLength);
-        return v => (!v || v.length >= minLength) || i18n.t('validation.field_must_be_more_than_minlength_character', {field, minLength});
+        return v => (!v || v.length >= minLength) || i18n.t('validation.field_must_be_more_than_minlength_character', {field: i18n.t(field), minLength});
     },
     isEmail: function(field) {
-        return v => constants.VALIDATION_EMAIL.test(v) || i18n.t('validation.field_must_be_valid', {field})
+        return v => constants.VALIDATION_EMAIL.test(v) || i18n.t('validation.field_must_be_valid', {field: i18n.t(field)})
     },
     in: function (field, list) {
         if(typeof list === 'string') {
@@ -42,7 +42,7 @@ export default {
             }
         }
 
-        return v => (v && list.indexOf(v) > -1) || i18n.t('validation.field_must_be_in_the_list', {field, list: list.join('", "')})
+        return v => (v && list.indexOf(v) > -1) || i18n.t('validation.field_must_be_in_the_list', {field: i18n.t(field), list: list.join('", "')})
     },
     notIn: function(field, list) {
         if(typeof list === 'string') {
@@ -53,7 +53,7 @@ export default {
             }
         }
 
-        return v => (v && list.indexOf(v) === -1) || i18n.t('validation.field_must_not_be_in_the_list', {field, list: list.join('", "')})
+        return v => (v && list.indexOf(v) === -1) || i18n.t('validation.field_must_not_be_in_the_list', {field: i18n.t(field), list: list.join('", "')})
     },
     confirmation: function (field, value, form) {
         let formKey = '';
@@ -67,10 +67,10 @@ export default {
         }
 
         return v => {
-            return ((!v && !value()) || v === value()) || i18n.t('validation.confirmation', {field});
+            return ((!v && !value()) || v === value()) || i18n.t('validation.confirmation', {field: i18n.t(field)});
         }
     },
     routeName: function(field) {
-        return v => constants.VALIDATION_ROUTE_NAME.test(v) || i18n.t('validation.field_must_be_valid', {field})
+        return v => !v || constants.VALIDATION_ROUTE_NAME.test(v) || i18n.t('validation.field_must_be_valid', {field: i18n.t(field)});
     },
 }

@@ -5,7 +5,7 @@
                 v-show="!(value.length === 1 && !multiple)"
         >
             <slot name="button">
-                <v-btn color="default" @click.prevent="selectFile"><v-icon v-html="uploadIcon"></v-icon>{{title}}</v-btn>
+                <v-btn color="default" @click.prevent="selectFile"><v-icon v-html="uploadIcon"></v-icon>{{$t(title)}}</v-btn>
             </slot>
             <input
                     class="hidden"
@@ -45,8 +45,8 @@
                 type: String,
                 default() {
                     return this.multiple ?
-                        this.$t('translations.words.select-files') :
-                        this.$t('translations.words.select-file');
+                        'translations.words.select-files' :
+                        'translations.words.select-file';
                 }
             },
             value: {

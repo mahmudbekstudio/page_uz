@@ -1,20 +1,8 @@
-<template>
-    <v-select
-        :items="[]"
-        v-bind="params"
-        v-on="events"
-        :value="''"
-        :disabled="disabled"
-    ></v-select>
-</template>
 <script>
-import mixins from '../../../../mixin';
+import selectField from '../selectField.vue';
 
 export default {
-    mixins: [mixins.get('formField')],
-    props: {
-        //
-    },
+    extends: selectField,
 }
 </script>
 <style scoped lang="scss">

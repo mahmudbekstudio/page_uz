@@ -1,7 +1,7 @@
 <template>
     <div class="breadcrumbs">
         <template v-for="(item, ind) in items">
-            <div class="breadcrumbs__item" @click.prevent="(items.length > (ind + 1)) && itemClicked(item)" :class="{'breadcrumbs__item--last': items.length === (ind + 1)}">{{ item.title }}</div>
+            <div class="breadcrumbs__item" @click.prevent="(items.length > (ind + 1)) && itemClicked(item)" :class="{'breadcrumbs__item--last': items.length === (ind + 1)}">{{ $t(item.title) }}</div>
             <div class="breadcrumbs__divider" v-show="items.length > (ind + 1)">{{ divider }}</div>
         </template>
     </div>

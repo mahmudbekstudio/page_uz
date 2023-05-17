@@ -247,7 +247,7 @@
                     })
                     .catch(error => {
                         console.log('error', error);
-                        app.errorMessage('Error, loading folders failed')
+                        app.errorMessage(this.$t('words.error_loading_folder_failed'))
                     })
                     .then(() => {
                         this.isLoading = false;
@@ -270,15 +270,15 @@
                         if(response.data.result) {
                             item.item.selected = false;
                             this.itemSelected(item);
-                            app.openMessage('File deleted');
+                            app.openMessage(this.$t('words.file_deleted'));
                             this.updateContent(this.selectedFolder);
                         } else {
-                            app.errorMessage('Error, delete file failed')
+                            app.errorMessage(this.$t('words.error_delete_file_failed'))
                         }
                     })
                     .catch(error => {
                         console.log('error', error);
-                        app.errorMessage('Error, delete file failed')
+                        app.errorMessage(this.$t('words.error_delete_file_failed'))
                     })
                     .then(() => {
                         this.isLoading = false;
@@ -291,16 +291,16 @@
                     .send()
                     .then(response => {
                         if(response.data.result) {
-                            app.openMessage('File name change');
+                            app.openMessage(this.$t('words.file_name_changed'));
                             renameFileForm.show = false;
                             this.updateContent(this.selectedFolder);
                         } else {
-                            app.errorMessage('Error, rename file failed')
+                            app.errorMessage(this.$t('words.error_rename_file_failed'))
                         }
                     })
                     .catch(error => {
                         console.log('error', error);
-                        app.errorMessage('Error, rename file failed')
+                        app.errorMessage(this.$t('words.error_rename_file_failed'))
                     })
                     .then(() => {
                         this.isLoading = false;
@@ -313,15 +313,15 @@
                     .send()
                     .then(response => {
                         if(response.data.result) {
-                            app.openMessage('Folder deleted');
+                            app.openMessage(this.$t('words.folder_deleted'));
                             this.updateContent(this.selectedFolder);
                         } else {
-                            app.errorMessage('Error, delete folder failed')
+                            app.errorMessage(this.$t('words.error_delete_folder_failed'))
                         }
                     })
                     .catch(error => {
                         console.log('error', error);
-                        app.errorMessage('Error, delete folder failed')
+                        app.errorMessage(this.$t('words.error_delete_folder_failed'))
                     })
                     .then(() => {
                         this.isLoading = false;
@@ -334,16 +334,16 @@
                     .send()
                     .then(response => {
                         if(response.data.result) {
-                            app.openMessage('Folder name change');
+                            app.openMessage(this.$t('words.folder_name_changed'));
                             renameFolderForm.show = false;
                             this.updateContent(this.selectedFolder);
                         } else {
-                            app.errorMessage('Error, rename folder failed')
+                            app.errorMessage(this.$t('words.error_rename_folder_failed'))
                         }
                     })
                     .catch(error => {
                         console.log('error', error);
-                        app.errorMessage('Error, rename folder failed')
+                        app.errorMessage(this.$t('words.error_rename_folder_failed'))
                     })
                     .then(() => {
                         this.isLoading = false;
@@ -455,7 +455,7 @@
                     })
                     .catch(error => {
                         console.log('error', error);
-                        app.errorMessage('Error, loading folders failed')
+                        app.errorMessage(this.$t('words.error_loading_folder_failed'))
                     })
                     .then(() => {
                         node.loading = false;

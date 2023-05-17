@@ -6,6 +6,7 @@ import auth from "./auth";
 import api from '../api';
 import logger from './logger';
 import httpListener from "../httpListener";
+import i18n from "../plugin/i18n";
 
 class Http {
     constructor(apiName, axios) {
@@ -15,7 +16,7 @@ class Http {
             url: '',
             method: 'get',
             baseURL: '',
-            headers: {},
+            headers: {locale: i18n.locale},
             params: {},
             data: {},
             responseType: 'json',

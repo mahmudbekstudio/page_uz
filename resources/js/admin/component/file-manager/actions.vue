@@ -30,7 +30,7 @@
                     </template>
                     <v-list class="sub-menu-list">
                         <!--v-list-item @click="gotoFolder(file)"><v-list-item-title>Go to folder</v-list-item-title></v-list-item-->
-                        <v-list-item @click="unselect(file)"><v-list-item-title>Unselect</v-list-item-title></v-list-item>
+                        <v-list-item @click="unselect(file)"><v-list-item-title>{{ $t('words.unselect') }}</v-list-item-title></v-list-item>
                     </v-list>
                 </v-menu>
             </div>
@@ -64,15 +64,15 @@
                             class="selected-file"
                             :class="{'not-supported-file': !file.isSupport, 'uploading-error': file.error, 'uploaded-success': file.uploaded && !file.error}"
                     >
-                        <v-icon v-show="!file.uploaded && !file.uploading && file.isSupport" class="remove-selected-file" @click="removeSelectedFile(ind)">close</v-icon>
+                        <v-icon v-show="!file.uploaded && !file.uploading && file.isSupport" class="remove-selected-file" @click="removeSelectedFile(ind)">{{$t('words.close')}}</v-icon>
                         <v-icon v-show="file.uploaded && !file.error">check</v-icon>
                         <v-progress-circular :size="24" :width="2" v-show="file.uploading" indeterminate></v-progress-circular>
-                        <v-icon v-show="!file.isSupport || file.error" @click="removeSelectedFile(ind)">cancel</v-icon>
+                        <v-icon v-show="!file.isSupport || file.error" @click="removeSelectedFile(ind)">{{ $t('words.cancel') }}</v-icon>
                         <v-icon>{{ itemIco(file.extension) }}</v-icon>
                         <span>{{ file.fullName }}</span>
                     </div>
                 </div>
-                <v-btn block color="primary" @click="$refs.selectFile.click()">Select File</v-btn>
+                <v-btn block color="primary" @click="$refs.selectFile.click()">{{ $t('words.select_file') }}</v-btn>
                 <input
                         type="file"
                         ref="selectFile"
@@ -114,10 +114,10 @@
                     }
                 },
                 folderNameParams: {
-                    label: 'Name *',
-                    placeholder: 'Enter Folder Name',
+                    label: 'words.name',
+                    placeholder: 'words.enter_folder_name',
                     rules: [
-                        validation.required('Name')
+                        validation.required('words.name')
                     ]
                 },
                 selectedFiles: []
@@ -244,7 +244,7 @@
             createFolderSave: function () {
                 this.$refs.createFolderForm.validate();
                 if(!this.dialog.folderCreate.valid) {
-                    app.errorMessage('Form is not valid');
+                    app.errorMessage(this.$t('words.form_is_not_valid'));
                     return false;
                 }
                 this.$emit('onCreateFolderSave', this.dialog.folderCreate);
@@ -263,8 +263,7 @@
                         }
                     })
                     .catch(error => {
-                        file.error = 'Error';
-                        console.log('error');
+                        file.error = this.$t('words.error');
                         console.log(error);
                     })
                     .then(() => {
@@ -275,7 +274,7 @@
             uploadFileSave: function() {
                 this.$refs.uploadFileForm.validate();
                 if(!this.dialog.uploadFile.valid) {
-                    app.errorMessage('Form is not valid');
+                    app.errorMessage(this.$t('words.form_is_not_valid'));
                     return false;
                 }
                 let uploadingResult = [];

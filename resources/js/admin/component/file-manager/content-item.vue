@@ -25,7 +25,7 @@
             </template>
             <v-list class="sub-menu-list">
                 <v-list-item v-for="(item, ind) in getSubMenuList(value)" :key="ind" @click="subMenuClicked(item.value, value)">
-                    <v-list-item-title>{{item.text}}</v-list-item-title>
+                    <v-list-item-title>{{$t(item.text)}}</v-list-item-title>
                 </v-list-item>
             </v-list>
         </v-menu>
@@ -80,18 +80,18 @@
                     },
                 },
                 folderNameParams: {
-                    label: 'Name *',
-                    placeholder: 'Enter Folder Name',
+                    label: 'words.name',
+                    placeholder: 'words.enter_folder_name',
                     rules: [
-                        validation.required('Name')
+                        validation.required('words.name')
                     ]
                 },
                 fileNameParams: {
-                    label: 'Name *',
-                    placeholder: 'Enter File Name',
+                    label: 'words.name',
+                    placeholder: 'words.enter_file_name',
                     suffix: '',
                     rules: [
-                        validation.required('Name')
+                        validation.required('words.name')
                     ]
                 },
             }
@@ -238,7 +238,7 @@
             renameFolderSave() {
                 this.$refs.renameFolderForm.validate();
                 if(!this.dialog.renameFolder.valid) {
-                    app.errorMessage('Form is not valid');
+                    app.errorMessage(this.$t('words.form_is_not_valid'));
                     return false;
                 }
                 this.$emit('onRenameFolderSave', this.dialog.renameFolder);
@@ -246,7 +246,7 @@
             renameFileSave() {
                 this.$refs.renameFileForm.validate();
                 if(!this.dialog.renameFile.valid) {
-                    app.errorMessage('Form is not valid');
+                    app.errorMessage(this.$t('words.form_is_not_valid'));
                     return false;
                 }
                 this.$emit('onRenameFileSave', this.dialog.renameFile);
@@ -256,20 +256,20 @@
 
                 if(item.type === 'folder') {
                     result.push({
-                        text: 'Open',
+                        text: 'words.open',
                         value: 'open'
                     });
                     result.push({
-                        text: 'Rename',
+                        text: 'words.rename',
                         value: 'rename'
                     });
                     result.push({
-                        text: 'Delete',
+                        text: 'words.delete',
                         value: 'delete'
                     });
                 } else {
                     result.push({
-                        text: 'Select',
+                        text: 'words.select',
                         value: 'select'
                     });
                     /*if(constants.FILE_TYPES[this.value.item.extension] === 'image') {
@@ -279,11 +279,11 @@
                         });
                     }*/
                     result.push({
-                        text: 'Rename',
+                        text: 'words.rename',
                         value: 'rename'
                     });
                     result.push({
-                        text: 'Delete',
+                        text: 'words.delete',
                         value: 'delete'
                     });
                 }
@@ -302,7 +302,7 @@
                             break;
                         case 'delete':
                             app.openConfirm(
-                                'Do you really want to delete folder ' + '"' + this.value.item.name + '"?',
+                                this.$t('words.do_you_really_want_to_delete_folder') + ' ' + '"' + this.value.item.name + '"?',
                                 () => this.$emit('onDeleteFolder')
                             );
                             break;
@@ -324,7 +324,7 @@
                             break;
                         case 'delete':
                             app.openConfirm(
-                                'Do you really want to delete file ' + '"' + this.value.item.name + '.' + this.value.item.extension + '"?',
+                                this.$t('words.do_you_really_want_to_delete_file') + ' ' + '"' + this.value.item.name + '.' + this.value.item.extension + '"?',
                                 () => this.$emit('onDeleteFile')
                             );
                             break;

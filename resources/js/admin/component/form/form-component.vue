@@ -19,7 +19,7 @@
                         :key="'tab' + index"
                         :class="{'tab-has-error': tab.hasError}"
                 >
-                    {{ tab.title }}
+                    {{ $t(tab.title) }}
                 </v-tab>
             </v-tabs>
             <v-tabs-items v-model="tab">
@@ -53,6 +53,7 @@
                                             :params="{...field.params, fieldObject: field.field.fieldObject, defaultObject: field.field.defaultObject}"
                                             :events="{...field.events}"
                                             :form="formObject"
+                                            :has-lang="fieldHasLang(field.field)"
                                     />
                                 </div>
                             </v-col>
@@ -101,6 +102,7 @@
                 return this.$refs.form.validate();
             });
             this.$emit('resetValidation', () => this.$refs.form.resetValidation());
+            this.$emit('reset', () => this.$refs.form.reset());
             this.initFormObject(this.value);
         },
         computed: {
@@ -118,6 +120,9 @@
             }
         },
         methods: {
+            fieldHasLang(field) {
+                return typeof field.fieldObject.params.hasLang === 'undefined' ? field.hasLang : field.fieldObject.params.hasLang;
+            },
             validateTab() {
                 const errors = this.$refs.form.inputs.filter(e => (e.hasError && e.$attrs.fieldObject && (e.hasFocused || e.hasInput))).map(e => e.$attrs.fieldObject.name);
 
@@ -125,8 +130,9 @@
                     tab.hasError = !!tab.getFields().filter(field => errors.indexOf(field.field.fieldObject.name) > -1).length;
                 }
             },
-            fieldChanged(key, val) {
-                this.formObject.setFieldValue(key, val);
+            fieldChanged(key, val, lang) {
+                const field = this.formObject.setFieldValue(key, val, lang);
+                this.$emit('fieldChange', {form: this.formObject, field, value: val, language: lang});
                 this.$emit('input', this.formObject)
             },
             initFormObject (val) {

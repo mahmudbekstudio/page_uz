@@ -5,6 +5,7 @@ import i18n from "../plugin/i18n";
 
 const defaultStates = {
     website: null,
+    language: null,
     typeNavigation: [],
     drawer: true,
     title: '',
@@ -83,6 +84,9 @@ export default {
                 noCallback: val.noCallback
             };
         },
+        changeLanguage(state, val) {
+            state.language = val;
+        }
     },
 
     actions: {
@@ -92,11 +96,28 @@ export default {
         toggleDrawer({commit, state}) {
             commit('changeDrawer', !state.drawer);
         },
-        changeWebsite({commit}, val) {
-            if (!val.lang) {
-                val.lang = cache('current-lang') || i18n.locale;
+        changeWebsite({commit}, website) {
+            const selectedLangExist = website.metas.languages_list.indexOf(cache('current-lang')) > -1;
+            const websiteLangExist = website.metas.languages_list.indexOf(website.lang) > -1;
+
+            if (!selectedLangExist && websiteLangExist) {
+                cache('current-lang', website.lang);
+                i18n.locale = website.lang;
+            } else if (selectedLangExist && !websiteLangExist) {
+                website.lang = cache('current-lang');
+                i18n.locale = website.lang;
+            } else if(!selectedLangExist && !websiteLangExist) {
+                website.lang = website.metas.languages_list[0];
+                cache('current-lang', website.lang);
+                i18n.locale = website.lang;
             }
-            commit('changeWebsite', val);
+
+            commit('changeWebsite', website);
+        },
+        changeLanguage({commit}, val) {
+            cache('current-lang', val);
+            i18n.locale = val;
+            commit('changeLanguage', val);
         },
         changeTypeNavigation({commit}, val) {
             commit('changeTypeNavigation', val);
@@ -148,16 +169,25 @@ export default {
                 noCallback: val.noCallback
             })
         },
-        setCurrentLang({commit, state}, val) {
+        /*setCurrentLang({commit, state}, val) {
             cache('current-lang', val);
             i18n.locale = val;
             commit('changeWebsite', {...state.website, lang: val});
-        }
+        }*/
     },
 
     getters: {
         website(state) {
             return state.website;
+        },
+        language(state) {
+            const lang = state.language || cache('current-lang') || i18n.locale;
+
+            if (!state.website.metas.languages_list.indexOf(lang) === -1) {
+                return state.website.metas.languages_list.indexOf(state.website.lang) > -1 ? state.website.lang : state.website.metas.languages_list[0];
+            }
+
+            return lang;
         },
         typeNavigation(state) {
             return state.typeNavigation;

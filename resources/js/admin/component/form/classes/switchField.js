@@ -5,7 +5,7 @@ export default class switchField extends field {
         {
             type: 'switch',
             name: 'value',
-            params: {label: 'Default value'}
+            params: {label: 'words.default_value'}
         },
     ]
     constructor(params) {

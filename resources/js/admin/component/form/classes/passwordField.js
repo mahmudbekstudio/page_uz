@@ -5,12 +5,12 @@ export default class passwordField extends textField {
         {
             type: 'text',
             name: 'hint',
-            params: {label: 'Hint'}
+            params: {label: 'words.hint'}
         },
         {
             type: 'text',
             name: 'placeholder',
-            params: {label: 'Placeholder'}
+            params: {label: 'words.placeholder'}
         },
     ]
     constructor(params) {

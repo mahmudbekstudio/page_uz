@@ -14,7 +14,7 @@ class CategoryMeta extends Model
 {
     use BelongsToWebsite, BelongsToUser, HasFactory, WebsiteAddScopeTrait, UserAddScopeTrait;
 
-    protected $fillable = ['website_id', 'user_id', 'category_id', 'meta_format', 'meta_key', 'meta_value', 'lang'];
+    protected $fillable = ['website_id', 'user_id', 'category_id', 'meta_format', 'meta_key', 'meta_value'];
 
     protected static function booted()
     {

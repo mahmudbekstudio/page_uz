@@ -18,7 +18,7 @@
                         >
                             <v-text-field
                                 v-model="search"
-                                label="Search by fields First name, Last name and Email"
+                                :label="$t('words.search_by_fields_name_and_email')"
                             ></v-text-field>
                         </v-col>
                         <v-col
@@ -28,7 +28,7 @@
                             <v-select
                                 :items="statusOptions"
                                 v-model="filter.status.value"
-                                label="Status"
+                                :label="$t('words.status')"
                             ></v-select>
                         </v-col>
                         <v-col
@@ -38,7 +38,7 @@
                             <v-select
                                 :items="roleOptions"
                                 v-model="filter.role.value"
-                                label="Role"
+                                :label="$t('words.role')"
                             ></v-select>
                         </v-col>
                     </v-row>
@@ -104,12 +104,12 @@ export default {
             dialogActions: [
                 {
                     color: 'default',
-                    text: 'Cancel',
+                    text: 'words.cancel',
                     click: () => this.showDialog = false
                 },
                 {
                     color: 'primary',
-                    text: 'Save',
+                    text: 'words.save',
                     click: () => {
                         if (this.validationForm()) {
                             if (this.userForm?.data?.id) {
@@ -118,11 +118,11 @@ export default {
                                     this.userForm.form.getFieldValues(),
                                     () => {
                                         this.showDialog = false;
-                                        app.openMessage('Saved');
+                                        app.openMessage(this.$t('words.saved'));
                                         this.listReloadCallback();
                                     },
                                     () => {
-                                        app.openMessage('Error', constants.SNACKBAR_COLORS.error)
+                                        app.openMessage(this.$t('words.error'), constants.SNACKBAR_COLORS.error)
                                     }
                                 );
                             } else {
@@ -130,11 +130,11 @@ export default {
                                     this.userForm.form.getFieldValues(),
                                     () => {
                                         this.showDialog = false;
-                                        app.openMessage('Created');
+                                        app.openMessage(this.$t('words.created'));
                                         this.listReloadCallback();
                                     },
                                     () => {
-                                        app.openMessage('Error', constants.SNACKBAR_COLORS.error)
+                                        app.openMessage(this.$t('words.error'), constants.SNACKBAR_COLORS.error)
                                     }
                                 );
                             }
@@ -176,12 +176,12 @@ export default {
 
         this.headers = [
             { text: 'Id', value: 'id' },
-            { text: 'First name', value: 'first_name' },
-            { text: 'Last name', value: 'last_name' },
+            { text: 'words.first_name', value: 'first_name' },
+            { text: 'words.last_name', value: 'last_name' },
             { text: 'Email', value: 'email' },
-            { text: 'Status', value: 'status' },
-            { text: 'Role', value: 'role' },
-            { text: 'Created', value: 'created_at' },
+            { text: 'words.status', value: 'status' },
+            { text: 'words.role', value: 'role' },
+            { text: 'words.created', value: 'created_at' },
         ];
     },
 
@@ -192,11 +192,11 @@ export default {
         dialogTitle () {
             return this.userForm?.data?.id ?
                 this.userForm.data.first_name + ' ' + this.userForm.data.last_name :
-                'Create user';
+                this.$t('words.create_user');
         },
         roleOptions () {
             const result = [
-                {text: 'Show all roles', value: ''}
+                {text: this.$t('words.show_all_roles'), value: ''}
             ];
 
             for(let role of mainConfig.app.userRoles) {
@@ -207,7 +207,7 @@ export default {
         },
         statusOptions () {
             const result = [
-                {text: 'Show all status', value: ''}
+                {text: this.$t('words.show_all_status'), value: ''}
             ];
 
             for(let statusId in mainConfig.app.status.user) {
@@ -230,12 +230,12 @@ export default {
         },
         clickDelete () {
             const userName = this.userForm.data.first_name + ' ' + this.userForm.data.last_name;
-            app.openConfirm('Do you realy want to delete user ' + userName + '?', () => {
+            app.openConfirm(this.$t('words.do_you_really_want_to_delete_user') + ' ' + userName + '?', () => {
                 this.$options.service.delete(this.userForm.data.id, () => {
                     this.showDialog = false;
-                    app.openMessage('Deleted');
+                    app.openMessage(this.$t('words.deleted'));
                     this.listReloadCallback();
-                }, () => app.openMessage('Error'));
+                }, () => app.openMessage(this.$t('words.error')));
             });
         },
         getStatusColor (statusId) {

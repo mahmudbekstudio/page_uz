@@ -2,13 +2,13 @@
     <div class="page-header" v-if="title || actions.length">
         <v-app-bar>
 
-            <v-toolbar-title>{{ title }}</v-toolbar-title>
+            <v-toolbar-title>{{ $t(title) }}</v-toolbar-title>
 
             <div class="flex-grow-1"></div>
 
             <v-btn v-for="(btn, i) in actions" class="hidden-sm-and-down" :key="i" v-on="btn.on" v-bind="btn.bind">
                 <v-icon v-if="btn.icon">{{btn.icon}}</v-icon>
-                {{btn.title}}
+                {{$t(btn.title)}}
             </v-btn>
 
             <v-menu
@@ -32,7 +32,7 @@
                             <v-icon v-text="btn.icon"></v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title v-text="btn.title"></v-list-item-title>
+                            <v-list-item-title>{{$t(btn.title)}}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list>

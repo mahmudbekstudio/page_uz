@@ -3,7 +3,7 @@ export default {
         title: {
             type: String,
             default() {
-                return this.multiple ? this.$t('filemanager.select_files') : this.$t('filemanager.select_file');
+                return this.multiple ? 'filemanager.select_files' : 'filemanager.select_file';
             }
         },
         multiple: {

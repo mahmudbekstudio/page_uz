@@ -5,7 +5,8 @@ export default class radioField extends field {
         {
             type: 'textarea',
             name: 'options',
-            params: {label: 'Options list', hint: 'Every item in line, key:value'}
+            hasLang: false,
+            params: {label: 'words.options_list', hint: 'words.every_item_in_line'}
         },
     ]
     constructor(params) {

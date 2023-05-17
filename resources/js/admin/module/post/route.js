@@ -14,7 +14,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Post list'
+                title: 'words.post_list'
             }
         },
         {
@@ -24,7 +24,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Post create'
+                title: 'words.post_create'
             }
         },
         {
@@ -34,7 +34,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'Post edit'
+                title: 'words.post_edit'
             }
         },
     ]

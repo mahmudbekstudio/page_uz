@@ -35,7 +35,6 @@ export default {
     computed: {
         ...mapGetters({
             loading: 'view/loading',
-            website: 'view/website',
         }),
     },
     watch: {
@@ -51,23 +50,16 @@ export default {
         loading(val) {
             this.actions.forEach(item => item.bind.disabled = val);
         },
-        'website.lang'(newLang, oldLang) {
-            this.currentLangChanged(newLang, oldLang);
-        },
     },
     methods: {
-        currentLangChanged() {
-            this.actions = [];
-            this.actions.push(getPageBoxAction(this.$t('words.back'), '', {color: 'default', disabled: false}, {
-                click: this.back
-            }));
-            this.actions.push(getPageBoxAction(this.$t('words.' + (this.$options.service.isEdit ? 'update' : 'create')), '', {color: 'primary', disabled: false}, {
-                click: this.save
-            }));
-        },
         init() {
             this.formValue = null;
-            this.currentLangChanged();
+            this.actions.push(getPageBoxAction('words.back', '', {color: 'default', disabled: false}, {
+                click: this.back
+            }));
+            this.actions.push(getPageBoxAction('words.' + (this.$options.service.isEdit ? 'update' : 'create'), '', {color: 'primary', disabled: false}, {
+                click: this.save
+            }));
             this.loadType();
         },
         loadType() {
@@ -95,9 +87,9 @@ export default {
                     this.formValue.getFieldValues(),
                     response => {
                         if (this.$options.service.isEdit) {
-                            app.successMessage('Updated');
+                            app.successMessage(this.$t('words.updated'));
                         } else {
-                            app.successMessage('Created');
+                            app.successMessage(this.$t('words.created'));
                             this.back();
                         }
                     }

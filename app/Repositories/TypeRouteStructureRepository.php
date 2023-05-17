@@ -19,7 +19,7 @@ class TypeRouteStructureRepository extends BaseRepository {
         return TypeRouteStructure::class;
     }
 
-    public function getItem($typeId, $parentId): TypeRouteStructure
+    public function getItem($typeId, $parentId): TypeRouteStructure|null
     {
         $result = $this->getVar($typeId . '_' . $parentId);
 

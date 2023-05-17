@@ -10,7 +10,7 @@
         :multiple="multiple"
         :min="min"
         :max="max"
-        :locale="locale"
+        :locale="locale || $i18n.locale"
         :first-day-of-week="firstDayOfWeek"
         :elevation="elevation"
         :disabled="disabled"

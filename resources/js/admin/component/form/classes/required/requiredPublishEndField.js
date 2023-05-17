@@ -5,7 +5,7 @@ export default class requiredPublishEndField extends field {
     constructor(params) {
         super(params);
 
-        this.fieldObject.params.label = 'Publish end date';
+        this.fieldObject.params.label = 'words.publish_end_date';
         this.fieldObject.name = 'publishEnd';
     }
 }

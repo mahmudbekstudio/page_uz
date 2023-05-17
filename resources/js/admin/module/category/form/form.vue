@@ -55,10 +55,10 @@ export default {
         init() {
             this.actions = [];
             this.formValue = null;
-            this.actions.push(getPageBoxAction(this.$t('words.back'), '', {color: 'default', disabled: false}, {
+            this.actions.push(getPageBoxAction('words.back', '', {color: 'default', disabled: false}, {
                 click: this.back
             }));
-            this.actions.push(getPageBoxAction(this.$t('words.' + (this.$options.service.isEdit ? 'update' : 'create')), '', {color: 'primary', disabled: false}, {
+            this.actions.push(getPageBoxAction('words.' + (this.$options.service.isEdit ? 'update' : 'create'), '', {color: 'primary', disabled: false}, {
                 click: this.save
             }));
 
@@ -89,9 +89,9 @@ export default {
                     this.formValue.getFieldValues(),
                     response => {
                         if (this.$options.service.isEdit) {
-                            app.successMessage('Updated');
+                            app.successMessage(this.$t('words.updated'));
                         } else {
-                            app.successMessage('Created');
+                            app.successMessage(this.$t('words.created'));
                             this.back();
                         }
                     }

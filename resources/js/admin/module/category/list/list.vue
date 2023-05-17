@@ -74,30 +74,30 @@ export default {
     methods: {
         init() {
             this.actions = [];
-            this.actions.push(getPageBoxAction(this.$t('words.create'), '', {color: 'primary'}, {
+            this.actions.push(getPageBoxAction('words.create', '', {color: 'primary'}, {
                 click: () => this.$router.push({name: 'category.create', params: {typeId: this.typeId}})
             }));
 
             this.headers = [
                 { text: 'Id', value: 'id' },
-                { text: 'Title', value: 'title' },
-                { text: 'Status', value: 'status' },
-                { text: 'Parent', value: 'parent' },
-                { text: 'Template', value: 'template' },
-                { text: 'Created', value: 'created_at' },
-                { text: 'Actions', value: 'actions' },
+                { text: 'words.title', value: 'title' },
+                { text: 'words.status', value: 'status' },
+                { text: 'words.parent', value: 'parent' },
+                { text: 'words.template', value: 'template' },
+                { text: 'words.created', value: 'created_at' },
+                { text: 'words.actions', value: 'actions' },
             ];
 
             this.listReloadCallback && this.listReloadCallback();
         },
         clickDelete (item) {
-            app.openConfirm('Do you really want to delete category "' + item.title + '"', () => {
+            app.openConfirm(this.$t('words.do_you_really_want_to_delete_category') + ' "' + item.title + '"', () => {
                 this.$options.service.delete(item.id, response => {
                     if (response.result) {
                         this.listReloadCallback();
-                        app.successMessage('Deleted');
+                        app.successMessage(this.$t('words.deleted'));
                     } else {
-                        app.errorMessage('Error');
+                        app.errorMessage(this.$t('words.error'));
                     }
                 });
             });

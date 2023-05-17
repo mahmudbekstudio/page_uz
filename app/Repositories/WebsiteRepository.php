@@ -96,8 +96,7 @@ class WebsiteRepository extends BaseRepository {
             $result = [];
 
             foreach($metas as $meta) {
-                $key = $meta->lang ? $meta->meta_key . '_' . $meta->lang : $meta->meta_key;
-                $result[$key] = DataFormat::toFormat($meta->meta_value, $meta->meta_format);
+                $result[$meta->meta_key] = DataFormat::toFormat($meta->meta_value, $meta->meta_format);
             }
 
             $this->setVar('metas_' . $id, $result);
@@ -108,8 +107,12 @@ class WebsiteRepository extends BaseRepository {
 
     public function getMetaValue(string $keyValue, string $lang = '') {
         $metas = $this->getMetas();
-        $key = $lang ? $keyValue . '_' . $lang : $keyValue;
-        return $metas[$key] ?: null;
+
+        if (gettype($metas[$keyValue]) === 'array' && isset($metas[$keyValue][$lang])) {
+            return $metas[$keyValue][$lang];
+        }
+
+        return $metas[$keyValue] ?: null;
     }
 
     public function getMetaLangValue(string $keyValue) {

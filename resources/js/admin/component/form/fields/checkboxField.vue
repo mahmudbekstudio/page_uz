@@ -1,6 +1,6 @@
 <template>
     <div>
-        <label class="field-label v-label theme--light">{{params.label}}</label>
+        <label class="field-label v-label theme--light">{{labelText}}</label>
         <v-checkbox
             v-for="(item, key) in list"
             :key="key"
@@ -8,9 +8,11 @@
             v-on="events"
             v-model="checkboxValues"
             :disabled="disabled"
-            :label="item"
+            :label="$t(item)"
             :value="key"
             hide-details
+            :hint="params?.hint ? $t(params.hint) : null"
+            :placeholder="params?.placeholder ? $t(params.placeholder) : null"
         ></v-checkbox>
     </div>
 </template>
