@@ -1,5 +1,5 @@
 <template>
-    <div class="content-item" :class="{'disabled': isLoading || disabled}" @click="itemClick">
+    <div class="content-item" :class="{'disabled': isLoading || disabled, 'content-item-checked': value.item.selected}" @click="itemClick">
         <div class="item-check" v-if="value.type !== 'folder'">
             <v-icon v-if="value.item.selected">mdi-checkbox-marked</v-icon>
             <v-icon v-else>mdi-checkbox-blank</v-icon>
@@ -61,7 +61,7 @@
     import FormField from '../form/field-component';
     import validation from '../../config/validation';
     import app from '../../service/app';
-    import {mapGetters} from "vuex";
+
     export default {
         data() {
             return {
@@ -117,13 +117,31 @@
                 default() {
                     return {};
                 }
-            }
+            },
+            fileBaseUrl: {
+                type: String,
+                default () {
+                    return '';
+                }
+            },
+            canRenameFolder: {
+                type: Boolean,
+                default: true
+            },
+            canDeleteFolder: {
+                type: Boolean,
+                default: true
+            },
+            canRenameFile: {
+                type: Boolean,
+                default: true
+            },
+            canDeleteFile: {
+                type: Boolean,
+                default: true
+            },
         },
         computed: {
-            ...mapGetters({
-                website: 'view/website',
-            }),
-
             itemIco() {
                 if(this.value.type === 'folder') {
                     return 'mdi-folder';
@@ -141,7 +159,7 @@
                     return false;
                 }
 
-                return this.website.fileBaseUrl + this.selectedFolder.path + '/' + this.value.item.name + '.' + this.value.item.extension;
+                return this.fileBaseUrl + this.selectedFolder.path + '/' + this.value.item.name + '.' + this.value.item.extension;
             }
         },
         watch: {
@@ -259,14 +277,18 @@
                         text: 'words.open',
                         value: 'open'
                     });
-                    result.push({
-                        text: 'words.rename',
-                        value: 'rename'
-                    });
-                    result.push({
-                        text: 'words.delete',
-                        value: 'delete'
-                    });
+                    if (this.canRenameFolder) {
+                        result.push({
+                            text: 'words.rename',
+                            value: 'rename'
+                        });
+                    }
+                    if (this.canDeleteFolder) {
+                        result.push({
+                            text: 'words.delete',
+                            value: 'delete'
+                        });
+                    }
                 } else {
                     result.push({
                         text: 'words.select',
@@ -278,14 +300,18 @@
                             value: 'open_image'
                         });
                     }*/
-                    result.push({
-                        text: 'words.rename',
-                        value: 'rename'
-                    });
-                    result.push({
-                        text: 'words.delete',
-                        value: 'delete'
-                    });
+                    if (this.canRenameFile) {
+                        result.push({
+                            text: 'words.rename',
+                            value: 'rename'
+                        });
+                    }
+                    if (this.canDeleteFile) {
+                        result.push({
+                            text: 'words.delete',
+                            value: 'delete'
+                        });
+                    }
                 }
 
                 return result;
@@ -357,6 +383,11 @@
         margin: 3px;
         position: relative;
         vertical-align: middle;
+        &-checked {
+            border-color: #4ba5ff;
+            background-color: #eaeaea;
+            border-width: 2px;
+        }
         &.disabled {
             &:before {
                 content: "";
@@ -377,6 +408,12 @@
         }
         &:hover {
             background-color: #eee;
+
+            .item-ico {
+                img {
+                    opacity: 1;
+                }
+            }
         }
         .item-check {
             position: absolute;
@@ -397,6 +434,7 @@
             img {
                 max-width: 100%;
                 max-height: 100%;
+                opacity: .7;
             }
         }
         .item-name {

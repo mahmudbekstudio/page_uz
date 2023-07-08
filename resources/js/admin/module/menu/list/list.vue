@@ -59,7 +59,7 @@ export default {
             this.$router.push({name: 'menu.edit', params: {menu: row.id}})
         },
         clickDelete (item) {
-            app.openConfirm(this.$('words.do_you_really_want_to_delete_menu') + ' "' + item.name + '"', () => {
+            app.openConfirm(this.$t('words.do_you_really_want_to_delete_menu') + ' "' + this.$t(item.name) + '"', () => {
                 this.$options.service.delete(item.id, response => {
                     if (response.result) {
                         this.listReloadCallback();

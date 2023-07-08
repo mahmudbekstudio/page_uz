@@ -2,10 +2,10 @@
     <div class="file-manager-actions">
         <div class="actions">
             <v-btn-toggle multiple active-class="custom-toggle">
-                <v-btn :disabled="isLoading" text depressed small @click="filePlusClicked">
+                <v-btn v-if="canAddFile" :disabled="isLoading" text depressed small @click="filePlusClicked">
                     <v-icon>mdi-file-plus</v-icon>
                 </v-btn>
-                <v-btn :disabled="isLoading" text depressed small @click="folderPlusClicked">
+                <v-btn v-if="canAddFolder" :disabled="isLoading" text depressed small @click="folderPlusClicked">
                     <v-icon>mdi-folder-plus</v-icon>
                 </v-btn>
                 <v-btn :disabled="isLoading" text depressed small :class="{'v-btn--active': selectedFilesShow}" @click="showSelectedFiles">
@@ -141,7 +141,19 @@
                 default() {
                     return []
                 }
-            }
+            },
+            canAddFile: {
+                type: Boolean,
+                default () {
+                    return true;
+                }
+            },
+            canAddFolder: {
+                type: Boolean,
+                default () {
+                    return true;
+                }
+            },
         },
         computed: {
             accept () {

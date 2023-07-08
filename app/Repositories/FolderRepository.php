@@ -14,8 +14,21 @@ class FolderRepository extends BaseRepository {
         return Folder::class;
     }
 
-    public function byParentId(int $id = 0)
+    public function byParentId(int $id = 0, $isLocal = false)
     {
-        return $this->findByField('parent_id', $id, ['id', 'name', 'path']);
+        $where = ['parent_id' => $id, 'is_local' => $isLocal];
+        $columns = ['id', 'name', 'path', 'is_local'];
+
+        if ($isLocal) {
+            $websiteRepository = WebsiteRepository::getInstance();
+            $currentWebsite = $websiteRepository->getCurrent();
+            $websiteRepository->setCurrent($websiteRepository->getMain()->id);
+            $list = $this->findWhere($where, $columns);
+            $websiteRepository->setCurrent($currentWebsite->id);
+
+            return $list;
+        }
+
+        return $this->findWhere($where, $columns);
     }
 }

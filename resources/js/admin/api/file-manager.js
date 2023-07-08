@@ -7,6 +7,13 @@ const folderContent = {
         this.urlParam('{id}', id);
     }
 };
+const folderStaticContent = {
+    ...Route.admin('file-manager.folder-static-content'),
+    token: true,
+    callback: function(id = 0) {
+        this.urlParam('{id}', id);
+    }
+};
 const createFolder = {
     ...Route.admin('file-manager.create-folder'),
     token: true,
@@ -69,6 +76,7 @@ const deleteFile = {
 
 export default {
     folderContent,
+    folderStaticContent,
     createFolder,
     renameFolder,
     deleteFolder,

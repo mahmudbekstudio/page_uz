@@ -171,6 +171,9 @@
             },
 
             isEqual(obj1, obj2) {
+                if (typeof obj1 === 'undefined' || typeof obj2 === 'undefined') {
+                    return false;
+                }
                 const obj1Keys = Object.keys(obj1 || {}).map(item => item.toString()).join(',');
                 const obj2Keys = Object.keys(obj2 || {}).map(item => item.toString()).join(',');
                 const obj1Values = Object.values(obj1 || {}).map(item => item.toString()).join(',');

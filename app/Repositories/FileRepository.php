@@ -14,13 +14,26 @@ class FileRepository extends BaseRepository {
         return File::class;
     }
 
-    public function byFolderId(int $id = 0)
+    public function byFolderId(int $id = 0, $isLocal = false)
     {
-        return $this->findByField('folder_id', $id, ['id', 'folder_id', 'size', 'name', 'extension']);
+        $where = ['folder_id' => $id, 'is_local' => $isLocal];
+        $columns = ['id', 'folder_id', 'size', 'name', 'extension', 'is_local'];
+
+        if ($isLocal) {
+            $websiteRepository = WebsiteRepository::getInstance();
+            $currentWebsite = $websiteRepository->getCurrent();
+            $websiteRepository->setCurrent($websiteRepository->getMain()->id);
+            $list = $this->findWhere($where, $columns);
+            $websiteRepository->setCurrent($currentWebsite->id);
+
+            return $list;
+        }
+
+        return $this->findWhere($where, $columns);
     }
 
-    public function getByName($folderId, $name, $ext)
+    public function getByName($folderId, $name, $ext, $isLocal = false)
     {
-        return $this->findWhere(['folder_id' => $folderId, 'name' => $name, 'extension' => $ext]);
+        return $this->findWhere(['folder_id' => $folderId, 'is_local' => $isLocal, 'name' => $name, 'extension' => $ext]);
     }
 }

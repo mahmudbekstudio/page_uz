@@ -51,6 +51,10 @@ class WebsiteRepository extends BaseRepository {
         return $this->getVar('current-website');
     }
 
+    public function getMain() {
+        return $this->getByDomain(config('app.main_website'));
+    }
+
     /**
      * Get website model by domain name
      *

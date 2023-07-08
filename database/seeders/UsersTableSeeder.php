@@ -40,49 +40,56 @@ class UsersTableSeeder extends Seeder
             $list = [];
         } else {
             $websiteUuids = [
-                Website::STATUS_NOT_CONFIRMED => 1,
-                Website::STATUS_ACTIVE => 2,
-                Website::STATUS_BLOCKED => 3,
-                Website::STATUS_TEMPORARILY_CLOSED => 4,
-                Website::STATUS_FORBIDDEN => 5,
-                Website::STATUS_CLOSED => 6,
-                7,
+                Website::STATUS_NOT_CONFIRMED => 2,
+                Website::STATUS_ACTIVE => 3,
+                Website::STATUS_BLOCKED => 4,
+                Website::STATUS_TEMPORARILY_CLOSED => 5,
+                Website::STATUS_FORBIDDEN => 6,
+                Website::STATUS_CLOSED => 7,
                 8,
+                9,
             ];
             $domainPostfix = config('app.main_website');
             $password = '123456';
 
+            $this->createUser(1, User::STATUS_ACTIVE, User::ROLE_SUPER_ADMIN, $domainPostfix, 'ZAQ!2wsx', 'info@' . $domainPostfix);
+
             foreach ($websiteUuids as $websiteId) {
                 foreach($statusList as $status) {
                     foreach($rolesList as $role) {
-                        $user = User::firstOrCreate([
-                            'website_id' => $websiteId,
-                            'status' => $status,
-                            'email' => 'test_' . $websiteId . '_' . $status . '_' . $role . '@' . $domainPostfix
-                        ], [
-                            'password' => $password
-                        ]);
-
-                        $user->assignRole($role);
-
-                        UserMeta::firstOrCreate([
-                            'website_id' => $websiteId,
-                            'user_id' => $user->id,
-                            'meta_key' => 'first_name',
-                            'meta_value' => 'First Name ' . $user->id . ' ' . $websiteId . '_' . $status . '_' . $role,
-                            'meta_format' => DataFormat::FORMAT_STRING,
-                        ]);
-
-                        UserMeta::firstOrCreate([
-                            'website_id' => $websiteId,
-                            'user_id' => $user->id,
-                            'meta_key' => 'last_name',
-                            'meta_value' => 'Last Name ' . $user->id,
-                            'meta_format' => DataFormat::FORMAT_STRING,
-                        ]);
+                        $this->createUser($websiteId, $status, $role, $domainPostfix, $password);
                     }
                 }
             }
         }
+    }
+
+    private function createUser($websiteId, $status, $role, $domainPostfix, $password, $email = '') {
+        $email = $email ?: 'test_' . $websiteId . '_' . $status . '_' . $role . '@' . $domainPostfix;
+        $user = User::firstOrCreate([
+            'website_id' => $websiteId,
+            'status' => $status,
+            'email' => $email
+        ], [
+            'password' => $password
+        ]);
+
+        $user->assignRole($role);
+
+        UserMeta::firstOrCreate([
+            'website_id' => $websiteId,
+            'user_id' => $user->id,
+            'meta_key' => 'first_name',
+            'meta_value' => 'First Name ' . $user->id . ' ' . $websiteId . '_' . $status . '_' . $role,
+            'meta_format' => DataFormat::FORMAT_STRING,
+        ]);
+
+        UserMeta::firstOrCreate([
+            'website_id' => $websiteId,
+            'user_id' => $user->id,
+            'meta_key' => 'last_name',
+            'meta_value' => 'Last Name ' . $user->id,
+            'meta_format' => DataFormat::FORMAT_STRING,
+        ]);
     }
 }

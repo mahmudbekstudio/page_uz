@@ -14,6 +14,7 @@ import timeField from "./timeField";
 import radioField from "./radioField";
 import checkboxField from "./checkboxField";
 import editorField from "./editorField";
+import colorField from "./colorField";
 import advancedParentField from './advanced/advancedParentField';
 import advancedChildOfField from './advanced/advancedChildOfField';
 import requiredPublishStartField from './required/requiredPublishStartField';
@@ -80,6 +81,27 @@ export class Form {
         return this.getCol(col, row, tab).addField(fieldObj);
     }
 
+    removeFieldByName(name) {
+        for (const tab of this.children) {
+            if (tab.removeFieldByName(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    getFieldByName(name) {
+        for (const tab of this.children) {
+            const result = tab.getFieldByName(name);
+            if (result) {
+                return true;
+            }
+        }
+
+        return null;
+    }
+
     getFieldBykey(key) {
         const keys = key.split(FORM.fieldKeySplitter);
         return keys.length === 4 ? this.getField(keys[3], keys[2], keys[1], keys[0]) : null;
@@ -93,7 +115,9 @@ export class Form {
                 if (JSON.stringify(field.value)[0] !== '{')  {
                     field.value = {};
                 }
-                field.value[lang] = val;
+                const fieldValue = field.value;
+                fieldValue[lang] = val;
+                field.value = fieldValue;
             } else {
                 field.value = val;
             }
@@ -182,6 +206,27 @@ export class Tab {
         return this.getChild(row).getChild(col).addField(fieldObj);
     }
 
+    removeFieldByName(name) {
+        for (const row of this.children) {
+            if (row.removeFieldByName(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    getFieldByName(name) {
+        for (const row of this.children) {
+            const result = row.getFieldByName(name);
+            if (result) {
+                return true;
+            }
+        }
+
+        return null;
+    }
+
     getFields() {
         const result = [];
 
@@ -249,6 +294,27 @@ export class Row {
         return this.getChild(col).addField(fieldObj);
     }
 
+    removeFieldByName(name) {
+        for (const col of this.children) {
+            if (col.removeFieldByName(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    getFieldByName(name) {
+        for (const col of this.children) {
+            const result = col.getFieldByName(name);
+            if (result) {
+                return true;
+            }
+        }
+
+        return null;
+    }
+
     set json(val) {
         val.children = val.children || [];
         for(let i = 0; i < val.children.length; i++) {
@@ -291,6 +357,27 @@ export class Col {
         const field = new Field({...fieldObj, isConstructor: this.isConstructor});
         this.children.push(field);
         return field;
+    }
+
+    removeFieldByName(name) {
+        for (const fieldIndex in this.children) {
+            if (this.children[fieldIndex].name === name) {
+                this.children.splice(fieldIndex, 1);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    getFieldByName(name) {
+        for (const fieldIndex in this.children) {
+            if (this.children[fieldIndex].name === name) {
+                return this.children[fieldIndex];
+            }
+        }
+
+        return null;
     }
 
     set json(val) {
@@ -396,6 +483,9 @@ export class Field {
                 break;
             case 'editor':
                 this.field = new editorField(fieldObj);
+                break;
+            case 'color':
+                this.field = new colorField(fieldObj);
                 break;
             case 'validation':
                 this.field = new validationField(fieldObj);

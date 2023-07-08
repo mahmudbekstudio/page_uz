@@ -24,6 +24,11 @@ class FolderFileController extends Controller
         return responseJsonData(true, $this->folderFileService->folderContent($id));
     }
 
+    public function folderStaticContent(int $id)
+    {
+        return responseJsonData(true, $this->folderFileService->folderStaticContent($id));
+    }
+
     public function createFolder(CreateFolderRequest $request)
     {
         $data = $request->only(['folder_id', 'name']);

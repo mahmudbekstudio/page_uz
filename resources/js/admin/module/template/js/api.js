@@ -1,0 +1,40 @@
+import route from '../../../api/route';
+
+const api = {
+    create: {
+        ...route.admin('template.create'),
+        callback: function(form) {
+            this.data(form);
+        },
+        token: true
+    },
+    edit: {
+        ...route.admin('template.edit'),
+        callback: function(id, form) {
+            this.urlParam('{template}', id);
+            this.data(form);
+        },
+        token: true
+    },
+    delete: {
+        ...route.admin('template.delete'),
+        callback: function(id) {
+            this.urlParam('{template}', id);
+        },
+        token: true
+    },
+    get: {
+        ...route.admin('template.get'),
+        callback: function(id) {
+            this.urlParam('{template}', id);
+        },
+        token: true
+    },
+
+    blocks: {
+        ...route.admin('template.blocks'),
+        token: true
+    }
+};
+
+export default api;

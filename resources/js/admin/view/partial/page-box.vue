@@ -1,6 +1,8 @@
 <template>
     <div class="page-box-wrapper">
-        <page-header :actions="actions"></page-header>
+        <page-header :actions="actions">
+            <template #actions><slot name="actions"></slot></template>
+        </page-header>
         <div class="page-box">
             <slot></slot>
         </div>

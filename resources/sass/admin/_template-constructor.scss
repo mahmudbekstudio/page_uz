@@ -1,0 +1,122 @@
+.template-constructor {
+    .constructor-container {
+        .constructor-row {
+            position: relative;
+
+            .row-action {
+                display: none;
+                position: absolute;
+                left: -24px;
+                width: 24px;
+                z-index: 1;
+
+                .row-actions-list {
+                    border-radius: 5px 0 0 5px;
+                    overflow: hidden;
+
+                    .action-ico {
+                        cursor: pointer;
+                        fill: #FFF;
+                        margin-bottom: 1px;
+                        background-color: #333;
+                        display: block;
+                        height: 26px;
+
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
+
+                        &:hover {
+                            background-color: #AAA;
+                            fill: #000;
+                        }
+                    }
+                }
+            }
+
+            &:hover {
+                outline: 1px solid #dee2e6;
+                background-color: #F6F6F6;
+
+                .row-action {
+                    display: block;
+                }
+            }
+
+            .constructor-col {
+                position: relative;
+
+                .cell-action {
+                    display: none;
+                    position: absolute;
+                    top: -27px;
+                    left: 50%;
+                    margin-left: -45px;
+                    height: 30px;
+                    color: #FFF;
+
+                    .cell-actions-list {
+                        border-radius: 5px 5px 0 0;
+                        overflow: hidden;
+                        display: flex;
+
+                        .action-ico {
+                            cursor: pointer;
+                            fill: #FFF;
+                            margin-right: 1px;
+                            background-color: #333;
+                            display: inline-block;
+                            width: 26px;
+                            height: 26px;
+
+                            &:last-child {
+                                margin-right: 0;
+                            }
+
+                            &:hover {
+                                background-color: #AAA;
+                                fill: #000;
+                            }
+                        }
+                    }
+                }
+
+                &:hover {
+                    outline: 1px solid #dee2e6;
+                    background-color: #F6F6F6;
+
+                    .cell-action {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.constructor-element {
+    .transition-group {
+        display: block;
+        min-height: 24px;
+    }
+}
+
+.layout-templates-list {
+    .dialog-card {
+        height: 100%;
+        .v-card__text {
+            height: 90%;
+            padding-bottom: 0;
+            .container {
+                height: 100%;
+                .row {
+                    height: 100%;
+                    .col-sm-9 {
+                        height: 100%;
+                        overflow: auto;
+                    }
+                }
+            }
+        }
+    }
+}

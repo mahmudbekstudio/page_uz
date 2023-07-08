@@ -5,7 +5,7 @@
             :init="initConfig"
             :inline="inline"
             :plugins1="plugins"
-            :toolbar1="toolbar"
+            :toolbar1="toolbarFull"
             v-model="content"
         />
         <dialog-component
@@ -68,7 +68,13 @@ export default {
             default () {
                 return '';
             }
-        }
+        },
+        type: {
+            type: String,
+            default () {
+                return 'full';
+            }
+        },
     },
     computed: {
         ...mapGetters({
@@ -85,8 +91,9 @@ export default {
         initConfig () {
             this.init.menubar = '';
             this.init.plugins = this.plugins;
-            this.init.toolbar = this.toolbar;
+            this.init.toolbar = this.type === 'simple' ? this.toolbarSimple : this.toolbarFull;
             this.init.language = this.$i18n.locale;
+            this.init.forced_root_block = this.type === 'full';
             this.init.file_picker_callback = (callback, value, meta) => {
                 this.showDialog = true;
                 this.filePickerCallback = callback;
@@ -127,13 +134,19 @@ export default {
             ];
             return list.join(' ');
         },
-        toolbar () {
+        toolbarFull () {
             return [
                 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect | fullscreen',
                 'alignleft aligncenter alignright alignjustify | numlist bullist | outdent indent blockquote | forecolor backcolor removeformat',
                 'link anchor | image media | table | charmap emoticons insertdatetime | code codesample'
             ];
-        }
+        },
+        toolbarSimple () {
+            return [
+                'bold italic underline strikethrough | link | fontsizeselect',
+                'alignleft aligncenter alignright alignjustify | forecolor backcolor | image media'
+            ];
+        },
     },
     methods: {
         saveSelected(files) {

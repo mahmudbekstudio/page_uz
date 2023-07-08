@@ -9,7 +9,7 @@
                 :width="width"
                 :max-width="maxWidthValue"
         >
-            <v-card v-if="fullscreen">
+            <v-card v-if="fullscreen" :class="classes">
                 <v-card
                         tile
                         class="dialog-card"
@@ -27,7 +27,7 @@
                         >
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
-                        <span class="text-h5">{{$t(title)}}</span>
+                        <span class="text-h5">{{$t(title, titleValues)}}</span>
                         <div class="dialog-top"><slot name="top" /></div>
                         <v-spacer></v-spacer>
                         <v-toolbar-items>
@@ -113,6 +113,12 @@
             this.showCloseButton = !this.persistent;
         },
         props: {
+            classes: {
+                type: String,
+                default() {
+                    return '';
+                }
+            },
             withoutPadding: {
                 type: Boolean,
                 default() {
@@ -136,6 +142,12 @@
                 type: String,
                 default() {
                     return '';
+                }
+            },
+            titleValues: {
+                type: Object,
+                default() {
+                    return {};
                 }
             },
             value: {

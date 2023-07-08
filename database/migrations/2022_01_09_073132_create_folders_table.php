@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('parent_id') ->default(0)->index('parent_id');
             $table->string('name')->index('name');
             $table->string('path')->index('path');
+            $table->boolean('is_local')->default(false)->index('is_local');
             $table->timestamps();
 
             $table->foreign('website_id')->references('id')->on('websites');

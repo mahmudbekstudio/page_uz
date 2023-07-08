@@ -12,6 +12,10 @@ export const ROLES = {
     user: 'user'
 };
 
+export const TEMPLATE = {
+    elementKeySplitter: ':'
+}
+
 export const FORM = {
     fieldKeySplitter: ':'
 };

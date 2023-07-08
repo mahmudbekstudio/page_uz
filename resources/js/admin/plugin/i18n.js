@@ -74,5 +74,6 @@ Vue.prototype.$t = function (key) {
 export default new VueI18n({
     locale: store.getters['view/website']?.lang || cache('current-lang') || config.lang.locale,
     messages: loadLocaleMessages(),
-    fallbackLocale: config.lang.fallback_locale
+    fallbackLocale: config.lang.fallback_locale,
+    silentTranslationWarn: true,
 });

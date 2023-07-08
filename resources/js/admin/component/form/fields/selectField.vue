@@ -37,7 +37,7 @@
                             }
 
                             isFirst = false;
-                            result.push({header: key});
+                            result.push({header: this.$t(key)});
 
                             for(let subKey in item) {
                                 result.push({text: this.$t(item[subKey]), value: subKey});

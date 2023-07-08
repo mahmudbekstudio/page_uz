@@ -140,7 +140,7 @@ class SettingController extends Controller
                 "params" => [
                     "options" => $pages,
                     "valueType" => DataFormat::FORMAT_STRING,
-                    "label" => "words.pageHome"
+                    "label" => "words.home_page"
                 ],
             ],
             [
@@ -150,7 +150,7 @@ class SettingController extends Controller
                 "params" => [
                     "options" => $pages,
                     "valueType" => DataFormat::FORMAT_STRING,
-                    "label" => "words.page404"
+                    "label" => "words.404_page"
                 ],
             ],
             [

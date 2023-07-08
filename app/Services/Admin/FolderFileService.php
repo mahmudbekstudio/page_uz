@@ -12,6 +12,7 @@ class FolderFileService extends BaseService {
 
     private FolderRepository $folderRepository;
     private FileRepository $fileRepository;
+    private string $rootPath = '';
 
     public function __construct(FolderRepository $folderRepository, FileRepository $fileRepository)
     {
@@ -27,9 +28,17 @@ class FolderFileService extends BaseService {
         ];
     }
 
-    public function createFolder($folderId, $name)
+    public function folderStaticContent(int $id = 0): array
     {
-        $folderExist = $this->folderRepository->findWhere(['parent_id' => $folderId, 'name' => $name]);
+        return [
+            'folder' => $this->folderRepository->byParentId($id, true),
+            'file' => $this->fileRepository->byFolderId($id, true),
+        ];
+    }
+
+    public function createFolder($folderId, $name, $isLocal = false)
+    {
+        $folderExist = $this->folderRepository->findWhere(['parent_id' => $folderId, 'name' => $name, 'is_local' => $isLocal]);
 
         if(!$folderExist->isEmpty()) {
             return false;
@@ -48,11 +57,11 @@ class FolderFileService extends BaseService {
 
         $path .= '/' . $name;
 
-        if(!Storage::makeDirectory($path)) {
+        if(!$isLocal && !Storage::makeDirectory($path)) {
             return false;
         }
 
-        $newFolder = $this->folderRepository->create(['parent_id' => $folderId, 'name' => $name, 'path' => $path]);
+        $newFolder = $this->folderRepository->create(['parent_id' => $folderId, 'name' => $name, 'path' => $path, 'is_local' => $isLocal]);
 
         return $newFolder->toArray();
     }
@@ -145,8 +154,20 @@ class FolderFileService extends BaseService {
         return $folder->toArray();
     }
 
+    public function setRootPath($path) {
+        $this->rootPath = $path;
+    }
+
+    public function resetRootPath() {
+        $this->rootPath = '';
+    }
+
     private function websiteRootPath(): string
     {
+        if (!empty($this->rootPath)) {
+            return $this->rootPath;
+        }
+
         return '/' . getRootFolderName();
     }
 

@@ -31,11 +31,13 @@ class MenuService extends BaseService
 
     public function update($id, array $fields)
     {
+        $fields['name'] = json_encode($fields['name']);
         return $this->menuRepository->update($fields, $id)->only(['id', 'name', 'items']);
     }
 
     public function create(array $fields)
     {
+        $fields['name'] = json_encode($fields['name']);
         return $this->menuRepository->create($fields)->only(['id', 'name', 'items']);
     }
 

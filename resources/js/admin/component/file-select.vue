@@ -141,7 +141,7 @@
                     return false;
                 }
 
-                return this.website.fileBaseUrl + val.folderPath + '/' + val.name + '.' + val.extension;
+                return (val.is_local ? '' : this.website.fileBaseUrl) + val.folderPath + '/' + val.name + '.' + val.extension;
             }
         },
         components: {

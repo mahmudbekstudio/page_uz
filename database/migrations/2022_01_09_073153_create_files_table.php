@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('name')->index('name');
             $table->string('extension', 10)->index('extension');
             $table->unsignedInteger('size')->index('size');
+            $table->boolean('is_local')->default(false)->index('is_local');
             $table->timestamps();
 
             $table->foreign('website_id')->references('id')->on('websites');

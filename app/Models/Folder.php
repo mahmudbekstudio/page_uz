@@ -15,7 +15,7 @@ class Folder extends Model
 {
     use BelongsToWebsite, BelongsToUser, HasFactory, WebsiteAddScopeTrait, UserAddScopeTrait;
 
-    protected $fillable = ['website_id', 'user_id', 'parent_id', 'name', 'path'];
+    protected $fillable = ['website_id', 'user_id', 'parent_id', 'name', 'path', 'is_local'];
 
     protected static function booted()
     {

@@ -9,16 +9,16 @@
             <transition-group
                 type="transition"
                 class="transition-group"
-                :class="{'list-is-empty': !list.length}"
+                :class="{'list-is-empty': !list.length, 'is-sortable-list': isSortableList}"
             >
                 <div
                     v-for="(item, index) in list"
                     :key="item.key"
                     class="list-group"
                 >
-                    <div class="list-item">
+                    <div class="list-item" :class="{'list-item-active': item.isActive}">
                         <v-input>
-                            <v-icon slot="prepend" class="list-item-handle">mdi-menu</v-icon>
+                            <v-icon v-if="!item.notSort" slot="prepend" class="list-item-handle">mdi-menu</v-icon>
                             <v-btn-toggle mandatory slot="append">
                                 <slot name="actions" :item="item" :index="index" :indexes="[...indexes, index]" />
                             </v-btn-toggle>
@@ -26,6 +26,8 @@
                         </v-input>
                     </div>
                     <sort-list
+                        disabled
+                        v-if="item.canHasChild || item.children.length"
                         v-model="item.children"
                         is-sub-list
                         @add="addElement({...$event})"
@@ -34,14 +36,21 @@
                         <template v-slot:actions="{item, index, indexes}">
                             <slot name="actions" :item="item" :index="index" :indexes="[...indexes]"></slot>
                         </template>
+                        <template v-slot:append-item="{value, indexes}">
+                            <slot name="append-item" :value="value" :indexes="[...indexes]"></slot>
+                        </template>
                     </sort-list>
                 </div>
             </transition-group>
         </draggable>
+        <div :class="{'is-sub-list': isSubList}">
+            <slot name="append-item" :value="value" :indexes="[...indexes]"></slot>
+        </div>
     </div>
 </template>
 <script>
 import draggable from 'vuedraggable';
+//import TransitionGroup from "vue/src/platforms/web/runtime/components/transition-group";
 export default {
     name: 'sort-list',
     data() {
@@ -76,8 +85,20 @@ export default {
                 group: 'menu-list',
                 disabled: false,
                 ghostClass: "ghost",
-                handle: '.list-item-handle'
+                handle: '.list-item-handle',
+                move: e => this.moveElement(e)
             };
+        },
+        isSortableList() {
+            if (!this.list.length) {
+                return true;
+            }
+            for (const item of this.list) {
+                if (!item.notSort) {
+                    return true;
+                }
+            }
+            return false;
         },
         list: {
             get() {
@@ -114,7 +135,10 @@ export default {
     methods: {
         addElement(e) {
             this.$emit('add', e);
-        }
+        },
+        moveElement(e) {
+            return e.to.classList.contains('is-sortable-list');
+        },
     },
     components: {
         draggable,
@@ -132,6 +156,10 @@ export default {
         border-radius: 4px;
         padding: 4px 10px;
         margin: 5px 0 0 0;
+
+        &.list-item-active {
+            outline: 2px solid #068eef;
+        }
 
         .v-input__slot {
             margin: 4px 0;

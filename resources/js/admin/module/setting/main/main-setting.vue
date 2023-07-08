@@ -36,12 +36,12 @@
             };
         },
         created() {
-            const saveButton = getPageBoxAction(this.$t('words.save'), '', {color: 'primary', disabled: true}, {
+            const saveButton = getPageBoxAction('words.save', '', {color: 'primary', disabled: true}, {
                 click: () => {
                     this.submit();
                 }
             });
-            const resetButton = getPageBoxAction(this.$t('words.reset'), '', {color: 'default', disabled: true}, {
+            const resetButton = getPageBoxAction('words.reset', '', {color: 'default', disabled: true}, {
                 click: () => {
                     this.initForm();
                 }
@@ -73,9 +73,6 @@
                 for (const item of this.initialFormValues) {
                     const tab = this.settingForm.addTab({title: this.$t(item.title)});
                     for (const field of item.children) {
-                        if (field?.params?.label) {
-                            field.params.label = this.$t(field.params.label);
-                        }
                         tab.addField(field);
                     }
                 }

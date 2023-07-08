@@ -1,8 +1,21 @@
 <template>
     <div class="component-file-manager" :class="{'nav-hidden': !showNav, 'selected-files': selectedFilesShow}">
         <v-progress-linear class="progress" v-show="isLoading" :indeterminate="true"></v-progress-linear>
+
         <div class="navigation">
-            <TreeView :items="navList" @onClick="navClicked" default-icon="mdi-folder" opened-icon="mdi-folder-open"></TreeView>
+            <v-tabs v-model="folderTab" class="navigation-tabs">
+                <v-tabs-slider></v-tabs-slider>
+                <v-tab><v-icon>mdi-folder-home</v-icon></v-tab>
+                <v-tab><v-icon>mdi-folder-network</v-icon></v-tab>
+            </v-tabs>
+            <v-tabs-items v-model="folderTab">
+                <v-tab-item :key="0">
+                    <TreeView :items="navList" @onClick="navClicked" default-icon="mdi-folder" opened-icon="mdi-folder-open"></TreeView>
+                </v-tab-item>
+                <v-tab-item :key="1">
+                    <TreeView :items="navStaticList" @onClick="navClicked" default-icon="mdi-folder" opened-icon="mdi-folder-open"></TreeView>
+                </v-tab-item>
+            </v-tabs-items>
         </div>
         <div class="toolbar">
             <v-btn small text fab @click.prevent="toggleNav">
@@ -20,6 +33,8 @@
                     @onUploadFileSave="uploadFileSave"
                     @onGotoFolder="actionGotoFolder($event)"
                     @onUnselect="actionUnselect($event)"
+                    :can-add-file="!selectedFolder.is_local"
+                    :can-add-folder="!selectedFolder.is_local"
             ></Actions>
         </div>
         <div class="content" id="filemanager-content">
@@ -36,6 +51,11 @@
                         @input="itemSelected($event)"
                         :selectedFolder="selectedFolder"
                         :key="item.id"
+                        :can-rename-folder="!item.is_local"
+                        :can-rename-file="!item.is_local"
+                        :can-delete-folder="!item.is_local"
+                        :can-delete-file="!item.is_local"
+                        :file-base-url="selectedFolder.is_local ? '' : website.fileBaseUrl"
                 ></ContentType>
             </div>
         </div>
@@ -75,13 +95,14 @@
         })
     };
 
-    const fileManagerFile = function (id, folderId, name, extension = '', size = 0, selected = false) {
+    const fileManagerFile = function (id, folderId, name, extension = '', size = 0, selected = false, is_local = false) {
         return fileManagerContentType('file', {
             id,
             folderId,
             name,
             extension,
             size,
+            is_local,
             selected
         })
     };
@@ -124,12 +145,16 @@
     export default {
         data: function() {
             return {
+                folderTab: 0,
                 inited: false,
                 showNav: true,
                 breadcrumbItems: [],
                 navList: [],
+                navStaticList: [],
                 content: [],
                 isLoading: false,
+                isFolderLoading: false,
+                isStaticFolderLoading: false,
                 selectedFolder: {},
                 selectedFilesShow: false,
                 selectedFiles: [],
@@ -213,11 +238,15 @@
                     constants.FILE_TYPES[item.item.extension] !== this.fileType;
             },
             initSelectFiles(val) {
-                this.selectedFiles = val.map(file => fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size));
+                this.selectedFiles = val.map(file => fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size, false, file.is_local));
             },
             init() {
                 this.initSelectFiles(this.value);
                 this.isLoading = true;
+                this.loadFolderContent();
+                this.loadStaticFolderContent();
+            },
+            loadFolderContent() {
                 http(filemanagerApi.folderContent)
                     .callback(0)
                     .send()
@@ -229,6 +258,7 @@
                             path: '/' + this.website.metas['root-folder-path'],
                             opened: true,
                             active: true,
+                            is_local: false,
                             files: response.data.data.file
                         });
 
@@ -237,6 +267,7 @@
                                 label: foldersList[i].name,
                                 id: foldersList[i].id,
                                 path: foldersList[i].path,
+                                is_local: false,
                             }));
                         }
 
@@ -250,7 +281,46 @@
                         app.errorMessage(this.$t('words.error_loading_folder_failed'))
                     })
                     .then(() => {
-                        this.isLoading = false;
+                        this.isFolderLoading = false;
+                        this.isLoading = this.isStaticFolderLoading;
+                        this.inited = true;
+                    });
+            },
+            loadStaticFolderContent() {
+                http(filemanagerApi.folderStaticContent)
+                    .callback(0)
+                    .send()
+                    .then(response => {
+                        this.navStaticList = [];
+                        const foldersList = response.data.data.folder;
+                        const rootFolder = navItem({
+                            label: 'Static',
+                            path: '/',
+                            opened: true,
+                            active: false,
+                            is_local: true,
+                            files: response.data.data.file
+                        });
+
+                        for(let i = 0; i < foldersList.length; i++) {
+                            rootFolder.children.push(navItem({
+                                label: foldersList[i].name,
+                                id: foldersList[i].id,
+                                path: foldersList[i].path,
+                                is_local: true,
+                            }));
+                        }
+
+                        this.navStaticList.push(rootFolder);
+                        //this.updateSelectedFolder(rootFolder);
+                    })
+                    .catch(error => {
+                        console.log('error', error);
+                        app.errorMessage(this.$t('words.error_loading_folder_failed'))
+                    })
+                    .then(() => {
+                        this.isStaticFolderLoading = false;
+                        this.isLoading = this.isFolderLoading;
                         this.inited = true;
                     });
             },
@@ -369,7 +439,7 @@
                         this.selectedFiles[selectedIndex].item.selected = true;
                         this.content.push(this.selectedFiles[selectedIndex]);
                     } else {
-                        this.content.push(fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size));
+                        this.content.push(fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size, false, file.is_local));
                     }
                 }
             },
@@ -389,6 +459,7 @@
                     folderPath: folderPath,
                     id: item.id,
                     name: item.name,
+                    is_local: item.is_local,
                     size: item.size
                 })));
             },
@@ -437,7 +508,7 @@
             },
             updateContent: function(node) {
                 node.loading = true;
-                http(filemanagerApi.folderContent)
+                http(filemanagerApi[node.is_local ? 'folderStaticContent' : 'folderContent'])
                     .callback(node.id)
                     .send()
                     .then(response => {
@@ -450,6 +521,7 @@
                                 label: foldersList[i].name,
                                 id: foldersList[i].id,
                                 path: foldersList[i].path,
+                                is_local: foldersList[i].is_local,
                             }));
                         }
                     })
@@ -578,6 +650,16 @@
             top: 0;
             z-index: 3;
             border-right: 1px solid silver;
+
+            .navigation-tabs::v-deep {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+
+                .v-item-group {
+                    background-color: #EEE;
+                }
+            }
         }
         .toolbar {
             padding-left: 300px;

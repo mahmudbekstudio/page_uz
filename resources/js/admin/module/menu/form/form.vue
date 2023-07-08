@@ -53,7 +53,7 @@
                             <v-btn
                                 small
                                 icon
-                                class="menu-action-btn"
+                                class="menu-action-btn btn-inactive"
                                 @click="clickEdit(item)"
                             >
                                 <v-icon>mdi-pencil</v-icon>
@@ -61,7 +61,7 @@
                             <v-btn
                                 small
                                 icon
-                                class="menu-action-btn"
+                                class="menu-action-btn btn-inactive"
                                 @click="clickLink(item)"
                             >
                                 <v-icon>mdi-open-in-new</v-icon>
@@ -69,7 +69,7 @@
                             <v-btn
                                 small
                                 icon
-                                class="menu-action-btn"
+                                class="menu-action-btn btn-inactive"
                                 @click="clickDelete(item, indexes)"
                             >
                                 <v-icon>mdi-close</v-icon>

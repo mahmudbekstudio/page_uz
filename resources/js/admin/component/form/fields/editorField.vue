@@ -7,6 +7,7 @@
             v-model="dataValue"
             :disabled="disabled"
             :class="className"
+            :type="params?.type"
         ></editor>
     </div>
 </template>

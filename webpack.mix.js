@@ -7,6 +7,7 @@ const config = {
     sass: './resources/sass',
     vueAdmin: './resources/js/admin',
     vueApp: './resources/js/app',
+    images: './resources/images',
 };
 
 /*
@@ -29,6 +30,8 @@ mix
     .js(config.vueApp + '/main.js', config.public + '/js/app/main.js')
     .vue()
     .sass(config.sass + '/app/styles.scss', config.public + '/css/app/styles.css');
+
+mix.copyDirectory(config.images, config.public + '/images');
 
 mix.webpackConfig({
     resolve: {

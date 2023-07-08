@@ -6,6 +6,7 @@
 
             <div class="flex-grow-1"></div>
 
+            <slot name="actions"></slot>
             <v-btn v-for="(btn, i) in actions" class="hidden-sm-and-down" :key="i" v-on="btn.on" v-bind="btn.bind">
                 <v-icon v-if="btn.icon">{{btn.icon}}</v-icon>
                 {{$t(btn.title)}}

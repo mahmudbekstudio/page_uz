@@ -167,7 +167,7 @@ export default {
                 this.openDialog(response);
             });
         }
-        const saveButton = getPageBoxAction(this.$t('words.create'), '', {color: 'primary'}, {
+        const saveButton = getPageBoxAction('words.create', '', {color: 'primary'}, {
             click: () => {
                 this.openDialog();
             }

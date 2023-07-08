@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\WebsiteController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\TemplateController;
 
 Route::group(['middleware' => ['auth:api']], function() {
     Route::get('settings', [MainController::class, 'settings'])->name('settings');
@@ -41,6 +42,7 @@ Route::group(['middleware' => ['auth:api']], function() {
             // for super admin, admin and manager
             Route::group(['prefix' => 'file-manager', 'as' => 'file-manager.'], function () {
                 Route::get('folder-content/{id}', [FolderFileController::class, 'folderContent'])->name('folder-content');
+                Route::get('folder-static-content/{id}', [FolderFileController::class, 'folderStaticContent'])->name('folder-static-content');
                 Route::post('create-folder', [FolderFileController::class, 'createFolder'])->name('create-folder');
                 Route::put('rename-folder', [FolderFileController::class, 'renameFolder'])->name('rename-folder');
                 Route::delete('delete-folder/{id}', [FolderFileController::class, 'deleteFolder'])->name('delete-folder');
@@ -85,6 +87,16 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::delete('delete/{menu}', [MenuController::class, 'delete'])->name('delete');
 
                 Route::get('links', [MenuController::class, 'links'])->name('links');
+            });
+
+            Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
+                Route::get('list', [TemplateController::class, 'list'])->name('list');
+                Route::get('get/{template}', [TemplateController::class, 'get'])->name('get');
+                Route::post('create', [TemplateController::class, 'create'])->name('create');
+                Route::put('edit/{template}', [TemplateController::class, 'edit'])->name('edit');
+                Route::delete('delete/{template}', [TemplateController::class, 'delete'])->name('delete');
+
+                Route::get('blocks', [TemplateController::class, 'blocks'])->name('blocks');
             });
 
             Route::group(['middleware' => [

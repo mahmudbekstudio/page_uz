@@ -1,9 +1,11 @@
 import formField from './form-field';
 import fileField from "./file-field";
+import templateElement from "./template-element";
 
 const mixinsList = {
     formField,
     fileField,
+    templateElement,
 };
 
 class Mixins {

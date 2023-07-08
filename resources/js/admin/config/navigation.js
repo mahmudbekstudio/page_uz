@@ -26,7 +26,8 @@ export default {
         {text: 'words.pages.type', icon: 'mdi-format-list-bulleted-type', route: {name: 'type.list'}, active: ['type.list', 'type.create', 'type.edit']},
         {text: 'words.menus', icon: 'mdi-menu', route: {name: 'menu.list'}, active: ['menu.list', 'menu.create', 'menu.edit']},
         {text: 'words.users', icon: 'mdi-account-group', route: {name: 'user.list'}},
-        {text: 'words.websites', icon: 'mdi-account-group', route: {name: 'website.list'}},
+        {text: 'words.template', icon: 'mdi-text-box-multiple-outline', route: {name: 'template.list'}},
+        {text: 'words.websites', icon: 'mdi-web', route: {name: 'website.list'}},
         {
             icon: 'settings',
             text: 'words.setting',
