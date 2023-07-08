@@ -140,7 +140,6 @@ export class WebsiteHtml {
 
         if (innerList/* && list !== innerList*/) {
             list = innerList;
-            //console.log('addBlock', block, innerList, this.blocks);
         }/* else {
             this.blocks.push(block);
         }*/

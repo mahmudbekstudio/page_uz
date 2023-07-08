@@ -51,10 +51,10 @@
                         @input="itemSelected($event)"
                         :selectedFolder="selectedFolder"
                         :key="item.id"
-                        :can-rename-folder="!item.is_local"
-                        :can-rename-file="!item.is_local"
-                        :can-delete-folder="!item.is_local"
-                        :can-delete-file="!item.is_local"
+                        :can-rename-folder="!selectedFolder.is_local"
+                        :can-rename-file="!selectedFolder.is_local"
+                        :can-delete-folder="!selectedFolder.is_local"
+                        :can-delete-file="!selectedFolder.is_local"
                         :file-base-url="selectedFolder.is_local ? '' : website.fileBaseUrl"
                 ></ContentType>
             </div>
@@ -503,7 +503,7 @@
                     }
                     return false;
                 };
-                searchByTree(this.navList, selectedFolder);
+                searchByTree(selectedFolder.is_local ? this.navStaticList : this.navList, selectedFolder);
                 this.breadcrumbItems = result.reverse();
             },
             updateContent: function(node) {

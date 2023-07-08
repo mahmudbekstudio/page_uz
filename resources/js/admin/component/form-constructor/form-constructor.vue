@@ -141,8 +141,6 @@
                                         return false;
                                     }
 
-                                    /*console.log(this.selectedElementForm, this.selectedElement);
-                                    return false;*/
                                     this.selectedElement.item.field.fill = this.selectedElementForm;
                                     this.selectedElement.col.children = [...this.selectedElement.col.children];
                                     this.selectedElement = null;

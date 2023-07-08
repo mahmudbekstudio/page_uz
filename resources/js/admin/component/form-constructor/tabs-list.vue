@@ -145,7 +145,6 @@
                 } else {
                     this.tabForm.name = val;
                 }
-                console.log(key, val, lang, this.tabForm.name);
             },
             addNewTab() {
                 this.openTabFormDialog(this.form.addTab({}), 'create');

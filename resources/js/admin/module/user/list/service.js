@@ -99,7 +99,6 @@ export default class Service {
             .callback(data)
             .send()
             .then(response => {
-                console.log(response);
                 if (response.data.result) {
                     successCallback();
                 } else {
@@ -119,7 +118,6 @@ export default class Service {
             .callback(id, data)
             .send()
             .then(response => {
-                console.log(response);
                 if (response.data.result) {
                     successCallback();
                 } else {

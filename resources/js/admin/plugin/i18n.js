@@ -32,7 +32,6 @@ Vue.prototype.$t = function (key) {
     var i18n = this.$i18n;
 
     try {
-        //console.log(key, key === 'object', Object.keys(key));
         if (key && (typeof key === 'object') && Object.keys(key).length) {
             if (typeof key[i18n.locale] !== 'undefined') {
                 return key[i18n.locale];
