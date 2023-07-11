@@ -1,9 +1,8 @@
 <template>
     <div class="template-field-textarea">
-        {{imageValue}}
         <form-component
             :value="fieldForm"
-            @input="$emit('input', $event.getFieldValues())"
+            @input="$emit('input', $event.getFieldValues().value)"
         ></form-component>
     </div>
 </template>
@@ -23,7 +22,7 @@ export default {
     },
     computed: {
         imageValue () {
-            return this.value && this.value.value ? (Array.isArray(this.value.value) ? this.value.value : [this.value.value]) : [];
+            return this.value || [];
         },
     },
     created() {

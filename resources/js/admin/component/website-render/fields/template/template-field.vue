@@ -1,13 +1,8 @@
 <template>
-    <div class="template-field">
-        <div class="template-field-title">
-            {{$t('words.' + type)}}
-        </div>
-        <component
-            :is="fieldComponent"
-            v-model="fieldValue"
-        ></component>
-    </div>
+    <component
+        :is="fieldComponent"
+        v-model="fieldValue"
+    ></component>
 </template>
 <script>
 import backgroundField from "./background.vue";
@@ -51,10 +46,4 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-.template-field {
-    &-title {
-        padding: 12px;
-        background-color: #EEE;
-    }
-}
 </style>

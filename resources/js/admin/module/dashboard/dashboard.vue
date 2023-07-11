@@ -1,6 +1,6 @@
 <template>
     <page-box class="module-dashboard">
-        <file-select v-model="files"></file-select>
+        <file-select v-model="files" multiple></file-select>
         <v-btn
                 text
                 @click="showDialog = true"
@@ -37,7 +37,7 @@
     export default {
         data() {
             return {
-                files: [],
+                files: [{"name": "1", "extension": "jpg", "folderPath": "/images/file-manager/cover", "is_local": 1}],
                 showDialog: false,
                 dialogActions: [
                     {

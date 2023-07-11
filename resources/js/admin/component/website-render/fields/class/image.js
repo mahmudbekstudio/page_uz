@@ -1,4 +1,5 @@
 import mainFieldClass from "./mainFieldClass";
+import store from '../../../../plugin/store';
 
 export default class image extends mainFieldClass {
     constructor(values, isSample = false, params = null, lang = null) {
@@ -6,15 +7,29 @@ export default class image extends mainFieldClass {
     }
 
     get value() {
-        return this.values['value'] || '';
+        if (Array.isArray(this.values) && this.values.length) {
+            const value = this.values[0];
+            let imageUrl = value['folderPath'] + '/' + value['name'] + '.' + value['extension'];
+            if (value['is_local']) {
+                return imageUrl;
+            } else {
+                return store.getters['view/website'].fileBaseUrl + imageUrl
+            }
+        }
+
+        return '';
     }
 
     get link() {
-        return this.values['link'] || null;
+        if (Array.isArray(this.values) && this.values.length) {
+            return this.values[0]['link'] || null;
+        }
+
+        return null;
     }
 
     get css() {
-        return 'background-image: url("' + this.value + '")';
+        return this.value ? 'background-image: url("' + this.value + '")' : '';
     }
 
     get classes() {

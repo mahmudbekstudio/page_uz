@@ -32,7 +32,7 @@ return [
             'layout' => 1,
             'values' => [
                 'background' => ['style' => 'solid', 'color' => '#251608'],
-                'logo' => ['value' => 'https://d1howb1wwyap5o.cloudfront.net/vuega/demo_store/en/header/logo-white.png', 'link' => '#'],
+                'logo' => [["name" => "logo-white", "extension" => "png", "folderPath" => "/images/file-manager/logo", "is_local" => 1, 'link' => '#']],
                 'account_button' => ['color' => '#FFF'],
                 'cart_button' => ['color' => '#FFF'],
                 'menu' => ['link-color' => '#FFF', 'class' => 'mr-auto'],
@@ -45,7 +45,7 @@ return [
             'layout' => 2,
             'values' => [
                 'background' => ['style' => 'solid', 'color' => '#FF86B4'],
-                'logo' => ['value' => 'https://d1howb1wwyap5o.cloudfront.net/vuega/demo_store/en/header/logo-white.png', 'link' => '#'],
+                'logo' => [["name" => "logo-white", "extension" => "png", "folderPath" => "/images/file-manager/logo", "is_local" => 1, 'link' => '#']],
                 'account_button' => ['color' => '#FFF'],
                 'cart_button' => ['color' => '#FFF'],
                 'menu' => ['link-color' => '#FFF', 'class' => 'mr-auto'],
@@ -58,7 +58,7 @@ return [
             'layout' => 3,
             'values' => [
                 'background' => ['style' => 'solid', 'color' => '#FF86B4'],
-                'logo' => ['value' => 'https://d1howb1wwyap5o.cloudfront.net/vuega/demo_store/en/header/logo-white.png', 'link' => '#'],
+                'logo' => [["name" => "logo-white", "extension" => "png", "folderPath" => "/images/file-manager/logo", "is_local" => 1, 'link' => '#']],
                 'account_button' => ['color' => '#FFF'],
                 'cart_button' => ['color' => '#FFF'],
                 'menu' => ['link-color' => '#FFF'],
@@ -71,7 +71,7 @@ return [
             'layout' => 4,
             'values' => [
                 'background' => ['style' => 'solid', 'color' => '#FF86B4'],
-                'logo' => ['value' => 'https://d1howb1wwyap5o.cloudfront.net/vuega/demo_store/en/header/logo-white.png', 'link' => '#'],
+                'logo' => [["name" => "logo-white", "extension" => "png", "folderPath" => "/images/file-manager/logo", "is_local" => 1, 'link' => '#']],
                 'account_button' => ['color' => '#FFF'],
                 'cart_button' => ['color' => '#FFF'],
                 'menu' => ['link-color' => '#FFF'],
@@ -104,7 +104,7 @@ return [
             'layout' => 5,
             'values' => [
                 'background' => ['style' => 'solid', 'color' => '#FF86B4'],
-                'logo' => ['value' => 'https://d1howb1wwyap5o.cloudfront.net/vuega/demo_store/en/header/logo-white.png', 'link' => '#'],
+                'logo' => [["name" => "logo-white", "extension" => "png", "folderPath" => "/images/file-manager/logo", "is_local" => 1, 'link' => '#']],
                 'account_button' => [],
                 'cart_button' => [],
                 'menu' => [],
@@ -115,7 +115,7 @@ return [
             'layout' => 6,
             'values' => [
                 'background' => ['style' => 'solid', 'color' => '#FF86B4'],
-                'logo' => ['value' => 'https://d1howb1wwyap5o.cloudfront.net/vuega/demo_store/en/header/logo-white.png', 'link' => '#'],
+                'logo' => [["name" => "logo-white", "extension" => "png", "folderPath" => "/images/file-manager/logo", "is_local" => 1, 'link' => '#']],
                 'account_button' => [],
                 'cart_button' => [],
                 'menu' => [],
@@ -129,7 +129,7 @@ return [
             'layout' => 7,
             'values' => [
                 'background' => ['style' => 'solid', 'color' => '#FF86B4'],
-                'logo' => ['value' => 'https://d1howb1wwyap5o.cloudfront.net/vuega/demo_store/en/header/logo-white.png', 'link' => '#'],
+                'logo' => [["name" => "logo-white", "extension" => "png", "folderPath" => "/images/file-manager/logo", "is_local" => 1, 'link' => '#']],
                 'account_button' => [],
                 'cart_button' => [],
                 'menu' => [],
@@ -143,7 +143,7 @@ return [
             'layout' => 8,
             'values' => [
                 'background' => ['style' => 'solid', 'color' => '#FF86B4'],
-                'logo' => ['value' => 'https://d1howb1wwyap5o.cloudfront.net/vuega/demo_store/en/header/logo-white.png', 'link' => '#'],
+                'logo' => [["name" => "logo-white", "extension" => "png", "folderPath" => "/images/file-manager/logo", "is_local" => 1, 'link' => '#']],
                 'account_button' => [],
                 'cart_button' => [],
                 'menu' => [],

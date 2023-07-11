@@ -48,7 +48,7 @@ return [
                 'tagline' => ['value' => '', 'size' => 18, 'color' => '#FFF'],
                 'title' => ['value' => 'Sunglasses', 'size' => 64, 'style' => ['b'], 'color' => '#FFF'],
                 'description' => ['value' => 'Rock your look with our eyewear created at the intersection of art, fashion, and technology.', 'size' => 18, 'color' => '#FFF'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1552940519-2c2c6f9064c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=1350&q=50'],
+                'image' => [["name" => "1", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Shop Now', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#FFF', 'text-color' => '#000'],
                 'second_action' => ['value' => '', 'appearance' => 'outline', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#FFF', 'background-color' => '#000'],
                 'arrow_action' => ['show' => false],
@@ -61,7 +61,7 @@ return [
                 'tagline' => ['value' => 'Essential skin care for every skin type', 'size' => 18, 'color' => '#191919'],
                 'title' => ['value' => 'State of Beauty', 'size' => 60, 'style' => ['b'], 'color' => '#191919'],
                 'description' => ['value' => 'Perfect your skin care routine with our body and facial products.', 'size' => 18, 'color' => '#191919'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1568054043324-86c349f926d0?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=2500&q=50'],
+                'image' => [["name" => "2", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Shop Now', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#191919', 'text-color' => '#FFF'],
                 'second_action' => ['value' => 'Contact Us', 'appearance' => 'outline', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#191919', 'background-color' => '#FFF'],
                 'arrow_action' => ['show' => false],
@@ -74,7 +74,7 @@ return [
                 'tagline' => ['value' => '', 'size' => 18, 'color' => '#FFF'],
                 'title' => ['value' => 'Chocolate Cake Shop', 'size' => 80, 'style' => ['b'], 'color' => '#FFF'],
                 'description' => ['value' => '', 'size' => 18, 'color' => '#FFF'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1536614984430-64652c3ad956?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=1330&q=50'],
+                'image' => [["name" => "3", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Order Now', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#FFF', 'text-color' => '#000'],
                 'second_action' => ['value' => '', 'appearance' => 'outline', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#FFF', 'background-color' => '#000'],
                 'arrow_action' => ['show' => false],
@@ -87,7 +87,7 @@ return [
                 'tagline' => ['value' => '', 'size' => 18, 'color' => '#FFF'],
                 'title' => ['value' => 'Jewels of my heart', 'size' => 80, 'style' => ['b'], 'color' => '#FFF'],
                 'description' => ['value' => 'Works of art designed to brighten your day.', 'size' => 18, 'color' => '#FFF'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1616413552922-aa3906103397?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=1500&q=50'],
+                'image' => [["name" => "4", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Shop Now', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#FFF', 'text-color' => '#000'],
                 'second_action' => ['value' => '', 'appearance' => 'outline', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#FFF', 'background-color' => '#000'],
                 'arrow_action' => ['show' => false],
@@ -100,7 +100,7 @@ return [
                 'tagline' => ['value' => '', 'size' => 22, 'color' => '#191919'],
                 'title' => ['value' => 'One-Bowl Meals', 'size' => 80, 'style' => ['b'], 'color' => '#191919'],
                 'description' => ['value' => 'Your favorite bowls at one place, healthy and filling. Veggie, fish, chicken, all made from the freshest ingredients.', 'size' => 22, 'color' => '#191919'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1543363136-3f2d17e6d6cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=1500&q=50'],
+                'image' => [["name" => "5", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Order Now', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#191919', 'text-color' => '#FFF'],
                 'second_action' => ['value' => 'Contact Us', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#191919', 'background-color' => '#FFF'],
                 'arrow_action' => ['show' => false],
@@ -113,7 +113,7 @@ return [
                 'tagline' => ['value' => 'Unmatched comfort and style', 'size' => 18, 'color' => '#191919'],
                 'title' => ['value' => 'Find your perfect look', 'size' => 64, 'style' => ['b'], 'color' => '#191919'],
                 'description' => ['value' => 'Style up your ultimate look this season with our collection of exceptional articles.', 'size' => 22, 'color' => '#191919'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1623082819157-25d7e8877ffc?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=1500&q=50'],
+                'image' => [["name" => "6", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Shop Now', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#191919', 'text-color' => '#FFF'],
                 'second_action' => ['value' => 'Contact Us', 'appearance' => 'outline', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#191919', 'background-color' => '#FFF'],
                 'arrow_action' => ['show' => false],
@@ -126,7 +126,7 @@ return [
                 'tagline' => ['value' => '', 'size' => 18, 'color' => '#191919'],
                 'title' => ['value' => 'Handmade Cosmetics', 'size' => 60, 'style' => ['b'], 'color' => '#191919'],
                 'description' => ['value' => 'We have chosen only the best products from top manufacturers.', 'size' => 18, 'color' => '#191919'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1579111537745-76061e8893dc?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=2000&q=50'],
+                'image' => [["name" => "7", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Catalog', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#191919', 'text-color' => '#FFF'],
                 'second_action' => ['value' => '', 'appearance' => 'outline', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#191919', 'background-color' => '#FFF'],
                 'arrow_action' => ['show' => false],
@@ -139,7 +139,7 @@ return [
                 'tagline' => ['value' => 'Green House', 'size' => 18, 'color' => '#191919'],
                 'title' => ['value' => 'Green Plants', 'size' => 80, 'style' => ['b'], 'color' => '#191919'],
                 'description' => ['value' => 'Bring life and color to your home.', 'size' => 22, 'color' => '#191919'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1619783547903-33edeced430a?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=1330&q=50'],
+                'image' => [["name" => "8", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Shop Now', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#191919', 'text-color' => '#FFF'],
                 'second_action' => ['value' => 'Contact Us', 'appearance' => 'outline', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#191919', 'background-color' => '#FFF'],
                 'arrow_action' => ['show' => false],
@@ -152,7 +152,7 @@ return [
                 'tagline' => ['value' => '', 'size' => 18, 'color' => '#FFF'],
                 'title' => ['value' => 'Youth styles and cool prints', 'size' => 64, 'style' => ['b'], 'color' => '#FFF'],
                 'description' => ['value' => 'Sharp silhouettes that evoke emotion and can be worn by any woman.', 'size' => 22, 'color' => '#FFF'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1503342250614-ca440786f637?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=2000&q=50'],
+                'image' => [["name" => "9", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Catalog', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#FFF', 'text-color' => '#000'],
                 'second_action' => ['value' => '', 'appearance' => 'outline', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#FFF', 'background-color' => '#000'],
                 'arrow_action' => ['show' => false],
@@ -165,7 +165,7 @@ return [
                 'tagline' => ['value' => '', 'size' => 18, 'color' => '#FFF'],
                 'title' => ['value' => 'Scandinavian Home', 'size' => 80, 'style' => ['b'], 'color' => '#FFF'],
                 'description' => ['value' => 'We make unique furniture to create a comfortable and relaxing environment.', 'size' => 22, 'color' => '#FFF'],
-                'image' => ['value' => 'https://images.unsplash.com/photo-1567016432779-094069958ea5?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&h=2000&q=50'],
+                'image' => [["name" => "10", "extension" => "jpg", "folderPath" => "/images/file-manager/cover", "is_local" => 1]],
                 'first_action' => ['value' => 'Catalog', 'appearance' => 'solid', 'size' => 'medium', 'shape' => 'round-corner', 'background-color' => '#FFF', 'text-color' => '#000'],
                 'second_action' => ['value' => '', 'appearance' => 'outline', 'size' => 'medium', 'shape' => 'round-corner', 'text-color' => '#FFF', 'background-color' => '#000'],
                 'arrow_action' => ['show' => false],
@@ -175,6 +175,9 @@ return [
     ],
     'styles' => [
         '#id.cover-layout-1' => [
+            'field' => 'background',
+        ],
+        '#id.cover-layout-1 .cover-layout-wrap' => [
             'field' => 'image',
             'background-size' => '100%',
             'background-repeat' => 'no-repeat',
@@ -201,10 +204,7 @@ return [
         //'.cover-layout-1-mobile-1' => [],
         //'.cover-layout-1-mobile-2' => [],
         '#id.cover-layout-2' => [
-            'field' => 'image',
-            'background-size' => '100%',
-            'background-repeat' => 'no-repeat',
-            'background-position'=> 'center',
+            'field' => 'background',
             'min-height'=> '451px',
         ],
         '#id.cover-layout-2 .cover-layout-tagline' => [
@@ -219,6 +219,10 @@ return [
         '#id.cover-layout-2 .cover-layout-wrap' => [
             'margin-right' => '50%',
             'padding-right' => '0',
+            'field' => 'image',
+            'background-size' => '100%',
+            'background-repeat' => 'no-repeat',
+            'background-position'=> 'center',
         ],
         /*'.cover-layout-2-mobile-1' => [],
         '.cover-layout-2-mobile-2' => [],*/
@@ -236,6 +240,10 @@ return [
             'margin-top' => '-60px'
         ],
 
+        '#id.cover-layout-3 .cover-layout-image' => [
+            'display' => 'block',
+        ],
+
         '#id.cover-layout-4' => [
             'field' => 'background',
         ],
@@ -249,17 +257,21 @@ return [
             'padding-right' => '30%',
         ],
         '#id.cover-layout-5' => [
+            'field' => 'background',
+        ],
+        '#id.cover-layout-5 .cover-layout-wrap' => [
+            'text-align' => 'center',
             'field' => 'image',
             'background-repeat' => 'no-repeat',
             'background-size' => '100% auto',
             'background-position' => 'center',
         ],
-        '#id.cover-layout-5 .cover-layout-wrap' => [
-            'text-align' => 'center',
-        ],
         /*'.cover-layout-5-mobile-1' => [],
         '.cover-layout-5-mobile-2' => [],*/
         '#id.cover-layout-6' => [
+            'field' => 'background',
+        ],
+        '#id.cover-layout-6 .cover-layout-wrap' => [
             'field' => 'image',
             'background-repeat' => 'no-repeat',
             'background-size' => '100% auto',
@@ -278,6 +290,9 @@ return [
         /*'.cover-layout-6-mobile-1' => [],
         '.cover-layout-6-mobile-2' => [],*/
         '#id.cover-layout-7' => [
+            'field' => 'background',
+        ],
+        '#id.cover-layout-7 .cover-layout-wrap' => [
             'field' => 'image',
             'background-repeat' => 'no-repeat',
             'background-size' => '100% auto',
@@ -286,13 +301,14 @@ return [
         /*'.cover-layout-7-mobile-1' => [],
         '.cover-layout-7-mobile-2' => [],*/
         '#id.cover-layout-8' => [
+            'field' => 'background',
+        ],
+        '#id.cover-layout-8 .cover-layout-wrap' => [
+            'text-align' => 'center',
             'field' => 'image',
             'background-repeat' => 'no-repeat',
             'background-size' => '100% auto',
             'background-position' => 'top center',
-        ],
-        '#id.cover-layout-8 .cover-layout-wrap' => [
-            'text-align' => 'center',
         ],
         '#id.cover-layout-8 .cover-layout-description' => [
             'width' => '75%',
@@ -301,12 +317,13 @@ return [
         /*'.cover-layout-8-mobile-1' => [],
         '.cover-layout-8-mobile-2' => [],*/
         '#id.cover-layout-9' => [
+            'field' => 'background',
+        ],
+        '#id.cover-layout-9 .cover-layout-wrap' => [
+            'margin-left' => '50%',
             'field' => 'image',
             'background-size' => '50% auto',
             'background-repeat' => 'no-repeat',
-        ],
-        '#id.cover-layout-9 .cover-layout-wrap' => [
-            'margin-left' => '50%'
         ],
         '#id.cover-layout-10' => [
             'field' => 'background',
@@ -319,6 +336,9 @@ return [
             'padding-right' => '50%',
         ],
         '#id.cover-layout-11' => [
+            'field' => 'background',
+        ],
+        '#id.cover-layout-11 .cover-layout-wrap' => [
             'field' => 'image',
             'background-repeat' => 'no-repeat',
             'background-size' => '100% auto',
@@ -327,13 +347,14 @@ return [
         /*'.cover-layout-11-mobile-1' => [],
         '.cover-layout-11-mobile-2' => [],*/
         '#id.cover-layout-12' => [
+            'field' => 'background',
+        ],
+        '#id.cover-layout-12 .cover-layout-wrap' => [
+            'text-align' => 'center',
             'field' => 'image',
             'background-repeat' => 'no-repeat',
             'background-size' => '100% auto',
             'background-position' => 'center',
-        ],
-        '#id.cover-layout-12 .cover-layout-wrap' => [
-            'text-align' => 'center'
         ],
         /*'.cover-layout-12-mobile-1' => [],
         '.cover-layout-12-mobile-2' => [],*/
