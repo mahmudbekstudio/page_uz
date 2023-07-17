@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Template;
 
+use App\Models\Template;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,9 +28,9 @@ class CreateTemplateRequest extends FormRequest
 
         return [
             'name' => ['required'],
-            'type' => ['required'],
+            'type' => ['required', 'in:' . implode(',', Template::types())],
             'content' => ['required', 'array'],
-            'params' => ['required', 'array'],
+            //'params' => ['required', 'array'],
         ];
     }
 }

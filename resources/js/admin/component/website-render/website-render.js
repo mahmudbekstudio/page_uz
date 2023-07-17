@@ -112,7 +112,6 @@ export class WebsiteHtml {
             this.idIncrement++;
             blocks[blocksKey].id = blocks[blocksKey].type + '-' + this.idIncrement;
             blocks[blocksKey].structure.attributes.id = blocks[blocksKey].id;
-            blocks[blocksKey].isActive = false;
 
             if(!blocks[blocksKey].title) {
                 blocks[blocksKey].title = blocks[blocksKey].type;
@@ -129,7 +128,6 @@ export class WebsiteHtml {
     addBlock(block, innerList = null) {
         this.idIncrement++;
         block.id = block.type + '-' + this.idIncrement;
-        block.isActive = false;
         block.structure.attributes.id = block.id;
 
         if(!block.title) {

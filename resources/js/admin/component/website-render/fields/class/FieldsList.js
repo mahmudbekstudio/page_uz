@@ -12,6 +12,7 @@ import text from "./text";
 import textarea from "./textarea";
 import background from "./background";
 import container from './container';
+import content from "./content";
 
 export default {
     account_button,
@@ -28,4 +29,5 @@ export default {
     textarea,
     background,
     container,
+    content,
 };

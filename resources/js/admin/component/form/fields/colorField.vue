@@ -26,6 +26,7 @@
         <v-card
             v-if="colorPicker"
             max-width="290px"
+            height="335px"
             class="color-field"
         >
             <v-tabs v-model="colorTab">

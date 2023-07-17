@@ -35,18 +35,9 @@ export default class button extends mainFieldClass {
         if (this.sizesList[this.size]) {
             for (const styleKey in this.sizesList[this.size].style) {
                 classes[id][styleKey] = this.sizesList[this.size].style[styleKey];
-                //styles.push(styleKey + ': ' + this.sizesList[this.size].style[styleKey]);
             }
         }
 
-        /*if (this.color) {
-            if (this.appearance === 'text' || this.appearance === 'outline') {
-                styles.push('color: ' + this.color + ' !important');
-            } else {
-                styles.push('color: ' + 'inherit');
-                styles.push('background: ' + this.color);
-            }
-        }*/
         if (this.backgroundColor && this.appearance === 'solid') {
             classes[id]['background'] = this.backgroundColor;
             //styles.push('background: ' + this.backgroundColor);
@@ -54,7 +45,6 @@ export default class button extends mainFieldClass {
 
         if (this.textColor) {
             classes[id]['color'] = this.textColor;
-            //styles.push('color: ' + this.textColor);
         }
 
         return classes;
@@ -73,11 +63,11 @@ export default class button extends mainFieldClass {
     }
 
     get backgroundColor() {
-        return this.values['background-color'] || null;
+        return this.values['background-color'] || '#FFF';
     }
 
     get textColor() {
-        return this.values['text-color'] || null;
+        return this.values['text-color'] || '#000';
     }
 
     get value() {

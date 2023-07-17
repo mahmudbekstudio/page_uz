@@ -83,7 +83,7 @@ export default {
         const colorField = this.fieldForm.addField({type: 'color'});
         colorField.setParams('label', 'words.color');
         colorField.name = 'text-color';
-        colorField.value = this.colorValue;
+        colorField.value = this.textColorValue;
 
         const backgroundColorField = this.fieldForm.addField({type: 'color'});
         backgroundColorField.setParams('label', 'words.backgroundColor');

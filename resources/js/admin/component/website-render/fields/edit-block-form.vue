@@ -23,7 +23,7 @@ import templateField from "./template/template-field.vue";
 export default {
     computed: {
         fields () {
-            return this.block.fields || [];
+            return this.block.fields.filter(item => !item.hide) || [];
         },
         values () {
             return this.block.values || {};

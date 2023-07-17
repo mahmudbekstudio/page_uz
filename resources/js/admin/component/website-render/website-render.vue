@@ -27,10 +27,24 @@ export default {
     },
     watch: {
         websiteHtml(newVal) {
-            const doc = this.$refs.websitecontainer.contentWindow.document;
+            const websitehtmlcontainer = this.$refs.websitecontainer;
+            const doc = websitehtmlcontainer.contentWindow.document;
             doc.open();
             doc.write(newVal);
             doc.close();
+
+
+            websitehtmlcontainer.height = 0;
+            (function (websitehtmlcontainer, doc) {
+                const callback = () => {
+                    if ((websitehtmlcontainer.height - 5) !== doc.body.scrollHeight) {
+                        websitehtmlcontainer.height = (doc.body.scrollHeight + 5) + "px";
+                    }
+
+                    //setTimeout(callback, 200);
+                };
+                setTimeout(callback, 400);
+            })(websitehtmlcontainer, doc);
         }
     }
 }
@@ -38,10 +52,8 @@ export default {
 <style scoped lang="scss">
 iframe {
     border: #000 1px solid;
-    position: absolute;
-    width: 72%;
-    height: 82%;
     overflow: auto;
+    width: 100%;
 }
 
 </style>

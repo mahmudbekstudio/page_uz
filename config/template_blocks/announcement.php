@@ -66,6 +66,7 @@ return [
     'styles' => [
         '.announcement' => [
             'field' => 'background',
+            'padding' => '5px 0',
         ],
         '.announcement-wrap' => [
             'padding' => '6px 0',

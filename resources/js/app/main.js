@@ -3,16 +3,24 @@ import './account_button';
 import './cart_button';
 
 window.openedPopover = null;
+parent.window.activeBlock = null;
 
 $(document)
     .on('click', '.template-block-border', function (e) {
+        const activeClassName = 'template-block-border-active';
+        const templateBlock = $(this).first();
+
+        if (!templateBlock.hasClass(activeClassName) && parent.window.activeBlock && parent.window.activeBlock.id) {
+            $('#' + parent.window.activeBlock.id).removeClass(activeClassName);
+        }
+
         parent.window.iframeClick(e);
-    })
-    .on('mouseover', '.template-block-border', function (e) {
-        parent.window.iframeMouseOver(e);
-    })
-    .on('mouseleave', '.template-block-border', function (e) {
-        parent.window.iframeMouseLeave(e);
+
+        if (templateBlock.hasClass(activeClassName)) {
+            templateBlock.removeClass(activeClassName);
+        } else {
+            templateBlock.addClass(activeClassName);
+        }
     });
 
 /*const popup = $('#website-main-popup');

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Template\CreateTemplateRequest;
 use App\Models\Template;
 use App\Services\Admin\TemplateService;
+use Illuminate\Support\Arr;
 
 class TemplateController extends Controller
 {
@@ -36,7 +37,14 @@ class TemplateController extends Controller
 
     public function get(Template $template)
     {
-        return responseJsonData(true, ['template' => $template->only(['name', 'type', 'content', 'params'])]);
+        $template = $template->only(['name', 'type', 'content', 'params']);
+        $name = Arr::get($template, 'name', '');
+
+        if (str_starts_with($name, '{') && str_ends_with($name, '}')) {
+            Arr::set($template, 'name', json_decode($name, true));
+        }
+
+        return responseJsonData(true, ['template' => $template]);
     }
 
     public function delete(Template $template)

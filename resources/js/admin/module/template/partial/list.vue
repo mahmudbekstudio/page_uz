@@ -48,7 +48,7 @@ export default {
             this.$router.push({name: 'template.edit', params: {id: row.id}});
         },
         clickDelete (item) {
-            app.openConfirm(this.$t('words.do_you_really_want_to_delete_template') + ' "' + item.name + '"', () => {
+            app.openConfirm(this.$t('words.do_you_really_want_to_delete_template') + ' "' + this.$t(item.name) + '"', () => {
                 this.$options.service.delete(item.id, response => {
                     if (response.result) {
                         this.listReloadCallback();

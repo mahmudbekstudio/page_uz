@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Repositories\TemplateRepository;
 use App\Services\BaseService;
+use Illuminate\Support\Arr;
 
 class TemplateService extends BaseService
 {
@@ -21,6 +22,12 @@ class TemplateService extends BaseService
 
     public function create(array $fields)
     {
+        $name = Arr::get($fields, 'name');
+
+        if (is_array($name)) {
+            Arr::set($fields, 'name', json_encode($name));
+        }
+
         return $this->templateRepository->create($fields)->only(['name', 'type', 'content', 'params']);
     }
 }

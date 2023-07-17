@@ -1,5 +1,11 @@
 <template>
     <div class="module-template-layout">
+        <formComponent
+            :value="templateForm"
+            :disabled="isLoading"
+            @input="formChanged($event)"
+            @validate="formValidateFunc($event)"
+        />
         <v-container fluid>
             <v-row>
                 <v-col
@@ -114,12 +120,16 @@ import sortList from "../../../component/sort-list.vue";
 import editBlockForm from "../../../component/website-render/fields/edit-block-form.vue";
 import * as _ from 'lodash';
 import {mapGetters} from "vuex";
+import formComponent from "../../../component/form/form-component.vue";
+import {Form as FormClass} from "../../../component/form/classes/form";
+import validation from "../../../config/validation";
 
 export default {
     service: new Service(),
     computed: {
         ...mapGetters({
             website: 'view/website',
+            isLoading: 'view/loading',
         }),
         modal() {
             return modal
@@ -127,6 +137,9 @@ export default {
     },
     data () {
         return {
+            templateValue: {},
+            templateForm: null,
+            formValidate: null,
             langToggle: 0,
             websiteRender: null,
             websiteHtmlObject: null,
@@ -134,6 +147,7 @@ export default {
             activeList: null,
             editBlock: false,
             activeBlock: null,
+            reRenderWebsite: true,
             dialog: {
                 title: 'words.sections',
                 show: false,
@@ -147,20 +161,25 @@ export default {
             }
         }
     },
+    props: {
+        value: {
+            type: Object,
+            default () {
+                return {};
+            }
+        },
+    },
     created() {
+        this.setValue();
         window.iframeClick = e => {
             const id = e.currentTarget.getAttribute('id');
             this.toggleActiveBlock(id);
         };
-        window.iframeMouseOver = e => {
-            const id = e.currentTarget.getAttribute('id');
-            this.mouseOverBlock(id);
-        };
-        window.iframeMouseLeave = e => {
-            const id = e.currentTarget.getAttribute('id');
-            this.mouseLeaveBlock(id);
-        };
-        this.websiteHtmlObject = new WebsiteHtml();
+        if (this.websiteHtmlObject) {
+            this.$nextTick(() => this.renderWebsite());
+        } else {
+            this.websiteHtmlObject = new WebsiteHtml();
+        }
         //this.websiteHtmlObject.setSample(true);
         /*this.selectTemplate({
             "type": "grid",
@@ -188,8 +207,11 @@ export default {
         }, 100);*/
         this.$options.service.blocks(response => {
             this.websiteRender = new WebsiteRenderClass(response.data.templates);
-            const contentBlock = this.websiteRender.getBlock('content');
-            this.websiteHtmlObject.addBlock(this.websiteRender.getTemplate(contentBlock, contentBlock.samples[0]));
+
+            if (!(Object.keys(this.value).length && this.value?.content?.length)) {
+                const contentBlock = this.websiteRender.getBlock('content');
+                this.websiteHtmlObject.addBlock(this.websiteRender.getTemplate(contentBlock, contentBlock.samples[0]));
+            }
         });
         this.$nextTick(() => {
             //this.dialog.show = true;
@@ -202,16 +224,20 @@ export default {
             //doc.open();
             //doc.write('<p>t<strong>es</strong>t</p>');
             //doc.close();
-        })
+        });
+
+        this.templateForm = new FormClass();
+        const nameField = this.templateForm.addField({type: 'text'});
+        nameField.setParams('label', 'words.name');
+        nameField.setParams('rules', [validation.required('words.name')]);
+        nameField.name = 'name';
+        nameField.value = this.templateValue.name;
     },
     methods: {
-        mouseLeaveBlock(id) {
-            const block = this.websiteHtmlObject.getBlockById(id);
-            block.isOver = false;
-        },
-        mouseOverBlock(id) {
-            const block = this.websiteHtmlObject.getBlockById(id);
-            block.isOver = true;
+        setValue (value = null) {
+            this.templateValue = value || this.value;
+            this.websiteHtmlObject = new WebsiteHtml(this.templateValue.content);
+            this.renderWebsite();
         },
         toggleActiveBlock(id) {
             const block = this.websiteHtmlObject.getBlockById(id);
@@ -222,16 +248,22 @@ export default {
 
             if (this.activeBlock && this.activeBlock !== block && this.activeBlock.isActive) {
                 this.activeBlock.isActive = false;
+
+                if (window.activeBlock) {
+                    window.activeBlock.isActive = false;
+                }
             }
 
             block.isActive = !block.isActive;
-            this.renderWebsite();
+            this.reRenderWebsite = false;
 
             if (block.isActive) {
                 this.activeBlock = block;
+                window.activeBlock = block;
                 this.editBlock = true;
             } else {
                 this.activeBlock = null;
+                window.activeBlock = null;
             }
         },
         selectTemplate(template) {
@@ -239,8 +271,10 @@ export default {
             this.websiteHtmlObject.addBlock(template, this.activeList);
             this.renderWebsite();
         },
-        renderWebsite() {
+        renderWebsite () {
             this.websiteHtmlDocument = this.websiteHtmlObject.htmlDocument(true, this.website.metas.languages_list[this.langToggle]);
+            this.templateValue.content = this.websiteHtmlObject.blocks;
+            this.templateChanged();
         },
         addSection(e) {
             if (e.value) {
@@ -265,11 +299,30 @@ export default {
 
             blockList.splice(indexes[indexes.length - 1], 1);
         },
+        formChanged (e) {
+            const values = e.getFieldValues();
+            this.templateValue.name = values.name;
+        },
+        formValidateFunc (e) {
+            this.formValidate = e;
+        },
+        templateChanged() {
+            this.templateValue.type = 'layout';
+            this.templateValue.params = [];
+            this.$emit('input', this.templateValue);
+        }
     },
     watch: {
+        value (newValue) {
+            this.setValue(newValue);
+        },
         'websiteHtmlObject.blocks': {
             handler() {
-                this.renderWebsite();
+                if (this.reRenderWebsite) {
+                    this.renderWebsite();
+                } else {
+                    this.reRenderWebsite = true;
+                }
             },
             deep: true
         },
@@ -284,6 +337,7 @@ export default {
         }*/
     },
     components: {
+        formComponent,
         sortList,
         websiteRender,
         dialogComponent,

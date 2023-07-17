@@ -8,58 +8,59 @@
                 :scrollable="scrollableValue"
                 :width="width"
                 :max-width="maxWidthValue"
+                class="testttt"
         >
-            <v-card v-if="fullscreen" :class="classes">
-                <v-card
-                        tile
-                        class="dialog-card"
+            <v-card
+                v-if="fullscreen"
+                :class="classes + (overlay ? ' dialog-overlay' : '')"
+                tile
+                class="dialog-card"
+            >
+                <v-toolbar
+                    flat
+                    color="primary"
+                    dark
                 >
-                    <v-toolbar
-                            flat
-                            color="primary"
-                            dark
+                    <v-btn
+                        icon
+                        color="default"
+                        @click="close"
+                        v-if="showCloseButton"
                     >
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <span class="text-h5">{{$t(title, titleValues)}}</span>
+                    <div class="dialog-top"><slot name="top" /></div>
+                    <v-spacer></v-spacer>
+                    <v-toolbar-items>
                         <v-btn
-                                icon
-                                color="default"
-                                @click="close"
-                                v-if="showCloseButton"
+                            v-for="(btn, i) in actions"
+                            :key="i"
+                            :color="btn.color === 'primary' ? 'default' : btn.color"
+                            :disabled="btn.disabled"
+                            text
+                            @click="btn.click"
+                            dark
                         >
-                            <v-icon>mdi-close</v-icon>
+                            {{$t(btn.text)}}
                         </v-btn>
-                        <span class="text-h5">{{$t(title, titleValues)}}</span>
-                        <div class="dialog-top"><slot name="top" /></div>
-                        <v-spacer></v-spacer>
-                        <v-toolbar-items>
-                            <v-btn
-                                    v-for="(btn, i) in actions"
-                                    :key="i"
-                                    :color="btn.color === 'primary' ? 'default' : btn.color"
-                                    :disabled="btn.disabled"
-                                    text
-                                    @click="btn.click"
-                                    dark
-                            >
-                                {{$t(btn.text)}}
-                            </v-btn>
-                        </v-toolbar-items>
-                    </v-toolbar>
-                    <v-card-text :class="{'without-padding': withoutPadding}">
-                        <slot></slot>
-                    </v-card-text>
+                    </v-toolbar-items>
+                </v-toolbar>
+                <v-card-text :class="{'without-padding': withoutPadding}">
+                    <slot></slot>
+                </v-card-text>
 
-                    <div style="flex: 1 1 auto;"></div>
-                </v-card>
+                <div style="flex: 1 1 auto;"></div>
             </v-card>
             <v-card v-else>
                 <v-card-title v-if="title">
                     <span class="text-h5">{{$t(title)}}</span>
                     <v-spacer></v-spacer>
                     <v-btn
-                            icon
-                            color="default"
-                            @click="close"
-                            v-if="showCloseButton"
+                        icon
+                        color="default"
+                        @click="close"
+                        v-if="showCloseButton"
                     >
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
@@ -72,12 +73,12 @@
                 <v-card-actions v-if="actions.length">
                     <v-spacer></v-spacer>
                     <v-btn
-                            v-for="(btn, i) in actions"
-                            :key="i"
-                            :color="btn.color"
-                            text
-                            @click="btn.click"
-                            :disabled="btn.disabled"
+                        v-for="(btn, i) in actions"
+                        :key="i"
+                        :color="btn.color"
+                        text
+                        @click="btn.click"
+                        :disabled="btn.disabled"
                     >
                         {{$t(btn.text)}}
                     </v-btn>
@@ -162,6 +163,12 @@
                     return false;
                 }
             },
+            overlay: {
+                type: Boolean,
+                default() {
+                    return false;
+                }
+            },
             fullscreen: {
                 type: Boolean,
                 default() {
@@ -228,7 +235,21 @@
     }
 </script>
 <style scoped>
+.dialog-overlay {
+    position: relative;
+}
+.dialog-overlay:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    background: rgba(0, 0, 0, .4)
+}
     .dialog-card {
+        overflow: auto;
         flex: 1 1 auto;
     }
     .without-padding {

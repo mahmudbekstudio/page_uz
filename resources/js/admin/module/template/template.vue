@@ -38,8 +38,12 @@
             :actions="dialog.actions"
             @close="gotoList()"
             fullscreen
+            :overlay="isLoading"
         >
-            <component :is="formComponent"></component>
+            <component
+                :is="formComponent"
+                v-model="templateValue"
+            ></component>
         </dialog-component>
     </page-box>
 </template>
@@ -52,11 +56,14 @@ import formLayout from './partial/layout.vue';
 import formPost from './partial/post.vue';
 import dialogComponent from "../../component/dialog-component";
 import Service from './js/service';
+import {mapGetters} from "vuex";
+import app from "../../service/app";
 
 export default {
     service: new Service(),
     data() {
         return {
+            templateValue: {},
             actions: [],
             types: {
                 layout: 'layout',
@@ -79,6 +86,9 @@ export default {
         },
     },
     computed: {
+        ...mapGetters({
+            isLoading: 'view/loading',
+        }),
         formComponent () {
             if (this.types[this.type]) {
                 return 'form' + this.type.charAt(0).toUpperCase() + this.type.slice(1);
@@ -93,38 +103,49 @@ export default {
     methods: {
         init() {
             this.type = this.$route.params.type || 'list';
-            this.id = this.$route.params.id;
+            this.id = parseInt(this.$route.params.id) || 0;
             this.dialog.show = false;
 
-            if (this.type === 'list') {
+            if (this.type === 'list' && !this.id) {
                 this.actions = [];
                 this.actions.push({title: 'words.layout', on: {click: () => this.gotoCreateType(this.types.layout)}});
                 this.actions.push({title: 'words.block', on: {click: () => this.gotoCreateType(this.types.block)}});
                 this.actions.push({title: 'words.post', on: {click: () => this.gotoCreateType(this.types.post)}});
                 this.actions.push({title: 'words.category', on: {click: () => this.gotoCreateType(this.types.category)}});
+            } else if (this.id) {
+                this.$options.service.get(response => {
+                    this.templateValue = response.data.template;
+                    this.type = this.templateValue.type;
+                    this.showForm();
+                });
             } else {
-                this.dialog.show = true;
-                this.dialog.title = 'words.create_template_type_' + this.type;
-                this.dialog.actions = [
-                    {
-                        color: 'default',
-                        text: 'words.cancel',
-                        click: () => this.dialog.show = false
-                    },
-                    {
-                        color: 'primary',
-                        text: 'words.' + (this.id ? 'save' : 'create'),
-                        click: () => {
-                            this.$options.service.submit({}, response => {
-                                console.log('response', response);
-                                if (!this.id) {
-                                    this.dialog.show = false;
-                                }
-                            })
-                        }
-                    }
-                ];
+                this.templateValue = {};
+                this.showForm();
             }
+        },
+        showForm() {
+            this.dialog.show = true;
+            this.dialog.title = 'words.create_template_type_' + this.type;
+            this.dialog.actions = [
+                {
+                    color: 'default',
+                    text: 'words.cancel',
+                    click: () => this.dialog.show = false
+                },
+                {
+                    color: 'primary',
+                    text: 'words.' + (this.id ? 'save' : 'create'),
+                    click: () => {
+                        this.$options.service.submit(this.templateValue, response => {
+                            if (!this.id) {
+                                this.dialog.show = false;
+                            }
+
+                            app.openMessage(this.$t('words.' + (this.id ? 'save' : 'create') + 'd'))
+                        })
+                    }
+                }
+            ];
         },
         gotoCreateType(type) {
             this.$router.push({name: 'template.create', params: {type}});

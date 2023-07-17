@@ -11,6 +11,7 @@ import buttonField from "./button.vue";
 import textField from "./text.vue";
 import imageField from "./image.vue";
 import block_next_buttonField from "./block_next_button.vue";
+import contentField from "./content.vue";
 
 export default {
     computed: {
@@ -42,6 +43,7 @@ export default {
         textField,
         imageField,
         block_next_buttonField,
+        contentField,
     }
 }
 </script>
