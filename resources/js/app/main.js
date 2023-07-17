@@ -4,6 +4,9 @@ import './cart_button';
 
 window.openedPopover = null;
 parent.window.activeBlock = null;
+parent.window.blockClickById = function (id) {
+    $(document).find('.template-block-border#' + id).trigger('click');
+};
 
 $(document)
     .on('click', '.template-block-border', function (e) {

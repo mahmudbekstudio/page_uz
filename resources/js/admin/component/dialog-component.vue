@@ -8,7 +8,6 @@
                 :scrollable="scrollableValue"
                 :width="width"
                 :max-width="maxWidthValue"
-                class="testttt"
         >
             <v-card
                 v-if="fullscreen"
@@ -20,6 +19,7 @@
                     flat
                     color="primary"
                     dark
+                    max-height="64"
                 >
                     <v-btn
                         icon

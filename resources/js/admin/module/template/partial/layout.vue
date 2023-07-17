@@ -18,7 +18,7 @@
                                 small
                                 icon
                                 class="edit-block-back-btn"
-                                @click="editBlock=false"
+                                @click="clickBlock(activeBlock)"
                             >
                                 <v-icon>mdi-keyboard-backspace</v-icon>
                             </v-btn>
@@ -37,7 +37,7 @@
                                     small
                                     icon
                                     class="menu-action-btn btn-inactive"
-                                    @click="clickBlockEdit(item, indexes)"
+                                    @click="clickBlock(item)"
                                 >
                                     <v-icon>mdi-pencil</v-icon>
                                 </v-btn>
@@ -147,7 +147,6 @@ export default {
             activeList: null,
             editBlock: false,
             activeBlock: null,
-            reRenderWebsite: true,
             dialog: {
                 title: 'words.sections',
                 show: false,
@@ -180,31 +179,7 @@ export default {
         } else {
             this.websiteHtmlObject = new WebsiteHtml();
         }
-        //this.websiteHtmlObject.setSample(true);
-        /*this.selectTemplate({
-            "type": "grid",
-            "canHasChild": true,
-            "styleFiles": [],
-            "scriptFiles": [],
-            "structure": {
-                "tag": "grid",
-                "attributes": {
-                    "id": "grid-3"
-                },
-                "children": [
-                    {
-                        "tag": "div",
-                        "attributes": {
-                            "class": "grid-wrap"
-                        },
-                        "children": []
-                    }
-                ]
-            }
-        });*/
-        /*setTimeout(() => {
 
-        }, 100);*/
         this.$options.service.blocks(response => {
             this.websiteRender = new WebsiteRenderClass(response.data.templates);
 
@@ -212,18 +187,6 @@ export default {
                 const contentBlock = this.websiteRender.getBlock('content');
                 this.websiteHtmlObject.addBlock(this.websiteRender.getTemplate(contentBlock, contentBlock.samples[0]));
             }
-        });
-        this.$nextTick(() => {
-            //this.dialog.show = true;
-
-
-
-            //const node = doc.createElement("p");
-            //node.innerHTML = 't<strong>es</strong>t';
-
-            //doc.open();
-            //doc.write('<p>t<strong>es</strong>t</p>');
-            //doc.close();
         });
 
         this.templateForm = new FormClass();
@@ -243,6 +206,9 @@ export default {
             const block = this.websiteHtmlObject.getBlockById(id);
             this.changeActiveBlock(block);
         },
+        clickBlock(block) {
+            window.blockClickById(block.id);
+        },
         changeActiveBlock(block) {
             this.editBlock = false;
 
@@ -255,7 +221,6 @@ export default {
             }
 
             block.isActive = !block.isActive;
-            this.reRenderWebsite = false;
 
             if (block.isActive) {
                 this.activeBlock = block;
@@ -284,10 +249,6 @@ export default {
             }
 
             this.dialog.show = true;
-        },
-        clickBlockEdit(item, indexes) {
-            item.isActive = false;
-            this.changeActiveBlock(item);
         },
         clickBlockDelete(item, indexes) {
             const path = indexes.slice(0, -1).join('.');
@@ -318,11 +279,7 @@ export default {
         },
         'websiteHtmlObject.blocks': {
             handler() {
-                if (this.reRenderWebsite) {
-                    this.renderWebsite();
-                } else {
-                    this.reRenderWebsite = true;
-                }
+                this.renderWebsite();
             },
             deep: true
         },
