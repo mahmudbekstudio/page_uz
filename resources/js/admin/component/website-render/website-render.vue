@@ -12,7 +12,11 @@ export default {
         };
     },
     created() {
-        //
+        if (this.websiteHtml) {
+            this.$nextTick(() => {
+                this.changeHtml(this.websiteHtml);
+            });
+        }
     },
     computed: {
 
@@ -25,12 +29,12 @@ export default {
             }
         }
     },
-    watch: {
-        websiteHtml(newVal) {
+    methods: {
+        changeHtml(html) {
             const websitehtmlcontainer = this.$refs.websitecontainer;
             const doc = websitehtmlcontainer.contentWindow.document;
             doc.open();
-            doc.write(newVal);
+            doc.write(html);
             doc.close();
 
 
@@ -45,6 +49,11 @@ export default {
                 };
                 setTimeout(callback, 400);
             })(websitehtmlcontainer, doc);
+        }
+    },
+    watch: {
+        websiteHtml(newVal) {
+            this.changeHtml(newVal);
         }
     }
 }

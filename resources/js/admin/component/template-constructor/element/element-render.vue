@@ -8,6 +8,7 @@
       <div class="element-render-cover" />
       <element-component
           :tag="element.tag"
+          :name="element.name"
           :params="element.params"
       />
   </div>

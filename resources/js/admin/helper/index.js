@@ -83,3 +83,16 @@ export let listToTree = function (list, parentId = 0, prefix = '', deep = 1, ids
 
     return result;
 }
+
+export let translate = function (key, i18n, lang = null) {
+    const selectedLang = lang || i18n.locale;
+    if (key && (typeof key === 'object') && Object.keys(key).length) {
+        if (typeof key[selectedLang] !== 'undefined') {
+            return key[selectedLang];
+        }
+
+        return Object.values(key)[0];
+    }
+
+    return i18n.t(key, selectedLang);
+}

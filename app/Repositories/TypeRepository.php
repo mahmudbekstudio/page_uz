@@ -79,6 +79,11 @@ class TypeRepository extends BaseRepository {
         return $this->findWhere(['status' => 1], ['id', 'title', 'name', 'type', 'child_of']);
     }
 
+    public function getByType(string $type)
+    {
+        return $this->findWhere(['status' => 1, 'type' => $type], ['id', 'title', 'name']);
+    }
+
     public function categories()
     {
         return $this->findWhere(['status' => 1, 'type' => Type::TYPE_CATEGORY], ['id', 'name']);

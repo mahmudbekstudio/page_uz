@@ -64,7 +64,7 @@
                             class="selected-file"
                             :class="{'not-supported-file': !file.isSupport, 'uploading-error': file.error, 'uploaded-success': file.uploaded && !file.error}"
                     >
-                        <v-icon v-show="!file.uploaded && !file.uploading && file.isSupport" class="remove-selected-file" @click="removeSelectedFile(ind)">{{$t('words.close')}}</v-icon>
+                        <v-icon v-show="!file.uploaded && !file.uploading && file.isSupport" class="remove-selected-file" @click="removeSelectedFile(ind)">close</v-icon>
                         <v-icon v-show="file.uploaded && !file.error">check</v-icon>
                         <v-progress-circular :size="24" :width="2" v-show="file.uploading" indeterminate></v-progress-circular>
                         <v-icon v-show="!file.isSupport || file.error" @click="removeSelectedFile(ind)">{{ $t('words.cancel') }}</v-icon>

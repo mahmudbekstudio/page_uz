@@ -5,7 +5,13 @@ export default {
             default () {
                 return {};
             }
-        }
+        },
+        name: {
+            type: String,
+            default () {
+                return '';
+            }
+        },
     },
     computed: {
         //

@@ -23,6 +23,13 @@ const api = {
         },
         token: true
     },
+    getByType: {
+        ...route.admin('type.get-by-type'),
+        callback: function(type) {
+            this.urlParam('{type}', type);
+        },
+        token: true
+    },
     delete: {
         ...route.admin('type.delete'),
         callback: function(id) {

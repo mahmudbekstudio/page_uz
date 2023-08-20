@@ -4,6 +4,7 @@ import api from './api';
 import app from "../../../service/app";
 import logger from "../../../service/logger";
 import i18n from "../../../plugin/i18n";
+import typeApi from '../../type/form/api';
 
 export default class Service {
     blocks(successCallback, errorCallback) {
@@ -27,10 +28,10 @@ export default class Service {
                 this.loading(false);
             })
     }
-    get(successCallback, errorCallback) {
+    get(successCallback, errorCallback, id = null) {
         this.loading(true);
         http(api.get)
-            .callback(this.id)
+            .callback(id || this.id)
             .send()
             .then(response => {
                 if (typeof successCallback === 'function') {
@@ -48,6 +49,75 @@ export default class Service {
             .then(() => {
                 this.loading(false);
             })
+    }
+
+    getAllTypes(type, successCallback, errorCallback) {
+        this.loading(true);
+        http(typeApi.getByType)
+            .callback(type)
+            .send()
+            .then(response => {
+                if (typeof successCallback === 'function') {
+                    successCallback(response.data);
+                }
+            })
+            .catch(error => {
+                if (typeof errorCallback === 'function') {
+                    errorCallback(error);
+                } else {
+                    logger.error('template submit', error);
+                    app.errors(error);
+                }
+            })
+            .then(() => {
+                this.loading(false);
+            })
+    }
+
+    getType(typeId, successCallback, errorCallback) {
+        this.loading(true);
+        http(typeApi.get)
+            .callback(typeId)
+            .send()
+            .then(response => {
+                if (typeof successCallback === 'function') {
+                    successCallback(response.data);
+                }
+            })
+            .catch(error => {
+                if (typeof errorCallback === 'function') {
+                    errorCallback(error);
+                } else {
+                    logger.error('template submit', error);
+                    app.errors(error);
+                }
+            })
+            .then(() => {
+                this.loading(false);
+            })
+    }
+
+    getAllLayouts(successCallback, errorCallback) {
+        this.loading(true);
+        http(api.getByType)
+            .callback('layout')
+            .send()
+            .then(response => {
+                if (typeof successCallback === 'function') {
+                    successCallback(response.data);
+                }
+            })
+            .catch(error => {
+                if (typeof errorCallback === 'function') {
+                    errorCallback(error);
+                } else {
+                    logger.error('template getAllLayouts', error);
+                    app.errors(error);
+                }
+            })
+            .then(() => {
+                this.loading(false);
+            });
     }
 
     submit(form, successCallback, errorCallback) {

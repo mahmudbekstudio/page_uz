@@ -38,6 +38,11 @@ class TypeController extends Controller
         return responseJsonData(true, ['type' => $type]);
     }
 
+    public function getByType(string $type, TypeRepository $repository)
+    {
+        return responseJsonData(true, ['list' => $repository->getByType($type)]);
+    }
+
     public function delete(Type $type)
     {
         $type->delete();

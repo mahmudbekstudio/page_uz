@@ -6,9 +6,8 @@
                     class="overlay"
                     v-if="disabled"
                 />
-                <components-list :list="componentsList"/>
+                <components-list :list="componentsList"></components-list>
                 <v-divider/>
-                {{templateObject}}
                 <v-container class="constructor-container">
                     <v-row
                         v-for="(row, rowIndex) in templateObject.children"
@@ -69,6 +68,10 @@ export default {
                     new Element({tag: 'p'}),
                     new Element({tag: 'div'}),
                     new Element({tag: 'hr'}),
+                    new Element({tag: 'img'})
+                ],
+                post: [
+                    //new Element({tag: 'h'}),
                 ]
             },
             selectedElement: null,
@@ -105,11 +108,7 @@ export default {
         }
     },
     props: {
-        value: {
-            default() {
-                return []
-            }
-        },
+        value: null,
         advanced: {
             type: Object,
             default() {
@@ -127,15 +126,33 @@ export default {
             default() {
                 return false;
             }
+        },
+        requiredFields: {
+            type: Array,
+            default () {
+                return [];
+            }
         }
     },
     created() {
         this.setTemplate(this.value);
+        this.initPostFields(this.requiredFields);
     },
     watch: {
         value(val) {
             this.setTemplate(val);
         },
+        requiredFields (value) {
+            this.initPostFields(value);
+        },
+        templateObject: {
+            handler(newValue) {
+                if (JSON.stringify(this.value) !== JSON.stringify(newValue.json)) {
+                    this.$emit('input', newValue instanceof Template ? newValue.json : newValue);
+                }
+            },
+            deep: true
+        }
     },
     computed: {
         elementForm () {
@@ -210,18 +227,26 @@ export default {
         },
         elementDialogTitle () {
             const fieldType = this.selectedElement?.item?.element?.constructor?.name;
+            const fieldName = this.selectedElement?.item?.element?.name;
             let title = this.elementDialog.actionType === 'add' ? this.$t('words.add') : this.$t('words.edit');
 
             if(fieldType) {
-                title += ' - ' + this.$t('words.components.tag_' + fieldType.substr(0, fieldType.length - 7));
+                title += ' - ' + this.$t('words.components.tag_' + fieldType.substr(0, fieldType.length - 7), {name: fieldName});
             }
 
             return title;
         }
     },
     methods: {
+        initPostFields (fields) {
+            this.componentsList.post = [];
+
+            for (const field of fields) {
+                this.componentsList.post.push(new Element({tag: field.type, name: field.name}));
+            }
+        },
         setTemplate(val) {
-            this.templateObject = val instanceof Template ? val : new Template(val);
+            this.templateObject = new Template(val);
         },
         editCell (cell) {
             this.selectedElement = cell;

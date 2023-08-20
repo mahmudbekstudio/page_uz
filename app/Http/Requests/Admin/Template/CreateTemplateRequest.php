@@ -25,12 +25,18 @@ class CreateTemplateRequest extends FormRequest
      */
     public function rules()
     {
-
-        return [
+        $rules = [
             'name' => ['required'],
             'type' => ['required', 'in:' . implode(',', Template::types())],
             'content' => ['required', 'array'],
             //'params' => ['required', 'array'],
         ];
+
+        if (in_array($this->get('type'), [Template::TYPE_POST, Template::TYPE_CATEGORY])) {
+            $rules['type_id'] = ['required', 'integer'];
+            $rules['layout_id'] = ['required', 'integer'];
+        }
+
+        return $rules;
     }
 }

@@ -1,4 +1,6 @@
 import Field from "./fields/class/Field";
+import {Element} from '../template/classes/template';
+import mainConfig from '../../config/main';
 
 export class WebsiteRender {
     templateConfig = null;
@@ -102,6 +104,7 @@ export class WebsiteHtml {
     fieldsStyles = {};
     idIncrement = 0;
     isSample = false;
+    contentHtml = '';
 
     constructor(blocks = null) {
         if (!blocks) {
@@ -266,7 +269,7 @@ export class WebsiteHtml {
         return this.isFresh ? '?t=' + (new Date()).getTime() : '';
     }
 
-    getStructureHtml(structure, block, withBorder = false, lang = null) {
+    getStructureHtml(structure, block, withBorder = false, lang = null, isGray = false) {
         if (structure.tag) {
             let html = '<' + structure.tag;
 
@@ -286,6 +289,7 @@ export class WebsiteHtml {
                     structure.attributes[attrKey] +
                     (withBorder && attrKey === 'class' ? ' template-block-border' : '') +
                     (withBorder && block.isActive && attrKey === 'class' ? ' template-block-border-active' : '') +
+                    (attrKey === 'class' && isGray ? ' template-block-gray' : '') +
                     '"'
             }
 
@@ -309,10 +313,14 @@ export class WebsiteHtml {
         } else if (structure.field && block.fields && block.values[structure.field]) {
             let blockHtml = '';
             if (block?.children) {
-                for (const blockChild of block.children) {
-                    if (blockChild.name === structure.field && blockChild?.children) {
-                        for (const blockChildItem of blockChild.children) {
-                            blockHtml += this.getStructureHtml(blockChildItem.structure, blockChildItem, false, lang);
+                if (structure.field === 'content') {
+                    blockHtml = this.generateContent(block.children, lang);
+                } else {
+                    for (const blockChild of block.children) {
+                        if (blockChild.name === structure.field && blockChild?.children) {
+                            for (const blockChildItem of blockChild.children) {
+                                blockHtml += this.getStructureHtml(blockChildItem.structure, blockChildItem, false, lang);
+                            }
                         }
                     }
                 }
@@ -345,12 +353,22 @@ export class WebsiteHtml {
         return null;
     }
 
-    htmlDocument(withBorder = false, lang = null) {
-        let structureHtml = '';
+    htmlDocument(withBorder = false, lang = null, greyTypeExcept = null) {
         this.fieldsStyles = {};
+        this.contentHtml = '';
 
         for (const block of this.blocks) {
-            structureHtml += this.getStructureHtml(block.structure, block, withBorder, lang);
+            let isGray = false;
+
+            if (Array.isArray(greyTypeExcept) && greyTypeExcept.length) {
+                isGray = true;
+
+                if (greyTypeExcept.indexOf(block.type) > -1) {
+                    isGray = false;
+                }
+            }
+
+            this.contentHtml += this.getStructureHtml(block.structure, block, withBorder, lang, isGray);
         }
 
         let html = ['<!doctype html>'];
@@ -358,17 +376,47 @@ export class WebsiteHtml {
         html.push('<head>');
         html.push('<meta charset="utf-8">');
         html.push('<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">');
-        html.push('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">');
-        html.push('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">');
+        for (const css of mainConfig.app.website.css) {
+            let cssTag = '<link rel="stylesheet" href="' + css.href + '"';
+
+            if (css.integrity) {
+                cssTag += ' integrity="' + css.integrity + '"';
+            }
+
+            if (css.crossorigin) {
+                cssTag += ' crossorigin="' + css.crossorigin + '"';
+            }
+
+            cssTag += '>';
+
+            html.push(cssTag);
+        }
+        //html.push('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">');
+        //html.push('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">');
         for (const styleFile of this.styleFiles) {
             html.push('<link rel="stylesheet" href="' + styleFile + this.getTimerParam() + '">');
         }
         html.push('<style>' + this.structureStyles + '</style>');
         html.push('</head>');
         html.push('<body>');
-        html.push(structureHtml);
-        html.push('<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"><\/script>');
-        html.push('<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"><\/script>');
+        html.push(this.contentHtml);
+        for (const js of mainConfig.app.website.js) {
+            let jsTag = '<script src="' + js.src + '"';
+
+            if (js.integrity) {
+                jsTag += ' integrity="' + js.integrity + '"';
+            }
+
+            if (js.crossorigin) {
+                jsTag += ' crossorigin="' + js.crossorigin + '"';
+            }
+
+            jsTag += '><\/script>';
+
+            html.push(jsTag);
+        }
+        //html.push('<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"><\/script>');
+        //html.push('<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"><\/script>');
 
         for (const scriptFile of this.scriptFiles) {
             html.push('<script src="' + scriptFile + this.getTimerParam() + '"><\/script>');
@@ -400,5 +448,27 @@ export class WebsiteHtml {
         }
 
         return null;
+    }
+
+    generateContent(list, lang) {
+        if (Array.isArray(list) && !list.length) {
+            return 'Content';
+        }
+
+        let contentHtml = '';
+        for (const itemRow of list) {
+            contentHtml += '<div class="row">';
+            for (const itemCol of itemRow.children) {
+                contentHtml += '<div class="col-md-' + itemCol.size + '">';
+                for (const itemColContent of itemCol.children) {
+                    const element = new Element(itemColContent, lang);
+                    contentHtml += element.element.html;
+                }
+                contentHtml += '</div>';
+            }
+            contentHtml += '</div>';
+        }
+
+        return contentHtml;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Models\Template;
 use App\Repositories\TemplateRepository;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
@@ -28,6 +29,31 @@ class TemplateService extends BaseService
             Arr::set($fields, 'name', json_encode($name));
         }
 
-        return $this->templateRepository->create($fields)->only(['name', 'type', 'content', 'params']);
+        Arr::set($fields, 'params', Arr::get($fields, 'params', []));
+
+        return $this->templateRepository->create($fields)->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id']);
+    }
+
+    public function getByType(string $type)
+    {
+        if (!in_array($type, Template::types())) {
+            return [];
+        }
+
+        return $this->templateRepository->findWhere(['type' => $type], ['id', 'name']);
+    }
+
+    public function detele(Template $template): bool
+    {
+        if (
+            $template->type === Template::TYPE_LAYOUT &&
+            $this->templateRepository->findWhere(['layout_id' => $template->id])->isNotEmpty()
+        ) {
+            return false;
+        }
+
+        $template->delete();
+
+        return true;
     }
 }

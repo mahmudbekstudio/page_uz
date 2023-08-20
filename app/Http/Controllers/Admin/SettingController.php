@@ -13,32 +13,32 @@ use Illuminate\Support\Arr;
 class SettingController extends Controller
 {
     protected $list = [
-        'name',
-        'logo',
-        'pageHome',
-        'page404',
-        'status',
-        'languages_list',
-        'language',
-        'phone',
-        'address',
-        'timezone',
-        'date_format',
-        'time_format',
-        'items_per_page',
-        //'post_template',
-        //'category_template',
-        'favicon',
-        'copyright',
+        'name' => DataFormat::FORMAT_STRING,
+        'logo' => DataFormat::FORMAT_ARRAY,
+        'pageHome' => DataFormat::FORMAT_INT,
+        'page404' => DataFormat::FORMAT_INT,
+        'status' => DataFormat::FORMAT_BOOL,
+        'languages_list' => DataFormat::FORMAT_ARRAY,
+        'language' => DataFormat::FORMAT_STRING,
+        'phone' => DataFormat::FORMAT_STRING,
+        'address' => DataFormat::FORMAT_STRING,
+        'timezone' => DataFormat::FORMAT_STRING,
+        'date_format' => DataFormat::FORMAT_STRING,
+        'time_format' => DataFormat::FORMAT_STRING,
+        'items_per_page' => DataFormat::FORMAT_INT,
+        'post_template' => DataFormat::FORMAT_INT,
+        'category_template' => DataFormat::FORMAT_INT,
+        'favicon' => DataFormat::FORMAT_ARRAY,
+        'copyright' => DataFormat::FORMAT_STRING,
 
-        'description',
-        'indexing',
-        'keywords',
-        'meta_tags',
+        'description' => DataFormat::FORMAT_STRING,
+        'indexing' => DataFormat::FORMAT_BOOL,
+        'keywords' => DataFormat::FORMAT_STRING,
+        'meta_tags' => DataFormat::FORMAT_STRING,
 
-        'image_sizes',
+        'image_sizes' => DataFormat::FORMAT_ARRAY,
 
-        'social_networks'
+        'social_networks' => DataFormat::FORMAT_ARRAY,
     ];
 
     public function get()
@@ -66,7 +66,11 @@ class SettingController extends Controller
 
     public function update(UpdateSettingRequest $request)
     {
-        //
+        $metas = Arr::only($request->all(), $this->list);
+        foreach ($metas as $key => $meta) {
+            ///
+        }
+        //WebsiteRepository::getInstance()->updateMetas();
     }
 
     private function getSettings($main, $seo, $image, $social): array
@@ -139,7 +143,7 @@ class SettingController extends Controller
                 "value" => Arr::get($metas, 'pageHome', 0),
                 "params" => [
                     "options" => $pages,
-                    "valueType" => DataFormat::FORMAT_STRING,
+                    "valueType" => DataFormat::FORMAT_INT,
                     "label" => "words.home_page"
                 ],
             ],
@@ -149,7 +153,7 @@ class SettingController extends Controller
                 "value" => Arr::get($metas, 'page404', 0),
                 "params" => [
                     "options" => $pages,
-                    "valueType" => DataFormat::FORMAT_STRING,
+                    "valueType" => DataFormat::FORMAT_INT,
                     "label" => "words.404_page"
                 ],
             ],

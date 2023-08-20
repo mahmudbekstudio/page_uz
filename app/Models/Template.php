@@ -13,7 +13,7 @@ class Template extends Model
 {
     use BelongsToWebsite, BelongsToUser, HasFactory, WebsiteAddScopeTrait, UserAddScopeTrait;
 
-    protected $fillable = ['user_id', 'website_id', 'name', 'type', 'content', 'params'];
+    protected $fillable = ['user_id', 'website_id', 'name', 'type', 'type_id', 'layout_id', 'content', 'params'];
 
     protected $casts = [
         'content' => 'array',
@@ -46,5 +46,10 @@ class Template extends Model
     public static function defaultType(): string
     {
         return self::TYPE_BLOCK;
+    }
+
+    public static function saveFileTypes(): array
+    {
+        return [self::TYPE_POST, self::TYPE_CATEGORY];
     }
 }

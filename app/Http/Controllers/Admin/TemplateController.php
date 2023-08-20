@@ -6,6 +6,7 @@ use App\DataTable\TemplateDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Template\CreateTemplateRequest;
 use App\Models\Template;
+use App\Repositories\TemplateRepository;
 use App\Services\Admin\TemplateService;
 use Illuminate\Support\Arr;
 
@@ -26,7 +27,7 @@ class TemplateController extends Controller
 
     public function create(CreateTemplateRequest $request)
     {
-        $template = $this->templateService->create($request->only(['name', 'type', 'content', 'params']));
+        $template = $this->templateService->create($request->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id']));
         return responseJsonData(true, ['template' => $template]);
     }
 
@@ -37,7 +38,7 @@ class TemplateController extends Controller
 
     public function get(Template $template)
     {
-        $template = $template->only(['name', 'type', 'content', 'params']);
+        $template = $template->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id']);
         $name = Arr::get($template, 'name', '');
 
         if (str_starts_with($name, '{') && str_ends_with($name, '}')) {
@@ -47,13 +48,20 @@ class TemplateController extends Controller
         return responseJsonData(true, ['template' => $template]);
     }
 
+    public function getByType(string $type)
+    {
+        return responseJsonData(true, ['list' => $this->templateService->getByType($type)]);
+    }
+
     public function delete(Template $template)
     {
+        $result = true;
+
         if (getCurrentWebsiteId() == $template->website_id) {
-            $template->delete();
+            $result = $this->templateService->detele($template);
         }
 
-        return responseJsonData(true, ['template' => $template]);
+        return responseJsonData($result, ['template' => $template]);
     }
 
     public function blocks()

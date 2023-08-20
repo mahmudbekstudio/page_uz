@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Repositories\WebsiteRepository;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Arr;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -46,5 +49,25 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof NotFoundHttpException) {
+            $path = explode('/', $request->path());
+            $websiteMetas = WebsiteRepository::getInstance()->getMetas();
+
+            if (
+                !count($path) ||
+                $path[0] === '' ||
+                in_array($path[0], Arr::get($websiteMetas, 'languages_list'))
+            ) {
+                return goHome();
+            }
+
+            return go404();
+        }
+
+        return parent::render($request, $e);
     }
 }

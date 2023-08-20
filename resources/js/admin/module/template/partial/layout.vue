@@ -86,7 +86,6 @@
                         </div>
                         <website-render
                             :website-html="websiteHtmlDocument"
-                            :website-html-object="websiteHtmlObject"
                         />
                     </div>
                 </v-col>
@@ -112,7 +111,6 @@
 import websiteRender from "../../../component/website-render/website-render.vue";
 import websiteBlockRender from "../../../component/website-render/website-block-render.vue";
 import dialogComponent from "../../../component/dialog-component";
-import modal from "bootstrap/js/src/modal";
 import Service from '../js/service';
 import {WebsiteHtml, WebsiteRender as WebsiteRenderClass} from "../../../component/website-render/website-render.js";
 import templatesList from "../../../component/website-render/templates-list.vue";
@@ -131,9 +129,6 @@ export default {
             website: 'view/website',
             isLoading: 'view/loading',
         }),
-        modal() {
-            return modal
-        }
     },
     data () {
         return {

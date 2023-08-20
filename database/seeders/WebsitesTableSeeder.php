@@ -12,6 +12,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Website;
 use App\Models\WebsiteMeta;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 
 class WebsitesTableSeeder extends Seeder
 {
@@ -57,6 +58,13 @@ class WebsitesTableSeeder extends Seeder
                 'APP_KEY' => generateRandomKey(),
                 'JWT_SECRET' => randomString64()
             ]);
+
+            createStorageTemplateDir('', $website->id);
+            //createStorageTemplateDir('layout', $website->id);
+            createStorageTemplateDir('post', $website->id);
+            createStorageTemplateDir('category', $website->id);
+            createStorageTemplateFile('post', '0', $website->id);
+            createStorageTemplateFile('category', '0', $website->id);
         }
 
         if(isset($item['metas'])) {

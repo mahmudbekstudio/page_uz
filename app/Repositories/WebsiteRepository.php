@@ -95,16 +95,26 @@ class WebsiteRepository extends BaseRepository {
         $result = $this->getVar('metas_' . $id);
 
         if(!$result) {
-            $current = $this->getById($id);
-            $metas = $current->metas;
-            $result = [];
-
-            foreach($metas as $meta) {
-                $result[$meta->meta_key] = DataFormat::toFormat($meta->meta_value, $meta->meta_format);
-            }
-
-            $this->setVar('metas_' . $id, $result);
+            $result = $this->updateMetas($id);
         }
+
+        return $result;
+    }
+
+    public function updateMetas(int $id = null) {
+        if (!$id) {
+            $id = $this->getCurrent()->id;
+        }
+
+        $current = $this->getById($id);
+        $metas = $current->metas;
+        $result = [];
+
+        foreach($metas as $meta) {
+            $result[$meta->meta_key] = DataFormat::toFormat($meta->meta_value, $meta->meta_format);
+        }
+
+        $this->setVar('metas_' . $id, $result);
 
         return $result;
     }

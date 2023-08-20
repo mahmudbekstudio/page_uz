@@ -9,6 +9,9 @@ use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
 use App\Repositories\TypeRepository;
 use App\Repositories\RouteRepository;
+use Illuminate\Support\Arr;
+use App\Repositories\PostRepository;
+use App\Repositories\CategoryRepository;
 
 if (! function_exists('route')) {
     /**
@@ -57,7 +60,7 @@ if (! function_exists('update_dotenv')) {
             }
         }
 
-        file_put_contents($filePath, implode("\n", $lines));
+        file_put_contents($filePath, implode("", $lines));
     }
 }
 
@@ -327,6 +330,181 @@ if (! function_exists('generateRouteUrl')) {
     }
 }
 
+if (! function_exists('redirectToPage')) {
+    function redirectToPage($id, $lang = null, $isPost = true)
+    {
+        $websiteRepository = WebsiteRepository::getInstance();
+        $websiteMetas = $websiteRepository->getMetas();
+
+        if (!in_array($lang, Arr::get($websiteMetas, 'languages_list'))) {
+            $lang = Arr::get($websiteMetas, 'language');
+        }
+
+        if ($isPost) {
+            $repo = app(PostRepository::class);
+        } else {
+            $repo = app(CategoryRepository::class);
+        }
+
+        $item = $repo->getById($id);
+        return redirect(implode('/', [$lang, $item->url]));
+    }
+}
+
+if (! function_exists('goHome')) {
+    function goHome($lang = null)
+    {
+        $websiteRepository = WebsiteRepository::getInstance();
+        $websiteMetas = $websiteRepository->getMetas();
+        return redirectToPage(Arr::get($websiteMetas, 'pageHome'), $lang);
+    }
+}
+
+if (! function_exists('go404')) {
+    function go404($lang = null)
+    {
+        $websiteRepository = WebsiteRepository::getInstance();
+        $websiteMetas = $websiteRepository->getMetas();
+        return redirectToPage(Arr::get($websiteMetas, 'page404'), $lang);
+    }
+}
+
+if (! function_exists('viewTemplatePath')) {
+    function viewTemplatePath($templateId, $isPost) {
+        $typePath = $isPost ? 'post/' : 'category/';
+        return storage_path('app/template/' . $typePath) . $templateId . '.php';
+    }
+}
+
+if (! function_exists('viewTemplate')) {
+    function viewTemplate($templateId, $isPost)
+    {
+        $templatePath = viewTemplatePath($templateId, $isPost);
+
+        if (!file_exists($templatePath)) {
+            $templateId = 0;
+            $templatePath = viewTemplatePath($templateId, $isPost);
+        }
+
+        if (!$templateId) {
+            $websiteRepository = WebsiteRepository::getInstance();
+            $websiteMetas = $websiteRepository->getMetas();
+            $defaultTemplateId = Arr::get($websiteMetas, ($isPost ? 'post' : 'category') . '_template');
+
+            if ($defaultTemplateId) {
+                $templateId = $defaultTemplateId;
+                $templatePath = viewTemplatePath($templateId, $isPost);
+            }
+        }
+
+        include $templatePath;
+        return;
+    }
+}
+
+if (! function_exists('createStorageTemplateDir')) {
+    function createStorageTemplateDir($path, $domainId = null, $permission = 0777)
+    {
+        $path = getStorageTemplatePath($path, $domainId);
+
+        if (!is_dir($path)) {
+            mkdir($path, $permission);
+        }
+    }
+}
+
+if (! function_exists('createStorageTemplateFile')) {
+    function createStorageTemplateFile($path, $fileName, $domainId = null, $content = '')
+    {
+        $filePath = getStorageTemplatePath($path, $domainId) . '/' . $fileName . '.php';
+
+        if (!file_exists($filePath)) {
+            $mode = 'w+';
+            $file = fopen($filePath, $mode);
+            fwrite($file, $content);
+            fclose($file);
+        }
+    }
+}
+
+if (! function_exists('updateStorageTemplateFile')) {
+    function updateStorageTemplateFile($path, $fileName, $domainId = null, $content = '')
+    {
+        $storageTemplatePath = getStorageTemplatePath($path, $domainId);
+        $filePath = $storageTemplatePath . '/' . $fileName . '.php';
+        $resFileName = $fileName . '-backup';
+
+        if (file_exists($filePath)) {
+            renameStorageTemplateFile($path, $fileName, $resFileName, $domainId);
+        }
+
+        createStorageTemplateFile($path, $fileName, $domainId, $content);
+
+        if (file_exists($storageTemplatePath . '/' . $resFileName . '.php')) {
+            deleteStorageTemplateFile($path, $resFileName, $domainId);
+        }
+    }
+}
+
+if (! function_exists('deleteStorageTemplateFile')) {
+    function deleteStorageTemplateFile($path, $fileName, $domainId = null)
+    {
+        $filePath = getStorageTemplatePath($path, $domainId) . '/' . $fileName . '.php';
+
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+    }
+}
+
+if (! function_exists('renameStorageTemplateFile')) {
+    function renameStorageTemplateFile($path, $fileName, $newFileName, $domainId = null)
+    {
+        $storageTemplatePath = getStorageTemplatePath($path, $domainId);
+        $filePath = $storageTemplatePath . '/' . $fileName . '.php';
+
+        if (file_exists($filePath)) {
+            $newFileName = $storageTemplatePath . '/' . $newFileName . '.php';
+            rename($filePath, $newFileName);
+        }
+    }
+}
+
+if (! function_exists('getStorageTemplatePath')) {
+    function getStorageTemplatePath($folder = '', $domainId = null)
+    {
+        if (!$domainId) {
+            $domainId = WebsiteRepository::getInstance()->getCurrent()->id;
+        }
+
+        $domainPath = ['domains', $domainId];
+        $path = ['app', 'template', $folder];
+
+        if (!str_ends_with(correctPath(storage_path()), implode('/', $domainPath))) {
+            $path = [...$domainPath, ...$path];
+        }
+
+        return storage_path(implode('/', $path));
+    }
+}
+
+if (! function_exists('correctPath')) {
+    function correctPath($path)
+    {
+        return str_replace('\\', '/', $path);
+    }
+}
+
+if (! function_exists('getCurrentTemplate')) {
+    function getCurrentTemplate($filePath)
+    {
+        $filePath = correctPath($filePath);
+        $path = explode('/', substr($filePath, 0, -4));
+        $templateRepository = app(\App\Repositories\TemplateRepository::class);
+
+        return $templateRepository->getById(end($path));
+    }
+}
 
 if (! function_exists('convertStringToRouteName')) {
     function convertStringToRouteName($str)

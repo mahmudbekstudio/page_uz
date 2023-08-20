@@ -104,6 +104,7 @@
             this.$emit('resetValidation', () => this.$refs.form.resetValidation());
             this.$emit('reset', () => this.$refs.form.reset());
             this.initFormObject(this.value);
+            this.$emit('input', this.formObject);
         },
         computed: {
             showTabs() {

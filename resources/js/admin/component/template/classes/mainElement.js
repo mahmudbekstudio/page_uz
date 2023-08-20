@@ -1,17 +1,24 @@
+import {translate} from '../../../helper/index';
+import i18n from "../../../plugin/i18n";
 export default class element {
     hasLang = true;
     fieldObject = {};
     id = null;
     defaultObject = {
         tag: 'div',
+        name: '',
         params: {},
     };
     hasFillable = true;
     fillable = [];
-    constructor(params = {}) {
+    lang = null;
+    constructor(params = {}, lang = null) {
+        this.lang = lang;
         this.fieldObject = Object.assign({}, this.defaultObject);
         this.fieldObject.tag = params.tag || this.defaultObject.tag;
+        this.fieldObject.name = params.name || this.defaultObject.name;
         this.fieldObject.params = params.params || this.defaultObject.params;
+        this.fieldObject.isKeyValue = !!params.name;
     }
 
     get tag() {
@@ -20,6 +27,14 @@ export default class element {
 
     set tag(val) {
         this.fieldObject.tag = val;
+    }
+
+    get name() {
+        return this.fieldObject.name;
+    }
+
+    set name(val) {
+        this.fieldObject.name = val;
     }
 
     get params() {
@@ -66,5 +81,13 @@ export default class element {
 
     get json() {
         return this.fieldObject;
+    }
+
+    get html() {
+        return '{ $' + this.name + ' }';
+    }
+
+    translate(key) {
+        return translate(key, i18n, this.lang);
     }
 }

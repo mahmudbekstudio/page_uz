@@ -20,6 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
             $table->string('name');
             $table->enum('type', Template::types())->default(Template::defaultType())->index('type');
+            $table->unsignedBigInteger('type_id')->default(0)->index('type_id');
+            $table->unsignedBigInteger('layout_id')->default(0)->index('layout_id');
             $table->json('content');
             $table->json('params');
             $table->timestamps();

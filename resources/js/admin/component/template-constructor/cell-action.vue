@@ -2,7 +2,8 @@
     <div class="cell-action">
         <div class="cell-actions-list">
             <span @click="actionClicked('left')" class="action-ico"><icon-left /></span>
-            <span @click="actionClicked('right')" class="action-ico"><icon-right /></span>
+            <!--span @click="actionClicked('right')" class="action-ico"><icon-right /></span-->
+            <span @click="actionClicked('edit')" class="action-ico"><icon-pen /></span>
         </div>
     </div>
 </template>
@@ -10,6 +11,7 @@
     import {
         iconLeft,
         iconRight,
+        iconPen
     } from '../icons';
     export default {
         props: {
@@ -18,7 +20,9 @@
         },
         methods: {
             actionClicked (actionName) {
-                if(this.col && this.row) {
+                if (actionName === 'edit') {
+                    //
+                } else if(this.col && this.row) {
                     let fromIndex = this.row.children.indexOf(this.col);
                     let toIndex = actionName === 'left' ? fromIndex - 1 : fromIndex + 1;
 
@@ -34,6 +38,7 @@
             }
         },
         components: {
+            iconPen,
             iconLeft,
             iconRight
         }

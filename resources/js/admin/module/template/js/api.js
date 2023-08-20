@@ -30,7 +30,13 @@ const api = {
         },
         token: true
     },
-
+    getByType: {
+        ...route.admin('template.get-by-type'),
+        callback: function(type) {
+            this.urlParam('{type}', type);
+        },
+        token: true
+    },
     blocks: {
         ...route.admin('template.blocks'),
         token: true

@@ -1,5 +1,8 @@
 @import "./field/index";
 
+.template-block-gray {
+    opacity: .5;
+}
 .template-block-border {
     position: relative;
     &::before {

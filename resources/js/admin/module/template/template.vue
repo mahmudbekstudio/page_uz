@@ -43,6 +43,7 @@
             <component
                 :is="formComponent"
                 v-model="templateValue"
+                :is-edit="!!id"
             ></component>
         </dialog-component>
     </page-box>
@@ -109,7 +110,7 @@ export default {
             if (this.type === 'list' && !this.id) {
                 this.actions = [];
                 this.actions.push({title: 'words.layout', on: {click: () => this.gotoCreateType(this.types.layout)}});
-                this.actions.push({title: 'words.block', on: {click: () => this.gotoCreateType(this.types.block)}});
+                //this.actions.push({title: 'words.block', on: {click: () => this.gotoCreateType(this.types.block)}});
                 this.actions.push({title: 'words.post', on: {click: () => this.gotoCreateType(this.types.post)}});
                 this.actions.push({title: 'words.category', on: {click: () => this.gotoCreateType(this.types.category)}});
             } else if (this.id) {
@@ -142,7 +143,7 @@ export default {
                             }
 
                             app.openMessage(this.$t('words.' + (this.id ? 'save' : 'create') + 'd'))
-                        })
+                        });
                     }
                 }
             ];

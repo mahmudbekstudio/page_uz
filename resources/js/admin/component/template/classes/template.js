@@ -2,9 +2,37 @@ import hElement from './hElement';
 import pElement from './pElement';
 import divElement from "./divElement";
 import hrElement from "./hrElement";
+import imgElement from "./imgElement";
 import { TEMPLATE } from '../../../constants';
 import * as _ from 'lodash';
 import validation from "../../../config/validation";
+
+import textElement from './type/textElement';
+import textareaElement from './type/textareaElement';
+import numberElement from './type/numberElement';
+import passwordElement from './type/passwordElement';
+import selectElement from './type/selectElement';
+import fileElement from './type/fileElement';
+import switchElement from './type/switchElement';
+import dividerElement from './type/dividerElement';
+import datetimeElement from './type/datetimeElement';
+import dateElement from './type/dateElement';
+import dateRangeElement from './type/dateRangeElement';
+import dateMultipleElement from './type/dateMultipleElement';
+import timeElement from './type/timeElement';
+import radioElement from './type/radioElement';
+import checkboxElement from './type/checkboxElement';
+import editorElement from './type/editorElement';
+import advancedParentElement from './type/advancedParentElement';
+import advancedChildOfElement from './type/advancedChildOfElement';
+import requiredPublishStartElement from './type/requiredPublishStartElement';
+import requiredPublishEndElement from './type/requiredPublishEndElement';
+import requiredRouteNameElement from './type/requiredRouteNameElement';
+import requiredSeoKeywordElement from './type/requiredSeoKeywordElement';
+import requiredSeoDescriptionElement from './type/requiredSeoDescriptionElement';
+import requiredStatusElement from './type/requiredStatusElement';
+import requiredTemplateElement from './type/requiredTemplateElement';
+import requiredTitleElement from './type/requiredTitleElement';
 
 export class Template {
     children = [];
@@ -16,7 +44,7 @@ export class Template {
         if(!Object.keys(params).length) {
             this.addRow({}, {});
         } else {
-            this.json = params;
+            this.json = params || [];
         }
     }
 
@@ -214,19 +242,102 @@ export class Element {
         },
     ];
 
-    constructor(elementObj) {
+    constructor(elementObj, lang = null) {
         switch (elementObj.tag) {
             case 'h':
-                this.element = new hElement(elementObj);
+                this.element = new hElement(elementObj, lang);
                 break;
             case 'p':
-                this.element = new pElement(elementObj);
+                this.element = new pElement(elementObj, lang);
                 break;
             case 'div':
-                this.element = new divElement(elementObj);
+                this.element = new divElement(elementObj, lang);
                 break;
             case 'hr':
-                this.element = new hrElement(elementObj);
+                this.element = new hrElement(elementObj, lang);
+                break;
+            case 'img':
+                this.element = new imgElement(elementObj, lang);
+                break;
+
+            // type fields
+            case 'text':
+                this.element = new textElement(elementObj, lang);
+                break;
+            case 'textarea':
+                this.element = new textareaElement(elementObj, lang);
+                break;
+            case 'number':
+                this.element = new numberElement(elementObj, lang);
+                break;
+            case 'password':
+                this.element = new passwordElement(elementObj, lang);
+                break;
+            case 'select':
+                this.element = new selectElement(elementObj, lang);
+                break;
+            case 'file':
+                this.element = new fileElement(elementObj, lang);
+                break;
+            case 'switch':
+                this.element = new switchElement(elementObj, lang);
+                break;
+            case 'divider':
+                this.element = new dividerElement(elementObj, lang);
+                break;
+            case 'datetime':
+                this.element = new datetimeElement(elementObj, lang);
+                break;
+            case 'date':
+                this.element = new dateElement(elementObj, lang);
+                break;
+            case 'dateRange':
+                this.element = new dateRangeElement(elementObj, lang);
+                break;
+            case 'dateMultiple':
+                this.element = new dateMultipleElement(elementObj, lang);
+                break;
+            case 'time':
+                this.element = new timeElement(elementObj, lang);
+                break;
+            case 'radio':
+                this.element = new radioElement(elementObj, lang);
+                break;
+            case 'checkbox':
+                this.element = new checkboxElement(elementObj, lang);
+                break;
+            case 'editor':
+                this.element = new editorElement(elementObj, lang);
+                break;
+            case 'advancedParent':
+                this.element = new advancedParentElement(elementObj, lang);
+                break;
+            case 'advancedChildOf':
+                this.element = new advancedChildOfElement(elementObj, lang);
+                break;
+            case 'requiredPublishStart':
+                this.element = new requiredPublishStartElement(elementObj, lang);
+                break;
+            case 'requiredPublishEnd':
+                this.element = new requiredPublishEndElement(elementObj, lang);
+                break;
+            case 'requiredRouteName':
+                this.element = new requiredRouteNameElement(elementObj, lang);
+                break;
+            case 'requiredSeoKeyword':
+                this.element = new requiredSeoKeywordElement(elementObj, lang);
+                break;
+            case 'requiredSeoDescription':
+                this.element = new requiredSeoDescriptionElement(elementObj, lang);
+                break;
+            case 'requiredStatus':
+                this.element = new requiredStatusElement(elementObj, lang);
+                break;
+            case 'requiredTemplate':
+                this.element = new requiredTemplateElement(elementObj, lang);
+                break;
+            case 'requiredTitle':
+                this.element = new requiredTitleElement(elementObj, lang);
                 break;
         }
     }
@@ -251,6 +362,14 @@ export class Element {
 
     set tag(val) {
         this.element.tag = val || 'tag';
+    }
+
+    get name() {
+        return this.element.name || '';
+    }
+
+    set name(val) {
+        this.element.name = val || '';
     }
 
     get id() {

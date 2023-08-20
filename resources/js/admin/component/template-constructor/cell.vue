@@ -10,6 +10,7 @@
             v-if="row.children.length > 1"
             :col="col"
             :row="row"
+            @actionClick="cellActionClick"
         />
         <draggable
             class="constructor-element"
@@ -62,6 +63,11 @@ export default {
         row: null
     },
     methods: {
+        cellActionClick (actionName) {
+            if (actionName === 'edit') {
+                ///
+            }
+        },
         endDrag (e) {
             this.dragging = false;
         },

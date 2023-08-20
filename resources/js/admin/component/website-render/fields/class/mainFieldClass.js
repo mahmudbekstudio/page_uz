@@ -1,3 +1,4 @@
+import { translate } from '../../../../helper/index';
 import i18n from "../../../../plugin/i18n";
 let fieldTimer = null;
 let fieldIndex = 0;
@@ -41,15 +42,6 @@ export default class mainFieldClass {
     }
 
     translate(key) {
-        const selectedLang = this.lang || i18n.locale;
-        if (key && (typeof key === 'object') && Object.keys(key).length) {
-            if (typeof key[selectedLang] !== 'undefined') {
-                return key[selectedLang];
-            }
-
-            return Object.values(key)[0];
-        }
-
-        return i18n.t(key, selectedLang);
+        return translate(key, i18n, this.lang);
     }
 }

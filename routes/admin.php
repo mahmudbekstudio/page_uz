@@ -92,6 +92,7 @@ Route::group(['middleware' => ['auth:api']], function() {
             Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
                 Route::get('list', [TemplateController::class, 'list'])->name('list');
                 Route::get('get/{template}', [TemplateController::class, 'get'])->name('get');
+                Route::get('get-by-type/{type}', [TemplateController::class, 'getByType'])->name('get-by-type');
                 Route::post('create', [TemplateController::class, 'create'])->name('create');
                 Route::put('edit/{template}', [TemplateController::class, 'edit'])->name('edit');
                 Route::delete('delete/{template}', [TemplateController::class, 'delete'])->name('delete');
@@ -108,6 +109,7 @@ Route::group(['middleware' => ['auth:api']], function() {
                     Route::post('create', [TypeController::class, 'create'])->name('create');
                     Route::put('edit/{id}', [TypeController::class, 'edit'])->name('edit');
                     Route::get('get/{type}', [TypeController::class, 'get'])->name('get');
+                    Route::get('get-by-type/{type}', [TypeController::class, 'getByType'])->name('get-by-type');
                     Route::delete('delete/{type}', [TypeController::class, 'delete'])->name('delete');
                     Route::get('categories', [TypeController::class, 'getCategories'])->name('categories');
                     Route::get('not-used-categories', [TypeController::class, 'getNotUsedCategories'])->name('not-used-categories');

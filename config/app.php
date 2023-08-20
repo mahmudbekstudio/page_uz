@@ -9,6 +9,7 @@ return [
     'main_website' => env('MAIN_WEBSITE', 'page.uz'),
     'default_locale' => 'en',
     'locale_list' => ['en', 'ru', 'uz'],
+    'special_routes' => ['administrator', 'cabinet', 'panel'],
     'route_rules' => [
         'number' => '[0-9]+',
         'name' => '[a-z0-9_\-]+',
@@ -58,6 +59,31 @@ return [
         'name' => 'page',
         'structure' => '[{"children":[{"children":[{"children":[{"type":"requiredTitle","name":"title","disabled":false,"value":null,"params":{"label":"words.title","valueType":"string","validation":{"required":null}},"events":[]}],"type":"col","size":"6"},{"children":[{"type":"requiredRouteName","name":"routeName","disabled":false,"value":null,"params":{"label":"words.route_name","valueType":"string","validation":{"routeName":null}},"events":[]}],"type":"col","size":"6"}],"type":"row"},{"children":[{"children":[{"type":"requiredStatus","name":"status","disabled":false,"value":true,"params":{"label":"words.status","valueType":"bool"},"events":[]}],"type":"col","size":"3"},{"children":[{"type":"advancedParent","name":"parent","disabled":false,"value":0,"params":{"label":"words.select_parent","valueType":"int"},"events":[]}],"type":"col","size":"9"}],"type":"row"},{"children":[{"children":[{"type":"editor","name":"content","disabled":false,"value":null,"params":{"label":"words.content","valueType":"string","validation":[]},"events":[]}],"type":"col","size":"12"}],"type":"row"}],"type":"tab","title":"words.main"},{"children":[{"children":[{"children":[{"type":"requiredSeoKeyword","name":"seoKeyword","disabled":false,"value":null,"params":{"label":"words.seo_keywords","valueType":"string"},"events":[]},{"type":"requiredSeoDescription","name":"seoDescription","disabled":false,"value":null,"params":{"label":"words.seo_description","valueType":"string"},"events":[]}],"type":"col","size":"12"}],"type":"row"}],"type":"tab","title":"words.seo"},{"children":[{"children":[{"children":[{"type":"requiredTemplate","name":"template","disabled":false,"value":0,"params":{"label":"words.template","valueType":"int"},"events":[]}],"type":"col","size":"12"}],"type":"row"},{"children":[{"children":[{"type":"requiredPublishStart","name":"publishStart","disabled":false,"value":null,"params":{"label":"words.publish_start_date","valueType":"string"},"events":[]}],"type":"col","size":"6"},{"children":[{"type":"requiredPublishEnd","name":"publishEnd","disabled":false,"value":null,"params":{"label":"words.publish_end_date","valueType":"string"},"events":[]}],"type":"col","size":"6"}],"type":"row"}],"type":"tab","title":"words.advanced"}]',
         'fields' => '[{"type":"requiredTitle","name":"title","disabled":false,"value":null,"params":{"label":"words.title","valueType":"string","validation":{"required":null}},"events":[]},{"type":"requiredRouteName","name":"routeName","disabled":false,"value":null,"params":{"label":"words.route_name","valueType":"string","validation":{"routeName":null}},"events":[]},{"type":"requiredStatus","name":"status","disabled":false,"value":true,"params":{"label":"words.status","valueType":"bool"},"events":[]},{"type":"advancedParent","name":"parent","disabled":false,"value":0,"params":{"label":"words.select_parent","valueType":"int"},"events":[]},{"type":"editor","name":"content","disabled":false,"value":null,"params":{"label":"words.content","valueType":"string","validation":[]},"events":[]},{"type":"requiredSeoKeyword","name":"seoKeyword","disabled":false,"value":null,"params":{"label":"words.seo_keywords","valueType":"string"},"events":[]},{"type":"requiredSeoDescription","name":"seoDescription","disabled":false,"value":null,"params":{"label":"words.seo_description","valueType":"string"},"events":[]},{"type":"requiredTemplate","name":"template","disabled":false,"value":0,"params":{"label":"words.template","valueType":"int"},"events":[]},{"type":"requiredPublishStart","name":"publishStart","disabled":false,"value":null,"params":{"label":"words.publish_start_date","valueType":"string"},"events":[]},{"type":"requiredPublishEnd","name":"publishEnd","disabled":false,"value":null,"params":{"label":"words.publish_end_date","valueType":"string"},"events":[]}]',
+    ],
+
+    'website' => [
+        'js' => [
+            [
+                'src' => 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js',
+                'integrity' => 'sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj',
+                'crossorigin' => 'anonymous'
+            ],
+            [
+                'src' => 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
+                'integrity' => 'sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct',
+                'crossorigin' => 'anonymous'
+            ],
+        ],
+        'css' => [
+            [
+                'href' => 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css',
+                'integrity' => 'sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N',
+                'crossorigin' => 'anonymous'
+            ],
+            [
+                'href' => 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css'
+            ]
+        ],
     ],
 
     /*

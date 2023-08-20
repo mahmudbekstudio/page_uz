@@ -1,7 +1,7 @@
 <template>
   <div class="element-cover">
     <div class="element-cover-wrapper">
-      <div class="element-cover-name">{{$t('words.components.tag_' + elementName)}}</div>
+      <div class="element-cover-name">{{$t('words.components.tag_' + elementTag, {name: elementName})}}</div>
     </div>
   </div>
 </template>
@@ -17,9 +17,12 @@ export default {
     }
   },
   computed: {
-    elementName () {
-      return this.element.tag || 'unknown'
-    }
+    elementTag () {
+      return this.element.tag || 'unknown';
+    },
+      elementName () {
+        return this.element.name || '';
+      }
   },
 }
 </script>

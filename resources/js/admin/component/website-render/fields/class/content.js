@@ -10,6 +10,6 @@ export default class content extends mainFieldClass {
     }
 
     get html() {
-        return '<div class="field-content" id="' + this.id + '">Content</div>';
+        return this.params || '<div class="field-content" id="' + this.id + '">Content</div>';
     }
 }
