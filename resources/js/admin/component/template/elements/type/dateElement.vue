@@ -1,11 +1,8 @@
-<template>
-    <div>{{params}}</div>
-</template>
 <script>
-import mixins from '../../../../mixin';
+import baseElement from "./baseElement.vue";
 
 export default {
-    mixins: [mixins.get('templateElement')],
+    extends: baseElement
 }
 </script>
 <style scoped lang="scss"></style>

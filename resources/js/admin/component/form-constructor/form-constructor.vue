@@ -75,7 +75,7 @@
                         new Field({type: 'number'}),
                         new Field({type: 'checkbox'}),
                         new Field({type: 'radio'}),
-                        new Field({type: 'divider'}),
+                        //new Field({type: 'divider'}),
                         new Field({type: 'date'}),
                         new Field({type: 'datetime'}),
                         new Field({type: 'dateMultiple'}),

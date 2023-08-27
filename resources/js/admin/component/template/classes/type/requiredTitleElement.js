@@ -1,6 +1,6 @@
 import element from '../mainElement';
 
-export default class textElement extends element {
+export default class requiredTitleElement extends element {
     fillable = [
         {
             name: 'content',

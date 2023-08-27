@@ -84,7 +84,7 @@ class MainController extends Controller
             return go404($lang);
         }
 
-        return viewTemplate($item->template_id, $isPost);
+        return viewTemplate($item, $typeItem, $routeItem, $isPost);
         //return view('welcome');
         //dd([$lang, $typeName, $routeName, $item->toArray()]);
         //return [$lang, $typeName, $routeName, $item->toArray()];

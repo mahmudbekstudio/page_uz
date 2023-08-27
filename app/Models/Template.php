@@ -8,6 +8,7 @@ use App\Models\Traits\UserAddScopeTrait;
 use App\Models\Traits\WebsiteAddScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Template extends Model
 {
@@ -51,5 +52,10 @@ class Template extends Model
     public static function saveFileTypes(): array
     {
         return [self::TYPE_POST, self::TYPE_CATEGORY];
+    }
+
+    public function typeInstance(): BelongsTo
+    {
+        return $this->belongsTo(Type::class, 'type_id', 'id');
     }
 }

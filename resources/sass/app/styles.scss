@@ -18,3 +18,19 @@
 .bs-popover-bottom .popover-header::before {
     border-bottom: 1px solid #5f698f;
 }
+
+.text-strong {
+    font-weight: bold;
+}
+
+.text-italic {
+    font-style: italic;
+}
+
+.text-strike {
+    text-decoration: line-through;
+}
+
+.text-underline {
+    text-decoration: underline;
+}

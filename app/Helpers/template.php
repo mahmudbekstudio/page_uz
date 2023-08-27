@@ -6,7 +6,11 @@ if (! function_exists('getFileContentFromTemmplate')) {
     {
         $addedStyleFiles = [];
         $addedScriptFiles = [];
-        $html = "<html lang=\"en\">\n";
+        $html = "<?php\n";
+        $html .= "use App\Helpers\GlobalVariable;\n";
+        $html .= '$variables = app(GlobalVariable::class);' . "\n";
+        $html .= "?>\n";
+        $html .= "<html lang=\"en\">\n";
         $html .= "<head>\n";
         $html .= "<meta charset=\"utf-8\">\n";
         $html .= "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n";
@@ -45,12 +49,45 @@ if (! function_exists('getFileContentFromTemmplate')) {
             }
         }
 
-        $html .= "<style>" . str_replace("\n", "", Arr::get($template->params, 'styles', '')) . "</style>\n";
+        $styles = strip_tags(Arr::get($template->params, 'styles', ''));
+        $html .= "<style>" . str_replace("\n", "", $styles) . "</style>\n";
 
         $html .= "</head>\n";
         $html .= "<body>\n";
 
-        $html .= Arr::get($template->params, 'contentHtml');
+        $contentHtml = str_replace('<?', '', Arr::get($template->params, 'contentHtml'));
+        $dom = new DOMDocument();
+        $dom->loadHTML($contentHtml, LIBXML_NOERROR|LIBXML_HTML_NODEFDTD|LIBXML_HTML_NOIMPLIED);
+
+        $tags_to_remove = ['script', 'style', 'iframe', 'link', 'html', 'head', 'body'];
+
+        foreach($tags_to_remove as $tag){
+            $element = $dom->getElementsByTagName($tag);
+            foreach($element  as $item){
+                $item->parentNode->removeChild($item);
+            }
+        }
+
+        foreach ($dom->getElementsByTagname('*') as $element)
+        {
+            foreach (iterator_to_array($element->attributes) as $name => $attribute)
+            {
+                if (substr_compare($name, 'on', 0, 2, TRUE) === 0)
+                {
+                    $element->removeAttribute($name);
+                }
+            }
+        }
+
+        $contentHtml = $dom->saveHTML();
+        foreach ($template->typeInstance->fields as $item) {
+            $name = Arr::get($item, 'name');
+            $replaceFrom = '{ $' . $name . ' }';
+            $replaceTo = '<?php echo $variables->get("fields.' . $name . '"); ?>';
+            $contentHtml = str_replace($replaceFrom, $replaceTo, $contentHtml);
+        }
+
+        $html .= $contentHtml;
 
         foreach (config('app.website.js') as $js) {
             $jsTag = '<script src="' . $js['src'] . '"';

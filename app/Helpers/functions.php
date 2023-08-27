@@ -12,6 +12,7 @@ use App\Repositories\RouteRepository;
 use Illuminate\Support\Arr;
 use App\Repositories\PostRepository;
 use App\Repositories\CategoryRepository;
+use App\Helpers\GlobalVariable;
 
 if (! function_exists('route')) {
     /**
@@ -377,8 +378,13 @@ if (! function_exists('viewTemplatePath')) {
 }
 
 if (! function_exists('viewTemplate')) {
-    function viewTemplate($templateId, $isPost)
+    function viewTemplate($item, $typeItem, $routeItem, $isPost)
     {
+        /**
+         * @var GlobalVariable
+         */
+        $variables = app(GlobalVariable::class);
+        $templateId = $item->template_id;
         $templatePath = viewTemplatePath($templateId, $isPost);
 
         if (!file_exists($templatePath)) {
@@ -386,9 +392,10 @@ if (! function_exists('viewTemplate')) {
             $templatePath = viewTemplatePath($templateId, $isPost);
         }
 
+        $websiteRepository = WebsiteRepository::getInstance();
+        $websiteMetas = $websiteRepository->getMetas();
+
         if (!$templateId) {
-            $websiteRepository = WebsiteRepository::getInstance();
-            $websiteMetas = $websiteRepository->getMetas();
             $defaultTemplateId = Arr::get($websiteMetas, ($isPost ? 'post' : 'category') . '_template');
 
             if ($defaultTemplateId) {
@@ -397,8 +404,16 @@ if (! function_exists('viewTemplate')) {
             }
         }
 
+        $fields = ['title' => 'testing'];//TODO: replace with post variables
+
+        $variables->set('item', $item);
+        $variables->set('type-item', $typeItem);
+        $variables->set('route-item', $routeItem);
+        $variables->set('is-post', $isPost);
+        $variables->set('website-metas', $websiteMetas);
+        $variables->set('fields', $fields);
+
         include $templatePath;
-        return;
     }
 }
 

@@ -236,9 +236,40 @@ export class Element {
             params: {label: 'words.title'}
         },
         {
+            type: 'select',
+            name: 'wrapper',
+            value: 'div',
+            params: {
+                clearable: false,
+                label: 'words.wrapper',
+                options: {
+                    'div': 'Div',
+                    'p': 'P',
+                    'h1': 'H1',
+                    'h2': 'H2',
+                    'h3': 'H3',
+                    'h4': 'H4',
+                    'h5': 'H5',
+                    'h6': 'H6',
+                }
+            }
+        },
+        {
             type: 'editor',
             name: 'content',
             params: {label: 'words.content', type: 'simple'}
+        },
+        {
+            type: 'text',
+            name: 'link_url',
+            hasLang: false,
+            params: {label: 'words.link_url'}
+        },
+        {
+            type: 'select',
+            name: 'link_target',
+            value: '_self',
+            params: {clearable: false, label: 'words.link_target', options: {'_self': 'Self', '_blank': 'Blank'}}
         },
     ];
 
@@ -351,6 +382,23 @@ export class Element {
 
         for (const elementItem of this.element.fillable) {
             mergeObj[elementItem.name] = elementItem;
+        }
+
+        if (mergeObj['content'].hide && !mergeObj['text_style']) {
+            mergeObj['text_style'] = {
+                type: 'select',
+                name: 'text_style',
+                params: {
+                    label: 'words.text_style',
+                    multiple: true,
+                    options: {
+                        'strong': 'Strong',
+                        'italic': 'Italic',
+                        'strike': 'Strike',
+                        'underline': 'Underline',
+                    }
+                }
+            };
         }
 
         return Object.values(mergeObj).filter(item => !item.hide);

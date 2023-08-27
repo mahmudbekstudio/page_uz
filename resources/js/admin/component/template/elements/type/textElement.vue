@@ -1,16 +1,8 @@
-<template>
-    <div
-        :id="params.id"
-        :class="params.class"
-        :title="$t(params.title)"
-        v-html="$t(params.content)"
-    />
-</template>
 <script>
-import mixins from '../../../../mixin';
+import baseElement from "./baseElement.vue";
 
 export default {
-    mixins: [mixins.get('templateElement')],
+    extends: baseElement
 }
 </script>
 <style scoped lang="scss"></style>

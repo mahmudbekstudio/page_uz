@@ -84,7 +84,31 @@ export default class element {
     }
 
     get html() {
-        return '{ $' + this.name + ' }';
+        const wrapper = this.params.wrapper || 'div';
+        let classes = this.params.class;
+
+        for (const styleClass of this.params.text_style) {
+            classes += ' text-' + styleClass;
+        }
+
+        const subTag = this.params.link_url ? 'a' : 'span';
+
+        let result = '<' + wrapper;
+        result += ' id="' + this.params.id + '"';
+        result += ' class="' + classes + '"';
+        result += ' title="' + this.translate(this.params.title) + '"';
+        result += '>';
+        result += '<' + subTag;
+
+        if (this.params.link_url) {
+            result += ' href="' + this.params.link_url + '" target="' + this.params.link_target + '"';
+        }
+        result += '>';
+        result += '{ $' + this.name + ' }';
+        result += '</' + subTag + '>';
+        result += '</' + wrapper + '>';
+
+        return result;
     }
 
     translate(key) {
