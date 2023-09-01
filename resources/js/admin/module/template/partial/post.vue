@@ -12,6 +12,8 @@
                 <v-col>
                     <div v-if="selectedType">
                         <v-btn @click="openEditForm">{{$t('words.edit_content')}}</v-btn>
+                        <v-btn @click="openStyleEditForm">{{$t('words.edit_style')}}</v-btn>
+
                         <dialog-component
                             :title="dialog.title"
                             v-model="dialog.show"
@@ -23,6 +25,18 @@
                                 v-model="contentField.children"
                                 :required-fields="selectedType.fields"
                             ></template-constructor>
+                        </dialog-component>
+
+                        <dialog-component
+                            :title="styleDialog.title"
+                            v-model="styleDialog.show"
+                            :actions="styleDialog.actions"
+                            fullscreen
+                        >
+                            <style-constructor
+                                :blocks="websiteHtmlObject.blocks"
+                                @getStylesCallback="getStylesCallback=$event"
+                            ></style-constructor>
                         </dialog-component>
                     </div>
                     <div class="website-render" v-if="selectedLayout">
@@ -59,6 +73,7 @@ import {WebsiteHtml, WebsiteRender as WebsiteRenderClass} from "../../../compone
 import dialogComponent from "../../../component/dialog-component";
 import templatesList from "../../../component/website-render/templates-list.vue";
 import templateConstructor from '../../../component/template-constructor/template-constructor.vue';
+import styleConstructor from "../../../component/template-constructor/style-constructor.vue";
 
 export default {
     service: new Service(),
@@ -93,6 +108,35 @@ export default {
                             this.dialog.show = false;
                             //this.contentField.children = this.templateValue.json;
                             //his.contentField.values.content = this.templateValue.json;
+                            this.renderWebsite();
+                            this.emit();
+                        }
+                    }
+                ],
+            },
+            getStylesCallback: null,
+            styleDialog: {
+                title: 'words.style',
+                show: false,
+                actions: [
+                    {
+                        color: 'default',
+                        text: 'words.cancel',
+                        click: () => this.styleDialog.show = false
+                    },
+                    {
+                        color: 'primary',
+                        text: 'words.save',
+                        click: () => {
+                            const customStyles = this.getStylesCallback();
+
+                            for (const block of this.websiteHtmlObject.blocks) {
+                                if (customStyles[block.id]) {
+                                    block.customStyles = {...customStyles[block.id]};
+                                }
+                            }
+
+                            this.styleDialog.show = false;
                             this.renderWebsite();
                             this.emit();
                         }
@@ -176,6 +220,9 @@ export default {
         openEditForm () {
             this.dialog.show = true;
         },
+        openStyleEditForm () {
+            this.styleDialog.show = true;
+        },
         formChanged (e) {
             this.emit();
         },
@@ -191,6 +238,7 @@ export default {
             websiteHtmlObj.htmlDocument();
             const contentHtml = websiteHtmlObj.contentHtml;
             const styles = websiteHtmlObj.structureStyles;
+            const customStyles = websiteHtmlObj.customStyles;
 
             if (this.websiteHtmlObject) {
                 this.$emit('input', {
@@ -199,7 +247,7 @@ export default {
                     type_id: values.type,
                     type: 'post',
                     content: websiteHtmlObj.blocks,
-                    params: {styles, contentHtml},
+                    params: {styles, customStyles, contentHtml},
                 });
             }
         },
@@ -250,6 +298,7 @@ export default {
         formComponent,
         dialogComponent,
         templateConstructor,
+        styleConstructor,
     }
 }
 </script>

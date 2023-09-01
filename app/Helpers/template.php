@@ -51,6 +51,8 @@ if (! function_exists('getFileContentFromTemmplate')) {
 
         $styles = strip_tags(Arr::get($template->params, 'styles', ''));
         $html .= "<style>" . str_replace("\n", "", $styles) . "</style>\n";
+        $customStyles = strip_tags(Arr::get($template->params, 'customStyles', ''));
+        $html .= "<style>" . str_replace("\n", "", $customStyles) . "</style>\n";
 
         $html .= "</head>\n";
         $html .= "<body>\n";

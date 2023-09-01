@@ -119,6 +119,8 @@ export class WebsiteHtml {
             if(!blocks[blocksKey].title) {
                 blocks[blocksKey].title = blocks[blocksKey].type;
             }
+
+            blocks[blocksKey].customStyles = blocks[blocksKey].customStyles || {'': []};
         }
 
         this.blocks = blocks;
@@ -165,6 +167,37 @@ export class WebsiteHtml {
         }
 
         return styles;
+    }
+
+    get customStyles() {
+        const classStyles = [];
+        for (const block of this.blocks) {
+            let styleItem = '';
+
+            for (const selector in block.customStyles) {
+                styleItem += '#' + block.id + (selector ? ' ' : '') + selector + ' {';
+
+                for (let selectorStyle of block.customStyles[selector]) {
+                    selectorStyle = selectorStyle ? selectorStyle.trim() : '';
+
+                    if (!selectorStyle) {
+                        continue;
+                    }
+
+                    if (selectorStyle.endsWith(';')) {
+                        selectorStyle = selectorStyle.substring(0, selectorStyle.length - 2);
+                    }
+
+                    styleItem += selectorStyle + ' !important;';
+                }
+
+                styleItem += '}'
+            }
+
+            classStyles.push(styleItem);
+        }
+
+        return classStyles.join('');
     }
 
     generateStyles(stylesList, block) {
@@ -397,6 +430,7 @@ export class WebsiteHtml {
             html.push('<link rel="stylesheet" href="' + styleFile + this.getTimerParam() + '">');
         }
         html.push('<style>' + this.structureStyles + '</style>');
+        html.push('<style>' + this.customStyles + '</style>');
         html.push('</head>');
         html.push('<body>');
         html.push(this.contentHtml);
