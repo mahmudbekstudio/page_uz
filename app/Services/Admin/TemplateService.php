@@ -43,7 +43,7 @@ class TemplateService extends BaseService
         return $this->templateRepository->findWhere(['type' => $type], ['id', 'name']);
     }
 
-    public function detele(Template $template): bool
+    public function delete(Template $template): bool
     {
         if (
             $template->type === Template::TYPE_LAYOUT &&

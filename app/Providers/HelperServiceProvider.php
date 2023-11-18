@@ -12,6 +12,7 @@ class HelperServiceProvider extends ServiceProvider
         'functions',
         'form',
         'template',
+        'fields',
         'error'
     ];
     protected $helpersFolder = 'Helpers';

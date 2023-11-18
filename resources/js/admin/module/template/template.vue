@@ -126,7 +126,7 @@ export default {
         },
         showForm() {
             this.dialog.show = true;
-            this.dialog.title = 'words.create_template_type_' + this.type;
+            this.dialog.title = 'words.' + (this.id ? 'edit' : 'create') + '_template_type_' + this.type;
             this.dialog.actions = [
                 {
                     color: 'default',

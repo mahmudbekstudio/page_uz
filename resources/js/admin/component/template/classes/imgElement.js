@@ -27,7 +27,7 @@ export default class imgElement extends element {
         },
     ];
     hasLang = false;
-    constructor(params) {
-        super(params);
+    constructor(params, lang = null, withAllTranslations = false) {
+        super(params, lang, withAllTranslations);
     }
 }

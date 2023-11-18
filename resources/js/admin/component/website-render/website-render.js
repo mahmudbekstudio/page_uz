@@ -169,12 +169,36 @@ export class WebsiteHtml {
         return styles;
     }
 
+    get contentStructureStyles() {
+        let styles = this.generateStyles(this.fieldsStyles);
+
+        for (const block of this.blocks) {
+            if (block.type === 'content') {
+                styles += this.generateStyles(block.styles, block);
+                if (block.type === 'grid' && block?.children) {
+                    for (const blockChild of block.children) {
+                        if (blockChild?.children) {
+                            for (const blockChild2 of blockChild.children) {
+                                styles += this.generateStyles(blockChild2.styles, blockChild2);
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        return styles;
+    }
+
     get customStyles() {
         const classStyles = [];
         for (const block of this.blocks) {
             let styleItem = '';
 
             for (const selector in block.customStyles) {
+                if (!block.customStyles[selector].length) continue;
+
                 styleItem += '#' + block.id + (selector ? ' ' : '') + selector + ' {';
 
                 for (let selectorStyle of block.customStyles[selector]) {
@@ -302,7 +326,17 @@ export class WebsiteHtml {
         return this.isFresh ? '?t=' + (new Date()).getTime() : '';
     }
 
-    getStructureHtml(structure, block, withBorder = false, lang = null, isGray = false) {
+    getContentBlockStructureHtml() {
+        for (const block of this.blocks) {
+            if (block.type === 'content') {
+                return this.getStructureHtml(block.structure, block, false, null, false, true);
+            }
+        }
+
+        return '';
+    }
+
+    getStructureHtml(structure, block, withBorder = false, lang = null, isGray = false, withAllTranslations = false) {
         if (structure.tag) {
             let html = '<' + structure.tag;
 
@@ -334,7 +368,7 @@ export class WebsiteHtml {
                 }
 
                 for (const childElement of structure.children) {
-                    html += this.getStructureHtml(childElement, block, false, lang);
+                    html += this.getStructureHtml(childElement, block, false, lang, false, withAllTranslations);
                 }
 
                 html += '</' + structure.tag + '>';
@@ -347,12 +381,12 @@ export class WebsiteHtml {
             let blockHtml = '';
             if (block?.children) {
                 if (structure.field === 'content') {
-                    blockHtml = this.generateContent(block.children, lang);
+                    blockHtml = this.generateContent(block.children, lang, withAllTranslations);
                 } else {
                     for (const blockChild of block.children) {
                         if (blockChild.name === structure.field && blockChild?.children) {
                             for (const blockChildItem of blockChild.children) {
-                                blockHtml += this.getStructureHtml(blockChildItem.structure, blockChildItem, false, lang);
+                                blockHtml += this.getStructureHtml(blockChildItem.structure, blockChildItem, false, lang, false, withAllTranslations);
                             }
                         }
                     }
@@ -360,6 +394,7 @@ export class WebsiteHtml {
             }
 
             const field = this.getField(structure.field, block, blockHtml, lang);
+            field.typeField.withAllTranslations = withAllTranslations;
             this.fieldsStyles = {...this.fieldsStyles, ...field.classes};
 
             return field.html;
@@ -386,7 +421,7 @@ export class WebsiteHtml {
         return null;
     }
 
-    htmlDocument(withBorder = false, lang = null, greyTypeExcept = null) {
+    htmlDocument(withBorder = false, lang = null, greyTypeExcept = null, withAllTranslations = false) {
         this.fieldsStyles = {};
         this.contentHtml = '';
 
@@ -401,7 +436,7 @@ export class WebsiteHtml {
                 }
             }
 
-            this.contentHtml += this.getStructureHtml(block.structure, block, withBorder, lang, isGray);
+            this.contentHtml += this.getStructureHtml(block.structure, block, withBorder, lang, isGray, withAllTranslations);
         }
 
         let html = ['<!doctype html>'];
@@ -484,9 +519,9 @@ export class WebsiteHtml {
         return null;
     }
 
-    generateContent(list, lang) {
+    generateContent(list, lang, forSave = false) {
         if (Array.isArray(list) && !list.length) {
-            return 'Content';
+            return forSave ? '{ $content }' : 'Content';
         }
 
         let contentHtml = '';
@@ -495,7 +530,7 @@ export class WebsiteHtml {
             for (const itemCol of itemRow.children) {
                 contentHtml += '<div class="col-md-' + itemCol.size + '">';
                 for (const itemColContent of itemCol.children) {
-                    const element = new Element(itemColContent, lang);
+                    const element = new Element(itemColContent, lang, forSave);
                     contentHtml += element.element.html;
                 }
                 contentHtml += '</div>';

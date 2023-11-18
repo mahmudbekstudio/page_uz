@@ -1,4 +1,5 @@
 import textareaField from './textareaField';
+import optionsField from './optionsField';
 import textField from './textField';
 import numberField from './numberField';
 import passwordField from './passwordField';
@@ -447,6 +448,9 @@ export class Field {
                 break;
             case 'textarea':
                 this.field = new textareaField(fieldObj);
+                break;
+            case 'options':
+                this.field = new optionsField(fieldObj);
                 break;
             case 'select':
                 this.field = new selectField(fieldObj);

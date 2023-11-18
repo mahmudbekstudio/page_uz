@@ -24,6 +24,8 @@
                                 :row="row"
                                 @edit="editCell($event)"
                                 @add="addElement($event)"
+                                :dragging="dragging"
+                                @dragging="dragging=$event"
                             />
                         </template>
                     </v-row>
@@ -61,6 +63,7 @@ import formComponent from "../form/form-component.vue";
 export default {
     data () {
         return {
+            dragging: false,
             templateObject: null,
             componentsList: {
                 basic: [

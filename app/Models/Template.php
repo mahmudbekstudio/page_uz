@@ -49,7 +49,7 @@ class Template extends Model
         return self::TYPE_BLOCK;
     }
 
-    public static function saveFileTypes(): array
+    public static function pageTypes(): array
     {
         return [self::TYPE_POST, self::TYPE_CATEGORY];
     }

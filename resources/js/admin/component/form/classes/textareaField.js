@@ -7,6 +7,7 @@ export default class textareaField extends field {
             type: 'number',
             name: 'rows',
             value: 5,
+            hasLang: false,
             params: {label: 'words.rows'}
         },
         {

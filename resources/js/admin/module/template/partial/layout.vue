@@ -12,6 +12,20 @@
                     cols="12"
                     sm="3"
                 >
+                    <p>
+                        <v-btn @click="openStyleEditForm">{{$t('words.edit_style')}}</v-btn>
+                    </p>
+                    <dialog-component
+                        :title="styleDialog.title"
+                        v-model="styleDialog.show"
+                        :actions="styleDialog.actions"
+                        fullscreen
+                    >
+                        <style-constructor
+                            :blocks="websiteHtmlObject.blocks"
+                            @getStylesCallback="getStylesCallback=$event"
+                        ></style-constructor>
+                    </dialog-component>
                     <div class="edit-block" v-if="editBlock && activeBlock">
                         <h1 class="edit-block-title">
                             <v-btn
@@ -121,6 +135,7 @@ import {mapGetters} from "vuex";
 import formComponent from "../../../component/form/form-component.vue";
 import {Form as FormClass} from "../../../component/form/classes/form";
 import validation from "../../../config/validation";
+import styleConstructor from "../../../component/template-constructor/style-constructor.vue";
 
 export default {
     service: new Service(),
@@ -152,7 +167,36 @@ export default {
                         click: () => this.dialog.show = false
                     }
                 ],
-            }
+            },
+            getStylesCallback: null,
+            styleDialog: {
+                title: 'words.style',
+                show: false,
+                actions: [
+                    {
+                        color: 'default',
+                        text: 'words.cancel',
+                        click: () => this.styleDialog.show = false
+                    },
+                    {
+                        color: 'primary',
+                        text: 'words.save',
+                        click: () => {
+                            const customStyles = this.getStylesCallback();
+
+                            for (const block of this.websiteHtmlObject.blocks) {
+                                if (customStyles[block.id]) {
+                                    block.customStyles = {...customStyles[block.id]};
+                                }
+                            }
+
+                            this.styleDialog.show = false;
+                            /*this.renderWebsite();
+                            this.emit();*/
+                        }
+                    }
+                ],
+            },
         }
     },
     props: {
@@ -192,6 +236,9 @@ export default {
         nameField.value = this.templateValue.name;
     },
     methods: {
+        openStyleEditForm () {
+            this.styleDialog.show = true;
+        },
         setValue (value = null) {
             this.templateValue = value || this.value;
             this.websiteHtmlObject = new WebsiteHtml(this.templateValue.content);
@@ -264,7 +311,13 @@ export default {
         },
         templateChanged() {
             this.templateValue.type = 'layout';
-            this.templateValue.params = [];
+            const websiteHtmlObj = new WebsiteHtml(this.websiteHtmlObject?.blocks)
+            websiteHtmlObj.htmlDocument(false, null, null, true);
+            const contentHtml = websiteHtmlObj.contentHtml;
+            const styles = websiteHtmlObj.structureStyles;
+            const customStyles = websiteHtmlObj.customStyles;
+
+            this.templateValue.params = {styles, customStyles, contentHtml};
             this.$emit('input', this.templateValue);
         }
     },
@@ -289,6 +342,7 @@ export default {
         }*/
     },
     components: {
+        styleConstructor,
         formComponent,
         sortList,
         websiteRender,

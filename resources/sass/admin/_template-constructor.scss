@@ -98,6 +98,10 @@
     .transition-group {
         display: block;
         min-height: 24px;
+
+        &.cell-empty {
+            background-color: #EFEFEF;
+        }
     }
 }
 

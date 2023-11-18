@@ -14,10 +14,8 @@ class TemplateObserver
      */
     public function created(Template $template)
     {
-        if ($this->canSaveFile($template)) {
-            $content = getFileContentFromTemmplate($template);
-            createStorageTemplateFile($template->type, $template->id, $template->website_id, $content);
-        }
+        $content = $this->getTemplateContent($template);
+        createStorageTemplateFile($template->type, $template->id, $template->website_id, $content);
     }
 
     /**
@@ -28,10 +26,8 @@ class TemplateObserver
      */
     public function updated(Template $template)
     {
-        if ($this->canSaveFile($template)) {
-            $content = getFileContentFromTemmplate($template);
-            updateStorageTemplateFile($template->type, $template->id, $template->website_id, $content);
-        }
+        $content = $this->getTemplateContent($template);
+        updateStorageTemplateFile($template->type, $template->id, $template->website_id, $content);
     }
 
     /**
@@ -42,9 +38,7 @@ class TemplateObserver
      */
     public function deleted(Template $template)
     {
-        if ($this->canSaveFile($template)) {
-            deleteStorageTemplateFile($template->type, $template->id, $template->website_id);
-        }
+        deleteStorageTemplateFile($template->type, $template->id, $template->website_id);
     }
 
     /**
@@ -55,10 +49,7 @@ class TemplateObserver
      */
     public function restored(Template $template)
     {
-        if ($this->canSaveFile($template)) {
-            $content = getFileContentFromTemmplate($template);
-            createStorageTemplateFile($template->type, $template->id, $template->website_id, $content);
-        }
+        $this->created($template);
     }
 
     /**
@@ -69,17 +60,31 @@ class TemplateObserver
      */
     public function forceDeleted(Template $template)
     {
-        if ($this->canSaveFile($template)) {
-            deleteStorageTemplateFile($template->type, $template->id, $template->website_id);
-        }
+        $this->deleted($template);
     }
 
     /**
      * @param Template $template
      * @return bool
      */
-    private function canSaveFile(Template $template): bool
+    private function isPageType(Template $template): bool
     {
-        return in_array($template->type, Template::saveFileTypes());
+        return in_array($template->type, Template::pageTypes());
+    }
+
+    private function isLayoutType(Template $template): bool
+    {
+        return $template->type === Template::TYPE_LAYOUT;
+    }
+
+    private function getTemplateContent(Template $template): string
+    {
+        if ($this->isPageType($template)) {
+            return getFileContentFromTemplatePage($template);
+        } elseif($this->isLayoutType($template)) {
+            return getFileContentFromTemplateLayout($template);
+        }
+
+        return '';
     }
 }

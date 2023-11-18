@@ -68,3 +68,13 @@ if(!function_exists('errorServiceUnavailable')) {
         abort(503, __('error.503.title'));
     }
 }
+
+if(!function_exists('errorServiceClosed')) {
+    /**
+     * Service Unavailable
+     */
+    function errorServiceClosed()
+    {
+        abort(499, __('error.499.title'));
+    }
+}

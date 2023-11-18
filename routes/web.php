@@ -21,7 +21,7 @@ Route::get('admin/{any?}', [\App\Http\Controllers\Web\MainController::class, 'ad
     return '22222';
 })->whereIn('routeName', config('app.special_routes'));*/
 
-Route::get('{lang}/{typeName}/{routeName}', [\App\Http\Controllers\Web\MainController::class, 'index'])
+Route::get('{lang?}/{typeName?}/{routeName?}', [\App\Http\Controllers\Web\MainController::class, 'index'])
     ->whereIn('lang', config('app.locale_list'));
 /*Route::get('{any?}', [\App\Http\Controllers\Web\MainController::class, 'redirectToHome'])
     ->where('any', '.*');*/

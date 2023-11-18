@@ -22,6 +22,7 @@
     import app from "../../../service/app";
     import * as constants from '../../../constants';
     import {Form as FormClass} from "../../../component/form/classes/form";
+    import timezones from 'Foundation/static/tomezones.js';
 
     export default {
         service: new Service(),
@@ -71,14 +72,22 @@
                 this.settingForm = new FormClass();
                 this.settingForm.children = [];
                 for (const item of this.initialFormValues) {
-                    const tab = this.settingForm.addTab({title: this.$t(item.title)});
+                    const tab = this.settingForm.addTab({title: item.title});
                     for (const field of item.children) {
                         tab.addField(field);
                     }
                 }
             },
             submit() {
-                this.$options.service.submit();
+                this.$options.service.submit((response, settings) => {
+                    this.initialFormValues = response;
+                    this.initForm();
+
+                    this.$store.dispatch('view/changeWebsite', settings.website);
+                    this.$store.dispatch('view/changeWebsiteTitle', settings.website.metas.name);
+                }, () => {
+                    app.openMessage(this.$t('words.error'), constants.SNACKBAR_COLORS.error);
+                });
             },
             actionButtonsDisabling (value) {
                 for (let item of this.actionsList) {

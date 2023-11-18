@@ -24,6 +24,7 @@
             <transition-group
                 type="transition"
                 class="transition-group"
+                :class="{'cell-empty': !col.children.length}"
             >
                 <element-render
                     v-for="(element, index) in col.children"
@@ -49,7 +50,6 @@ import { Element } from '../template/classes/template';
 export default {
     data () {
         return {
-            dragging: false,
             dragOptions: {
                 animation: 200,
                 group: 'description',
@@ -60,7 +60,13 @@ export default {
     },
     props: {
         col: null,
-        row: null
+        row: null,
+        dragging: {
+            type: Boolean,
+            default () {
+                return false;
+            }
+        },
     },
     methods: {
         cellActionClick (actionName) {
@@ -69,13 +75,13 @@ export default {
             }
         },
         endDrag (e) {
-            this.dragging = false;
+            this.$emit('dragging', false);
         },
         startDrag (e) {
-            this.dragging = true;
+            this.$emit('dragging', true);
         },
         changeList (item) {
-            if (item.added) {
+            if (item.added && !this.dragging) {
                 const newItem = new Element({..._.cloneDeep(item.added.element.json), isConstructor: this.col.isConstructor});
                 newItem.newId();
                 this.col.children[item.added.newIndex] = newItem;

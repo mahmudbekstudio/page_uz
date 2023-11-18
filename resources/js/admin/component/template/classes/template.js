@@ -217,6 +217,7 @@ let elementId = 0;
 
 export class Element {
     element = {};
+    withAllTranslations = false;
     fillable = [
         {
             type: 'text',
@@ -273,102 +274,103 @@ export class Element {
         },
     ];
 
-    constructor(elementObj, lang = null) {
+    constructor(elementObj, lang = null, withAllTranslations = false) {
+        this.withAllTranslations = withAllTranslations;
         switch (elementObj.tag) {
             case 'h':
-                this.element = new hElement(elementObj, lang);
+                this.element = new hElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'p':
-                this.element = new pElement(elementObj, lang);
+                this.element = new pElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'div':
-                this.element = new divElement(elementObj, lang);
+                this.element = new divElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'hr':
-                this.element = new hrElement(elementObj, lang);
+                this.element = new hrElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'img':
-                this.element = new imgElement(elementObj, lang);
+                this.element = new imgElement(elementObj, lang, this.withAllTranslations);
                 break;
 
             // type fields
             case 'text':
-                this.element = new textElement(elementObj, lang);
+                this.element = new textElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'textarea':
-                this.element = new textareaElement(elementObj, lang);
+                this.element = new textareaElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'number':
-                this.element = new numberElement(elementObj, lang);
+                this.element = new numberElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'password':
-                this.element = new passwordElement(elementObj, lang);
+                this.element = new passwordElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'select':
-                this.element = new selectElement(elementObj, lang);
+                this.element = new selectElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'file':
-                this.element = new fileElement(elementObj, lang);
+                this.element = new fileElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'switch':
-                this.element = new switchElement(elementObj, lang);
+                this.element = new switchElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'divider':
-                this.element = new dividerElement(elementObj, lang);
+                this.element = new dividerElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'datetime':
-                this.element = new datetimeElement(elementObj, lang);
+                this.element = new datetimeElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'date':
-                this.element = new dateElement(elementObj, lang);
+                this.element = new dateElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'dateRange':
-                this.element = new dateRangeElement(elementObj, lang);
+                this.element = new dateRangeElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'dateMultiple':
-                this.element = new dateMultipleElement(elementObj, lang);
+                this.element = new dateMultipleElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'time':
-                this.element = new timeElement(elementObj, lang);
+                this.element = new timeElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'radio':
-                this.element = new radioElement(elementObj, lang);
+                this.element = new radioElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'checkbox':
-                this.element = new checkboxElement(elementObj, lang);
+                this.element = new checkboxElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'editor':
-                this.element = new editorElement(elementObj, lang);
+                this.element = new editorElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'advancedParent':
-                this.element = new advancedParentElement(elementObj, lang);
+                this.element = new advancedParentElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'advancedChildOf':
-                this.element = new advancedChildOfElement(elementObj, lang);
+                this.element = new advancedChildOfElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'requiredPublishStart':
-                this.element = new requiredPublishStartElement(elementObj, lang);
+                this.element = new requiredPublishStartElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'requiredPublishEnd':
-                this.element = new requiredPublishEndElement(elementObj, lang);
+                this.element = new requiredPublishEndElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'requiredRouteName':
-                this.element = new requiredRouteNameElement(elementObj, lang);
+                this.element = new requiredRouteNameElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'requiredSeoKeyword':
-                this.element = new requiredSeoKeywordElement(elementObj, lang);
+                this.element = new requiredSeoKeywordElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'requiredSeoDescription':
-                this.element = new requiredSeoDescriptionElement(elementObj, lang);
+                this.element = new requiredSeoDescriptionElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'requiredStatus':
-                this.element = new requiredStatusElement(elementObj, lang);
+                this.element = new requiredStatusElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'requiredTemplate':
-                this.element = new requiredTemplateElement(elementObj, lang);
+                this.element = new requiredTemplateElement(elementObj, lang, this.withAllTranslations);
                 break;
             case 'requiredTitle':
-                this.element = new requiredTitleElement(elementObj, lang);
+                this.element = new requiredTitleElement(elementObj, lang, this.withAllTranslations);
                 break;
         }
     }

@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use App\Repositories\PostRepository;
 use App\Repositories\CategoryRepository;
 use App\Helpers\GlobalVariable;
+use App\Models\Template;
 
 if (! function_exists('route')) {
     /**
@@ -135,6 +136,19 @@ if (! function_exists('responseJsonData')) {
     function responseJsonData(bool $result, array $data, array $setting = []): \Illuminate\Http\JsonResponse
     {
         return responseJson($result, [], $data, $setting);
+    }
+}
+
+if (! function_exists('responseStatus')) {
+    /**
+     * Reponse json data
+     *
+     * @param bool $result
+     * @return \Illuminate\Http\JsonResponse
+     */
+    function responseStatus(bool $result, array $setting = []): \Illuminate\Http\JsonResponse
+    {
+        return responseJson($result, [], [], $setting);
     }
 }
 
@@ -377,6 +391,12 @@ if (! function_exists('viewTemplatePath')) {
     }
 }
 
+if (! function_exists('viewLayoutTemplatePath')) {
+    function viewLayoutTemplatePath($templateId) {
+        return storage_path('app/template/layout/') . $templateId . '.php';
+    }
+}
+
 if (! function_exists('viewTemplate')) {
     function viewTemplate($item, $typeItem, $routeItem, $isPost)
     {
@@ -385,6 +405,7 @@ if (! function_exists('viewTemplate')) {
          */
         $variables = app(GlobalVariable::class);
         $templateId = $item->template_id;
+        $layoutId = 0;
         $templatePath = viewTemplatePath($templateId, $isPost);
 
         if (!file_exists($templatePath)) {
@@ -404,7 +425,34 @@ if (! function_exists('viewTemplate')) {
             }
         }
 
-        $fields = ['title' => 'testing'];//TODO: replace with post variables
+        if ($templateId) {
+            $pageTemplate = Template::find($templateId);
+
+            $layoutId = $pageTemplate->layout_id;
+            $layoutTemplatePath = viewLayoutTemplatePath($layoutId);
+
+            if (!file_exists($templatePath)) {
+                $templateId = 0;
+                $layoutTemplatePath = viewLayoutTemplatePath($templateId);
+            }
+        } else {
+            $layoutTemplatePath = viewLayoutTemplatePath($templateId);
+        }
+
+
+        $fields = [];
+        $typeFields = [];
+
+        foreach ($item->type->fields as $field) {
+            $typeFields[Arr::get($field, 'name', '')] = $field;
+        }
+
+        $item->metas->each(function ($item) use (&$fields, $typeFields) {
+            $fileType = Arr::get($typeFields, $item->meta_key);
+            if ($fileType) {
+                $fields[$item->meta_key] = getFormattedField($item, $fileType);
+            }
+        });
 
         $variables->set('item', $item);
         $variables->set('type-item', $typeItem);
@@ -412,8 +460,9 @@ if (! function_exists('viewTemplate')) {
         $variables->set('is-post', $isPost);
         $variables->set('website-metas', $websiteMetas);
         $variables->set('fields', $fields);
+        $variables->set('pageTemplatePath', $templatePath);
 
-        include $templatePath;
+        include $layoutTemplatePath;
     }
 }
 
@@ -518,6 +567,21 @@ if (! function_exists('getCurrentTemplate')) {
         $templateRepository = app(\App\Repositories\TemplateRepository::class);
 
         return $templateRepository->getById(end($path));
+    }
+}
+
+if (! function_exists('translateText')) {
+    function translateText($text, $lang = null)
+    {
+        if (gettype($text) == 'array') {
+            if (isset($text[app()->getLocale()])) {
+                return stripslashes($text[app()->getLocale()]);
+            }
+
+            return stripslashes(array_values($text)[0]);
+        }
+
+        return trans(stripslashes($text));
     }
 }
 

@@ -15,4 +15,5 @@ return [
     'app.userRoles',
     'app.parentPageDeepLimit',
     'app.website',
+    'template.exceptFields' => 'app.template.except_fields'
 ];

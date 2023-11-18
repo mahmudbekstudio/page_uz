@@ -54,6 +54,7 @@ export default {
     methods: {
         init() {
             this.formValue = null;
+            this.actions = [];
             this.actions.push(getPageBoxAction('words.back', '', {color: 'default', disabled: false}, {
                 click: this.back
             }));

@@ -2,7 +2,7 @@
     <v-textarea
         v-bind="params"
         v-on="events"
-        v-model="dataValue"
+        v-model="textDataValue"
         :disabled="disabled"
         :hint="params?.hint ? $t(params.hint) : null"
         :label="labelText"

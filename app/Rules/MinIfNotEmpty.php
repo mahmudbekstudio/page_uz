@@ -16,10 +16,30 @@ class MinIfNotEmpty implements Rule
 
     public function passes($attribute, $value): bool
     {
-        if (empty($value)) {
+        if (valueIsEmpty($value)) {
             return true;
         }
 
+        if (is_array($value)) {
+            foreach ($value as $item) {
+                if (!$this->checkValue($item)) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            return $this->checkValue($value);
+        }
+    }
+
+    public function message(): string
+    {
+        return trans('validation.min.numeric');
+    }
+
+    private function checkValue($value)
+    {
         switch (gettype($value)) {
             case 'integer':
                 return $this->min <= $value;
@@ -30,10 +50,5 @@ class MinIfNotEmpty implements Rule
         }
 
         return true;
-    }
-
-    public function message(): string
-    {
-        return trans('validation.min.numeric');
     }
 }

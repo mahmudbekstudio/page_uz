@@ -38,7 +38,7 @@ export default class Service {
             });
     }
 
-    submit() {
+    submit(successCallback, failCallback) {
         this.loading(true);
         http(api.updateSettings)
             .callback(store.getters['main-setting/form'])
@@ -46,7 +46,7 @@ export default class Service {
             .then(response => {
                 const data = response.data.data;
                 if (typeof successCallback === 'function') {
-                    successCallback(data);
+                    successCallback(data, response.data.setting);
                 }
             })
             .catch(error => {

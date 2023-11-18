@@ -95,14 +95,15 @@
         })
     };
 
-    const fileManagerFile = function (id, folderId, name, extension = '', size = 0, selected = false, is_local = false) {
+    const fileManagerFile = function (id, folder_id, name, extension = '', size = 0, selected = false, is_local = false, folderPath = '') {
         return fileManagerContentType('file', {
             id,
-            folderId,
+            folder_id,
             name,
             extension,
             size,
             is_local,
+            folderPath,
             selected
         })
     };
@@ -238,7 +239,18 @@
                     constants.FILE_TYPES[item.item.extension] !== this.fileType;
             },
             initSelectFiles(val) {
-                this.selectedFiles = val.map(file => fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size, false, file.is_local));
+                this.selectedFiles = val.map(file =>
+                    fileManagerFile(
+                        file.id,
+                        file.folder_id,
+                        file.name,
+                        file.extension,
+                        file.size,
+                        false,
+                        file.is_local,
+                        file.folderPath
+                    )
+                );
             },
             init() {
                 this.initSelectFiles(this.value);
@@ -439,7 +451,7 @@
                         this.selectedFiles[selectedIndex].item.selected = true;
                         this.content.push(this.selectedFiles[selectedIndex]);
                     } else {
-                        this.content.push(fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size, false, file.is_local));
+                        this.content.push(fileManagerFile(file.id, file.folder_id, file.name, file.extension, file.size, false, file.is_local, file.folderPath));
                     }
                 }
             },
@@ -455,8 +467,8 @@
                 }
                 this.$emit('input', this.selectedFiles.map(({item, folderPath}) => ({
                     extension: item.extension,
-                    folderId: item.folderId,
-                    folderPath: folderPath,
+                    folder_id: item.folder_id,
+                    folderPath: folderPath || item.folderPath,
                     id: item.id,
                     name: item.name,
                     is_local: item.is_local,

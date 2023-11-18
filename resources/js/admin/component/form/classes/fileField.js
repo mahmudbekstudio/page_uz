@@ -12,6 +12,7 @@ export default class fileField extends field {
         {
             type: 'switch',
             name: 'multiple',
+            value: false,
             params: {label: 'words.multiple'},
             events: {change: e => this.fillable[0].params.multiple = e}
         },
@@ -19,12 +20,13 @@ export default class fileField extends field {
             type: 'select',
             name: 'fileType',
             value: FILE_DEFAULT_TYPE,
-            params: {label: 'words.type', options: _.zipObject(FILE_TYPE_LIST, FILE_TYPE_LIST)},
+            params: {label: 'words.type', clearable: false, options: _.zipObject(FILE_TYPE_LIST, FILE_TYPE_LIST)},
             events: {change: e => this.fillable[0].params.fileType = e}
         },
     ]
     constructor(params) {
         super(params);
+
         this.fieldObject.params.valueType = 'array';
         this.defaultObject.value = [];
         this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;

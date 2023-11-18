@@ -22,4 +22,9 @@ return [
     '503' => [
         'title' => 'Xato 503'
     ],
+    '499' => [
+        'title' => 'Xato 499'
+    ],
+
+    'template_used' => 'Bu shablonni oʻchirib boʻlmaydi. Shablon ishlatilgan.',
 ];

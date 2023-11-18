@@ -5,6 +5,7 @@
             v-bind="dragOptions"
             :class="{'list-wrap': !isSubList, 'is-sub-list': isSubList}"
             @add="addElement({event: $event, indexes: [...indexes, $event.newIndex]})"
+            @end="$emit('end')"
         >
             <transition-group
                 type="transition"

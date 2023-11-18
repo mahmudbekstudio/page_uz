@@ -3,8 +3,10 @@ namespace App\Repositories;
 
 use App\Helpers\DataFormat;
 use App\Models\Website;
+use App\Models\WebsiteMeta;
 use App\Repositories\Traits\StaticInstance;
 use App\Repositories\Traits\Vars;
+use Illuminate\Support\Arr;
 
 class WebsiteRepository extends BaseRepository {
 
@@ -37,14 +39,33 @@ class WebsiteRepository extends BaseRepository {
         return $result;
     }
 
+    public static function changeStatusOfCurrentWebsite(int $status)
+    {
+        /**
+         * @var Website $website
+         */
+        $website = self::getInstance()->getCurrent();
+
+        if (in_array($status, $website->getAllStatuses()) && $website->status !== $status) {
+            $website = Website::find($website->id);
+            $website->status = $status;
+            $website->save();
+        }
+    }
+
     public function setCurrent(int $id) {
+        $this->setVar('current-website', $this->getRoot($id));
+    }
+
+    private function getRoot(int $id)
+    {
         $website = $this->getById($id);
 
         if ($website->domain_id) {
             $website = $this->getById($website->domain_id);
         }
 
-        $this->setVar('current-website', $website);
+        return $website;
     }
 
     public function getCurrent() {
@@ -95,19 +116,19 @@ class WebsiteRepository extends BaseRepository {
         $result = $this->getVar('metas_' . $id);
 
         if(!$result) {
-            $result = $this->updateMetas($id);
+            $result = $this->getUpdatedMetas($id);
         }
 
         return $result;
     }
 
-    public function updateMetas(int $id = null) {
+    public function getUpdatedMetas(int $id = null) {
         if (!$id) {
             $id = $this->getCurrent()->id;
         }
 
         $current = $this->getById($id);
-        $metas = $current->metas;
+        $metas = $current->metas()->get();
         $result = [];
 
         foreach($metas as $meta) {
@@ -117,6 +138,23 @@ class WebsiteRepository extends BaseRepository {
         $this->setVar('metas_' . $id, $result);
 
         return $result;
+    }
+
+    public function storeMetas($metas)
+    {
+        foreach ($metas as $key => $meta) {
+            $value = Arr::get($meta, 'value');
+            $format = Arr::get($meta, 'format');
+
+            WebsiteMeta::updateOrCreate([
+                'meta_key' => $key,
+            ], [
+                'meta_value' => DataFormat::toString($value, $format),
+                'meta_format' => $format,
+            ]);
+        }
+
+        return $this->getUpdatedMetas();
     }
 
     public function getMetaValue(string $keyValue, string $lang = '') {

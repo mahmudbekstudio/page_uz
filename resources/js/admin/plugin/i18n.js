@@ -70,6 +70,47 @@ Vue.prototype.$t = function (key) {
     return result;
 };
 
+VueI18n.prototype.t = function t (key) {
+    var ref;
+    var i18n = this/*.$i18n*/;
+
+    try {
+        if (key && (typeof key === 'object') && Object.keys(key).length) {
+            if (typeof key[i18n.locale] !== 'undefined') {
+                return key[i18n.locale];
+            }
+
+            return Object.values(key)[0];
+        }
+        /*if (typeof key !== 'string' && typeof key !== 'number') {
+            console.log(key);
+            key = JSON.stringify(key);
+        }*/
+
+        if (key && typeof key === 'string' && key.startsWith('{') && key.endsWith('}')) {
+            key = JSON.parse(key);
+
+            if (typeof key[i18n.locale] !== 'undefined') {
+                return key[i18n.locale];
+            }
+
+            return Object.values(key)[0];
+        }
+    } catch (e) {
+        console.log(e);
+    }
+
+    var values = [], len = arguments.length - 1;
+    while ( len-- > 0 ) values[ len ] = arguments[ len + 1 ];
+    let result = (ref = this)._t.apply(ref, [ key, this.locale, this._getMessages(), null ].concat( values ));
+
+    if (typeof result === 'object') {
+        return key;
+    }
+
+    return result;
+};
+
 export default new VueI18n({
     locale: store.getters['view/website']?.lang || cache('current-lang') || config.lang.locale,
     messages: loadLocaleMessages(),

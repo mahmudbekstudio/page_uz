@@ -22,4 +22,9 @@ return [
     '503' => [
         'title' => 'Error 503'
     ],
+    '499' => [
+        'title' => 'Error 499'
+    ],
+
+    'template_used' => 'This template cannot be delete. Template used.',
 ];

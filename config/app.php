@@ -10,6 +10,7 @@ return [
     'default_locale' => 'en',
     'locale_list' => ['en', 'ru', 'uz'],
     'special_routes' => ['administrator', 'cabinet', 'panel'],
+    'open_when_website_temporary_closed' => ['admin', 'api/admin'],
     'route_rules' => [
         'number' => '[0-9]+',
         'name' => '[a-z0-9_\-]+',
@@ -84,6 +85,23 @@ return [
                 'href' => 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css'
             ]
         ],
+    ],
+    'format' => [
+        'date' => 'Y-m-d',
+        'time' => 'H:i:s'
+        /*'date' => [//Y, y      F, m, M         d, D
+            'Y-m-d',
+            'd-m-Y',
+        ],
+        'time' => [
+            'H:i:s',
+            'H:i',
+            'h:i:s A',
+            'h:i A',
+        ],*/
+    ],
+    'template' => [
+        'except_fields' => ['childOf', 'template', 'parent', 'status', 'routeName']
     ],
 
     /*

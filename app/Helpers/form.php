@@ -4,6 +4,13 @@ use App\Repositories\TypeRepository;
 use Illuminate\Support\Arr;
 use App\Rules\MinIfNotEmpty;
 use App\Rules\RouteNameExist;
+use App\Rules\IsEmail;
+use App\Rules\Required;
+use App\Rules\RequiredIf;
+use App\Rules\In;
+use App\Rules\NotIn;
+use App\Rules\Max;
+use App\Rules\Min;
 
 if (! function_exists('getTypeById')) {
     function getTypeById($typeId) {
@@ -71,17 +78,24 @@ if (! function_exists('getFieldRules')) {
 
             if ($name) {
                 $valueType = Arr::get($field, 'params.valueType');
-                $rules[$name] = [Arr::get($specific, $valueType, $valueType)];
+                $valueType = Arr::get($specific, $valueType, $valueType);
+
+                if ($valueType) {
+                    $typeRule = getValidationTypeRule($valueType);
+                    $rules[$name] = $typeRule ? [$typeRule] : [$valueType];
+                } else {
+                    $rules[$name] = [];
+                }
 
                 $validation = Arr::get($field, 'params.validation', []);
                 foreach ($validation as $rule => $value) {
                     $rule = getValidationRule($rule, $value, $typeId, $id);
-                    if (gettype($rule) === 'string') {
-                        $rules[$name][] = $rule;
-                    } else {
+                    if (gettype($rule) === 'array') {
                         foreach ($rule as $item) {
                             $rules[$name][] = $item;
                         }
+                    } else {
+                        $rules[$name][] = $rule;
                     }
                 }
             }
@@ -95,21 +109,28 @@ if (! function_exists('getValidationRule')) {
     function getValidationRule($key, $value, $typeId, $id = 0) {
         switch ($key) {
             case 'required':
-                return 'required';
+                return new Required();
             case 'requiredIfNotEmpty':
-                return 'required_if:' . $value;
+                return new RequiredIf($value);
+            //return 'required_if:' . $value;
             case 'max':
-                return 'max:' . $value;
+                return new Max($value);
+            //return 'max:' . $value;
             case 'min':
-                return 'min:' . $value;
+                return new Min($value);
+            //return 'min:' . $value;
+            case 'integer':
+                return new \App\Rules\Integer();
             case 'minIfNotEmpty':
                 return new MinIfNotEmpty($value);
             case 'isEmail':
-                return 'email';
+                return new IsEmail();
             case 'in':
-                return 'in:' . implode(',', explode("\n", $value));
+                return new In(implode(',', explode("\n", $value)));
+            //return 'in:' . implode(',', explode("\n", $value));
             case 'notIn':
-                return 'not_in:' . implode(',', explode("\n", $value));
+                return new NotIn(implode(',', explode("\n", $value)));
+            //return 'not_in:' . implode(',', explode("\n", $value));
             case 'confirmation':
                 return 'same:' . $value;
             case 'routeName':
@@ -120,5 +141,52 @@ if (! function_exists('getValidationRule')) {
         }
 
         return false;
+    }
+}
+
+if (! function_exists('getValidationTypeRule')) {
+    function getValidationTypeRule($key) {
+        switch ($key) {
+            case 'integer':
+                return new \App\Rules\Integer();
+            case 'isEmail':
+                return new IsEmail();
+        }
+
+        return false;
+    }
+}
+
+if (! function_exists('valueIsEmpty')) {
+    function valueIsEmpty($value): bool
+    {
+        if (is_string($value)) {
+            return !$value;
+        } elseif (is_array($value)) {
+            foreach ($value as $item) {
+                if (!$item) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+}
+
+if (! function_exists('getFieldValue')) {
+    function getFieldValue($value): mixed
+    {
+        if (is_string($value)) {
+            return $value;
+        } elseif (is_array($value)) {
+            $lang = getLang();
+
+            return isset($value[$lang]) ? $value[$lang] : array_values($value)[0];
+        }
+
+        return null;
     }
 }

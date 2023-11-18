@@ -87,8 +87,12 @@ class RouteServiceProvider extends ServiceProvider
         /** @var $website Website */
         $website = WebsiteRepository::getInstance()->getByDomain($domain);
 
-        if (!$website || in_array($website->status, [Website::STATUS_NOT_CONFIRMED, Website::STATUS_CLOSED])) {
-            errorPageNotFound();
+        if (
+            !$website ||
+            in_array($website->status, [Website::STATUS_NOT_CONFIRMED, Website::STATUS_CLOSED]) ||
+            !in_array($website->status, $website->getAllStatuses())
+        ) {
+            errorServiceClosed();
         }
 
         if ($website->status === Website::STATUS_BLOCKED) {
@@ -96,7 +100,17 @@ class RouteServiceProvider extends ServiceProvider
         }
 
         if ($website->status === Website::STATUS_TEMPORARILY_CLOSED) {
-            errorServiceUnavailable();
+            $hasError = true;
+            foreach (config('app.open_when_website_temporary_closed') as $path) {
+                if (str_starts_with(request()->path(), $path)) {
+                    $hasError = false;
+                    break;
+                }
+            }
+
+            if ($hasError) {
+                errorServiceUnavailable();
+            }
         }
 
         if ($website->status === Website::STATUS_FORBIDDEN) {

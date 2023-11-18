@@ -8,13 +8,15 @@ export default class checkboxField extends field {
             params: {label: 'words.default_value', hint: 'words.multiple_value_with_comma'}
         },
         {
-            type: 'textarea',
+            type: 'options',
             name: 'options',
-            hasLang: false,
-            params: {label: 'words.options_list', hint: 'words.every_item_in_line'}
+            params: {label: 'words.options_list'}
         },
     ]
     constructor(params) {
         super(params);
+        this.fieldObject.params.valueType = 'array';
+        this.defaultObject.value = [];
+        this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
     }
 }

@@ -14,10 +14,9 @@ export default class selectField extends field {
             params: {label: 'words.multiple'}
         },
         {
-            type: 'textarea',
+            type: 'options',
             name: 'options',
-            hasLang: false,
-            params: {label: 'words.options_list', hint: 'words.every_item_in_line'}
+            params: {label: 'words.options_list'}
         },
     ]
     constructor(params) {

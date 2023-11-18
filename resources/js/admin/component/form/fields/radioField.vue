@@ -8,10 +8,10 @@
         :label="labelText"
     >
         <v-radio
-            v-for="(item, key) in list"
-            :key="key"
-            :label="$t(item)"
-            :value="key"
+            v-for="item of list"
+            :key="item.value"
+            :label="$t(item.text)"
+            :value="item.value"
         ></v-radio>
     </v-radio-group>
 </template>
@@ -25,15 +25,27 @@ export default {
     },
     computed: {
         list () {
-            if (typeof this.params['options'] === 'string') {
-                const options = this.params['options'].split("\n");
+            const options = this.params['options'];
+            if (typeof options === 'string') {
+                const optionsList = options.split("\n");
                 const result = {};
 
-                for (let item of options) {
+                for (let item of optionsList) {
                     item = item.trim().split(':').map(item => item.trim());
                     if (item.length >= 2 && item[0] && item[1]) {
                         result[item[0]] = item[1];
                     }
+                }
+
+                return result;
+            } else if(Array.isArray(options) && options.length && !options[0].text && !options[0].value) {
+                const result = [];
+
+                for (const optionKey in options) {
+                    result.push({
+                        value: optionKey,
+                        text: options[optionKey]
+                    });
                 }
 
                 return result;

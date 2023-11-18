@@ -41,6 +41,7 @@ mix.webpackConfig({
             App: path.resolve(__dirname, 'resources/js/app'),
             Modules: path.resolve(__dirname, 'resources/js/app/modules'),
             Static: path.resolve(__dirname, 'resources/static'),
+            Foundation: path.resolve(__dirname, 'resources/js/foundation'),
         },
     },
 });

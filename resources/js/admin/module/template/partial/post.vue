@@ -7,7 +7,7 @@
             @input="formChanged($event)"
             @validate="formValidateFunc($event)"
         />
-        <v-container>
+        <v-container v-if="selectedLayout && selectedType">
             <v-row>
                 <v-col>
                     <div v-if="selectedType">
@@ -74,6 +74,7 @@ import dialogComponent from "../../../component/dialog-component";
 import templatesList from "../../../component/website-render/templates-list.vue";
 import templateConstructor from '../../../component/template-constructor/template-constructor.vue';
 import styleConstructor from "../../../component/template-constructor/style-constructor.vue";
+import mainConfig from '../../../config/main';
 
 export default {
     service: new Service(),
@@ -193,8 +194,9 @@ export default {
         });
         this.$options.service.getAllTypes('post', response => {
             const result = {};
+
             for (const item of response.data.list) {
-                result[item.id] = item.title;
+                result[item.id] = this.$t(item.title);
             }
 
             this.typeField.setParams('options', result);
@@ -236,8 +238,8 @@ export default {
             const values = this.templateForm.getFieldValues();
             const websiteHtmlObj = new WebsiteHtml(this.websiteHtmlObject?.blocks)
             websiteHtmlObj.htmlDocument();
-            const contentHtml = websiteHtmlObj.contentHtml;
-            const styles = websiteHtmlObj.structureStyles;
+            const contentHtml = websiteHtmlObj.getContentBlockStructureHtml();
+            const styles = websiteHtmlObj.contentStructureStyles;
             const customStyles = websiteHtmlObj.customStyles;
 
             if (this.websiteHtmlObject) {
@@ -273,6 +275,9 @@ export default {
             if (typeId) {
                 this.selectedType = null;
                 this.$options.service.getType(typeId, response => {
+                    response.data.type.fields = response.data.type.fields.filter(
+                        item => mainConfig.template.exceptFields.indexOf(item.name) === -1
+                    );
                     this.selectedType = response.data.type;
                 });
             }

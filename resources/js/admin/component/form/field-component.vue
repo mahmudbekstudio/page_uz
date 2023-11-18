@@ -7,24 +7,27 @@
                     x-small
                     v-for="(lang, index) of website.metas.languages_list"
                     :key="lang"
-                    :class="{'v-item--active v-btn--active': index === langToggle}"
+                    :class="{'v-item--active v-btn--active': index === langToggle, 'has-error': (hasError && params.fieldObject.params.errorList.indexOf(index) > -1)}"
                 >
                     {{ lang }}
                 </v-btn>
             </v-btn-toggle>
         </div>
-        <component
-            v-for="(lang, index) of website.metas.languages_list"
-            :key="lang"
-            v-if="hasLang && index===langToggle"
-            :is="typeComponent"
-            :params="{...params, rules}"
-            :events="events"
-            :disabled="disabled"
-            :value="getValue(lang)"
-            @input="changed($event, hasLang ? lang : null)"
-            :class="{'has-lang': hasLang && (website.metas.languages_list.length > 1)}"
-        ></component>
+        <div v-if="hasLang">
+            <component
+                v-for="(lang, index) of website.metas.languages_list"
+                :key="lang"
+                v-show="index===langToggle"
+                :is="typeComponent"
+                :params="{...params, rules}"
+                :events="{...events}"
+                :disabled="disabled"
+                :value="getValue(lang)"
+                @input="changed($event, hasLang ? lang : null)"
+                class="has-lang"
+                :class="'lang-' + index"
+            ></component>
+        </div>
         <component
             v-if="!hasLang"
             :is="typeComponent"
@@ -41,6 +44,7 @@
     import numberField from './fields/numberField';
     import passwordField from './fields/passwordField';
     import textareaField from './fields/textareaField';
+    import optionsField from './fields/optionsField.vue';
     import selectField from './fields/selectField';
     import fileField from "./fields/fileField";
     import switchField from "./fields/switchField";
@@ -110,6 +114,12 @@
             ...mapGetters({
                 website: 'view/website',
             }),
+            hasError() {
+                if (!this.params.fieldObject.params.errorList || !Array.isArray(this.params.fieldObject.params.errorList) || !this.params.fieldObject.params.errorList.length) {
+                    return false;
+                }
+                return true;
+            },
             typeComponent() {
                 return this.type + 'Field';
             },
@@ -154,11 +164,11 @@
                 }
             },
             getValue(lang) {
-                if (this.hasLang && this.fieldValue && typeof this.fieldValue === 'object' && !this.fieldValue[lang]) {
+                if (this.hasLang && this.fieldValue && typeof this.fieldValue === 'object' && typeof this.fieldValue[lang] === 'undefined') {
                     return Object.values(this.fieldValue)[0];
                 }
 
-                return this.hasLang && this.fieldValue && this.fieldValue[lang] ? this.fieldValue[lang] : this.fieldValue;
+                return this.hasLang && this.fieldValue && typeof this.fieldValue[lang] !== 'undefined' ? this.fieldValue[lang] : this.fieldValue;
             }
         },
         components: {
@@ -166,6 +176,7 @@
             numberField,
             passwordField,
             textareaField,
+            optionsField,
             selectField,
             fileField,
             switchField,
@@ -201,10 +212,20 @@
         bottom: 16px;
         left: 0;
         z-index: 1;
+
+        .v-btn.has-error {
+            background-color: #F00;
+            color: #FFF;
+        }
     }
-    .v-item--active {
+    .v-btn.v-item--active,
+    .v-btn.has-error.v-item--active {
         background-color: #757575;
         color: #FFF !important;
+    }
+
+    .btn-inactive.v-btn.v-item--active {
+        background-color: transparent !important;
     }
 
     .v-btn-toggle {

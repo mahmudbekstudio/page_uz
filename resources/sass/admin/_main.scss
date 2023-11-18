@@ -1,5 +1,8 @@
 .btn-inactive {
     &.v-btn {
+        &.v-item--active {
+            background-color: transparent;
+        }
         &.v-btn--active {
             opacity: .8 !important;
         }

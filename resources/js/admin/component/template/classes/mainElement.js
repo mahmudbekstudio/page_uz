@@ -7,17 +7,21 @@ export default class element {
     defaultObject = {
         tag: 'div',
         name: '',
-        params: {},
+        params: {
+            text_style: [],
+        },
     };
     hasFillable = true;
     fillable = [];
     lang = null;
-    constructor(params = {}, lang = null) {
+    withAllTranslations = false;
+    constructor(params = {}, lang = null, withAllTranslations = false) {
         this.lang = lang;
+        this.withAllTranslations = withAllTranslations;
         this.fieldObject = Object.assign({}, this.defaultObject);
         this.fieldObject.tag = params.tag || this.defaultObject.tag;
         this.fieldObject.name = params.name || this.defaultObject.name;
-        this.fieldObject.params = params.params || this.defaultObject.params;
+        this.fieldObject.params = {...this.defaultObject.params, ...params.params};
         this.fieldObject.isKeyValue = !!params.name;
     }
 
@@ -94,9 +98,18 @@ export default class element {
         const subTag = this.params.link_url ? 'a' : 'span';
 
         let result = '<' + wrapper;
-        result += ' id="' + this.params.id + '"';
-        result += ' class="' + classes + '"';
-        result += ' title="' + this.translate(this.params.title) + '"';
+        if (this.params.id) {
+            result += ' id="' + this.params.id + '"';
+        }
+
+        if (classes) {
+            result += ' class="' + classes + '"';
+        }
+
+        if (this.params.title) {
+            result += ' title="' + this.translate(this.params.title) + '"';
+        }
+
         result += '>';
         result += '<' + subTag;
 
@@ -112,6 +125,10 @@ export default class element {
     }
 
     translate(key) {
+        if (this.withAllTranslations) {
+            return '<!--translateStart-->' + (typeof key === 'string' ? key : JSON.stringify(key)) + '<!--translateEnd-->';
+        }
+
         return translate(key, i18n, this.lang);
     }
 }

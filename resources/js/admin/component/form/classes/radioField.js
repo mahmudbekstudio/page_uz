@@ -3,10 +3,10 @@ import field from './mainField';
 export default class radioField extends field {
     fillable = [
         {
-            type: 'textarea',
+            type: 'options',
             name: 'options',
             hasLang: false,
-            params: {label: 'words.options_list', hint: 'words.every_item_in_line'}
+            params: {label: 'words.options_list'}
         },
     ]
     constructor(params) {

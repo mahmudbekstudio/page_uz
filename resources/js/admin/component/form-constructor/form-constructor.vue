@@ -32,6 +32,8 @@
                                 :row="row"
                                 @edit="editCell($event)"
                                 @add="addElement($event)"
+                                :dragging="dragging"
+                                @dragging="dragging=$event"
                             />
                         </template>
                     </v-row>
@@ -68,6 +70,7 @@
     export default {
         data() {
             return {
+                dragging: false,
                 componentsList: {
                     basic: [
                         new Field({type: 'text'}),

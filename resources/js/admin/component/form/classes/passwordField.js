@@ -1,6 +1,7 @@
 import textField from './textField';
 
 export default class passwordField extends textField {
+    hasLang = false;
     fillable = [
         {
             type: 'text',

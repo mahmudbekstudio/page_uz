@@ -54,7 +54,7 @@ export default {
                         this.listReloadCallback();
                         app.successMessage(this.$t('words.deleted'));
                     } else {
-                        app.errorMessage(this.$t('words.error'));
+                        app.errorMessage([this.$t('words.error'), ...response.message]);
                     }
                 });
             });

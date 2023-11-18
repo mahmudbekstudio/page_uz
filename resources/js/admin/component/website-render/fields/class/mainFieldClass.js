@@ -10,6 +10,7 @@ export default class mainFieldClass {
     isSample = false;
     params = null;
     lang = null;
+    withAllTranslations = false;
     constructor(values, isSample = false, params = null, lang = null) {
         this.values = values;
         this.isSample = isSample;
@@ -42,6 +43,10 @@ export default class mainFieldClass {
     }
 
     translate(key) {
+        if (this.withAllTranslations) {
+            return '<!--translateStart-->' + (typeof key === 'string' ? key : JSON.stringify(key)) + '<!--translateEnd-->';
+        }
+
         return translate(key, i18n, this.lang);
     }
 }

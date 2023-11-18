@@ -1,12 +1,4 @@
-import element from '../mainElement';
+import baseElement from './baseElement';
 
-export default class textareaElement extends element {
-    fillable = [];
-
-    constructor(params) {
-        super(params);
-        if (typeof params.hasLang !== 'undefined') {
-            this.hasLang = params.hasLang;
-        }
-    }
+export default class textElement extends baseElement {
 }

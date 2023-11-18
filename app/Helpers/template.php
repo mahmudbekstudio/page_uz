@@ -1,11 +1,10 @@
 <?php
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
-if (! function_exists('getFileContentFromTemmplate')) {
-    function getFileContentFromTemmplate(\App\Models\Template $template)
+if (! function_exists('getFileContentFromTemplateLayout')) {
+    function getFileContentFromTemplateLayout(\App\Models\Template $template)
     {
-        $addedStyleFiles = [];
-        $addedScriptFiles = [];
         $html = "<?php\n";
         $html .= "use App\Helpers\GlobalVariable;\n";
         $html .= '$variables = app(GlobalVariable::class);' . "\n";
@@ -13,7 +12,11 @@ if (! function_exists('getFileContentFromTemmplate')) {
         $html .= "<html lang=\"en\">\n";
         $html .= "<head>\n";
         $html .= "<meta charset=\"utf-8\">\n";
+        $html .= '<?php echo $variables->get("website-metas.indexing", "") ? "" : "<meta name=\"robots\" content=\"noindex, nofollow\" />";?>';
         $html .= "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n";
+        $html .= '<meta name="description" content="<?php echo $variables->get("fields.seoDescription", translateText($variables->get("website-metas.seoDescription", ""))); ?>">';
+        $html .= '<meta name="keywords" content="<?php echo $variables->get("fields.seoKeyword", translateText($variables->get("website-metas.seoKeyword", ""))); ?>">';
+        $html .= '<link rel="icon" type="image/x-icon" href="<?php echo \Illuminate\Support\Arr::get(getFilesList($variables->get("website-metas.favicon")), "0.url", "") ?>">';
 
         foreach (config('app.website.css') as $css) {
             $cssTag = '<link rel="stylesheet" href="' . $css['href'] . '"';
@@ -30,6 +33,9 @@ if (! function_exists('getFileContentFromTemmplate')) {
 
             $html .= $cssTag;
         }
+
+        $addedStyleFiles = [];
+        $addedScriptFiles = [];
 
         foreach ($template->content as $item) {
             $styleFiles = Arr::get($item, 'styleFiles', []);
@@ -52,14 +58,43 @@ if (! function_exists('getFileContentFromTemmplate')) {
         $styles = strip_tags(Arr::get($template->params, 'styles', ''));
         $html .= "<style>" . str_replace("\n", "", $styles) . "</style>\n";
         $customStyles = strip_tags(Arr::get($template->params, 'customStyles', ''));
-        $html .= "<style>" . str_replace("\n", "", $customStyles) . "</style>\n";
+        $customStyles = str_replace("\n", "", $customStyles);
 
+        if ($customStyles) {
+            $html .= "<style>" . $customStyles . "</style>\n";
+        }
+
+        $html .= '<title><?php echo translateText($variables->get("website-metas.name")); ?> - <?php echo $variables->get("fields.title"); ?></title>';
         $html .= "</head>\n";
         $html .= "<body>\n";
 
         $contentHtml = str_replace('<?', '', Arr::get($template->params, 'contentHtml'));
+
+        preg_match_all('/<!--translateStart-->(.*)<!--translateEnd-->/U', $contentHtml, $matches);
+        $replaceTranslations = [];
+        $replaceTranslationsKey = 0;
+        foreach ($matches[0] as $key => $item) {
+            if (str_starts_with($matches[1][$key], '{') && str_ends_with($matches[1][$key], '}')) {
+                $matches[1][$key] = json_decode($matches[1][$key], true);
+
+                $keysArr = [];
+                foreach ($matches[1][$key] as $subKey => $val) {
+                    $keysArr[] = '"' . $subKey . '"=>"' . addslashes($val) . '"';
+                }
+
+                $matches[1][$key] = '[' . implode(',', $keysArr) . ']';
+            } else {
+                $matches[1][$key] = '"' . $matches[1][$key] . '"';
+            }
+
+            $replaceTranslations[$replaceTranslationsKey] = '<?php echo translateText(' . $matches[1][$key] . ') ?>';
+            $contentHtml = str_replace($item, '---echoTranslationText_' . $replaceTranslationsKey . '---', $contentHtml);
+            $replaceTranslationsKey++;
+        }
+
         $dom = new DOMDocument();
-        $dom->loadHTML($contentHtml, LIBXML_NOERROR|LIBXML_HTML_NODEFDTD|LIBXML_HTML_NOIMPLIED);
+        $dom->encoding = 'utf-8';
+        $dom->loadHTML(utf8_decode($contentHtml), LIBXML_NOERROR|LIBXML_HTML_NODEFDTD|LIBXML_HTML_NOIMPLIED);
 
         $tags_to_remove = ['script', 'style', 'iframe', 'link', 'html', 'head', 'body'];
 
@@ -81,12 +116,12 @@ if (! function_exists('getFileContentFromTemmplate')) {
             }
         }
 
-        $contentHtml = $dom->saveHTML();
-        foreach ($template->typeInstance->fields as $item) {
-            $name = Arr::get($item, 'name');
-            $replaceFrom = '{ $' . $name . ' }';
-            $replaceTo = '<?php echo $variables->get("fields.' . $name . '"); ?>';
-            $contentHtml = str_replace($replaceFrom, $replaceTo, $contentHtml);
+        $replaceFrom = '{ $content }';
+        $replaceTo = '<?php include($variables->get("pageTemplatePath")); ?>';
+        $contentHtml = str_replace($replaceFrom, $replaceTo, $dom->saveHTML());
+
+        foreach ($replaceTranslations as $key => $value) {
+            $contentHtml = str_replace('---echoTranslationText_' . $key . '---', $value, $contentHtml);
         }
 
         $html .= $contentHtml;
@@ -117,6 +152,233 @@ if (! function_exists('getFileContentFromTemmplate')) {
         return $html;
     }
 }
+
+if (! function_exists('getFileContentFromTemplatePage')) {
+    function getFileContentFromTemplatePage(\App\Models\Template $template)
+    {
+        $html = "<?php\n";
+        $html .= "use App\Helpers\GlobalVariable;\n";
+        $html .= '$variables = app(GlobalVariable::class);' . "\n";
+        $html .= "?>\n";
+
+        //$addedStyleFiles = [];
+        $addedScriptFiles = [];
+
+        /*foreach ($template->content as $item) {
+            $styleFiles = Arr::get($item, 'styleFiles', []);
+
+            foreach ($styleFiles as $styleFile) {
+                if (!in_array($styleFile, $addedStyleFiles)) {
+                    $addedStyleFiles[] = $styleFile;
+                    $html .= "<link rel=\"stylesheet\" href=\"" . $styleFile . "\">\n";
+                }
+            }
+
+            $scriptFiles = Arr::get($item, 'scriptFiles', []);
+            foreach ($scriptFiles as $scriptFile) {
+                if (!in_array($scriptFile, $addedScriptFiles)) {
+                    $addedScriptFiles[] = $scriptFile;
+                }
+            }
+        }*/
+
+        $styles = strip_tags(Arr::get($template->params, 'styles', ''));
+        $html .= "<style>" . str_replace("\n", "", $styles) . "</style>\n";
+        $customStyles = strip_tags(Arr::get($template->params, 'customStyles', ''));
+        $html .= "<style>" . str_replace("\n", "", $customStyles) . "</style>\n";
+
+        $contentHtml = str_replace('<?', '', Arr::get($template->params, 'contentHtml'));
+
+        preg_match_all('/<!--translateStart-->(.*)<!--translateEnd-->/U', $contentHtml, $matches);
+        $replaceTranslations = [];
+        $replaceTranslationsKey = 0;
+
+        foreach ($matches[0] as $key => $item) {
+            if (str_starts_with($matches[1][$key], '{') && str_ends_with($matches[1][$key], '}')) {
+                $matches[1][$key] = json_decode($matches[1][$key], true);
+
+                $keysArr = [];
+                foreach ($matches[1][$key] as $subKey => $val) {
+                    $keysArr[] = '"' . $subKey . '"=>"' . addslashes($val) . '"';
+                }
+
+                $matches[1][$key] = '[' . implode(',', $keysArr) . ']';
+            } else {
+                $matches[1][$key] = '"' . $matches[1][$key] . '"';
+            }
+
+            $replaceTranslations[$replaceTranslationsKey] = '<?php echo translateText(' . $matches[1][$key] . ') ?>';
+            $contentHtml = str_replace($item, '---echoTranslationText_' . $replaceTranslationsKey . '---', $contentHtml);
+            $replaceTranslationsKey++;
+            /*$contentHtml = str_replace($item, '<?php echo translateText(' . $matches[1][$key] . ') ?>', $contentHtml);*/
+        }
+
+        $dom = new DOMDocument();
+        $dom->encoding = 'utf-8';
+        $dom->loadHTML(utf8_decode($contentHtml), LIBXML_NOERROR|LIBXML_HTML_NODEFDTD|LIBXML_HTML_NOIMPLIED);
+
+        $tags_to_remove = ['script', 'style', 'iframe', 'link', 'html', 'head', 'body'];
+
+        foreach($tags_to_remove as $tag){
+            $element = $dom->getElementsByTagName($tag);
+            foreach($element  as $item){
+                $item->parentNode->removeChild($item);
+            }
+        }
+
+        foreach ($dom->getElementsByTagname('*') as $element)
+        {
+            foreach (iterator_to_array($element->attributes) as $name => $attribute)
+            {
+                if (substr_compare($name, 'on', 0, 2, TRUE) === 0)
+                {
+                    $element->removeAttribute($name);
+                }
+            }
+        }
+
+        $contentHtml = $dom->saveHTML();
+
+        foreach ($template->typeInstance->fields as $item) {
+            $name = Arr::get($item, 'name');
+            $type = Arr::get($item, 'type');
+            $replaceFrom = '<div><span>{ $' . $name . ' }</span>';
+            $typeClassName = 'field-' . $type . '-wrapper';
+            $nameClassName = 'field-' . $name . '-wrapper';
+            $replaceTo = '<div class="field-' . $type . '-' . $name . '-wrapper' . ' ' . $typeClassName . ' ' . $nameClassName . '"><?php echo $variables->get("fields.' . $name . '"); ?>';
+            $contentHtml = str_replace($replaceFrom, $replaceTo, $contentHtml);
+        }
+
+        foreach ($replaceTranslations as $key => $value) {
+            $contentHtml = str_replace('---echoTranslationText_' . $key . '---', $value, $contentHtml);
+        }
+
+        $html .= $contentHtml;
+
+        /*foreach ($addedScriptFiles as $scriptFile) {
+            $html .= "<script src=\"" . $scriptFile . "\"></script>\n";
+        }*/
+
+        return $html;
+    }
+}
+
+//if (! function_exists('getFileContentFromTemmplate')) {
+//    function getFileContentFromTemmplate(\App\Models\Template $template)
+//    {
+//        $addedStyleFiles = [];
+//        $addedScriptFiles = [];
+//        $html = "<?php\n";
+//        $html .= "use App\Helpers\GlobalVariable;\n";
+//        $html .= '$variables = app(GlobalVariable::class);' . "\n";
+/*        $html .= "?>\n";*/
+//        $html .= "<html lang=\"en\">\n";
+//        $html .= "<head>\n";
+//        $html .= "<meta charset=\"utf-8\">\n";
+//        $html .= "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n";
+//
+//        foreach (config('app.website.css') as $css) {
+//            $cssTag = '<link rel="stylesheet" href="' . $css['href'] . '"';
+//
+//            if (isset($css['integrity'])) {
+//                $cssTag .= ' integrity="' . $css['integrity'] . '"';
+//            }
+//
+//            if (isset($css['crossorigin'])) {
+//                $cssTag .= ' crossorigin="' . $css['crossorigin'] . '"';
+//            }
+//
+//            $cssTag .= ">\n";
+//
+//            $html .= $cssTag;
+//        }
+//
+//        foreach ($template->content as $item) {
+//            $styleFiles = Arr::get($item, 'styleFiles', []);
+//
+//            foreach ($styleFiles as $styleFile) {
+//                if (!in_array($styleFile, $addedStyleFiles)) {
+//                    $addedStyleFiles[] = $styleFile;
+//                    $html .= "<link rel=\"stylesheet\" href=\"" . $styleFile . "\">\n";
+//                }
+//            }
+//
+//            $scriptFiles = Arr::get($item, 'scriptFiles', []);
+//            foreach ($scriptFiles as $scriptFile) {
+//                if (!in_array($scriptFile, $addedScriptFiles)) {
+//                    $addedScriptFiles[] = $scriptFile;
+//                }
+//            }
+//        }
+//
+//        $styles = strip_tags(Arr::get($template->params, 'styles', ''));
+//        $html .= "<style>" . str_replace("\n", "", $styles) . "</style>\n";
+//        $customStyles = strip_tags(Arr::get($template->params, 'customStyles', ''));
+//        $html .= "<style>" . str_replace("\n", "", $customStyles) . "</style>\n";
+//
+//        $html .= "</head>\n";
+//        $html .= "<body>\n";
+//
+//        $contentHtml = str_replace('<?', '', Arr::get($template->params, 'contentHtml'));
+//        $dom = new DOMDocument();
+//        $dom->loadHTML($contentHtml, LIBXML_NOERROR|LIBXML_HTML_NODEFDTD|LIBXML_HTML_NOIMPLIED);
+//
+//        $tags_to_remove = ['script', 'style', 'iframe', 'link', 'html', 'head', 'body'];
+//
+//        foreach($tags_to_remove as $tag){
+//            $element = $dom->getElementsByTagName($tag);
+//            foreach($element  as $item){
+//                $item->parentNode->removeChild($item);
+//            }
+//        }
+//
+//        foreach ($dom->getElementsByTagname('*') as $element)
+//        {
+//            foreach (iterator_to_array($element->attributes) as $name => $attribute)
+//            {
+//                if (substr_compare($name, 'on', 0, 2, TRUE) === 0)
+//                {
+//                    $element->removeAttribute($name);
+//                }
+//            }
+//        }
+//
+//        //$contentHtml = $dom->saveHTML();
+//        /*foreach ($template->typeInstance->fields as $item) {
+//            $name = Arr::get($item, 'name');
+//            $replaceFrom = '{ $' . $name . ' }';
+/*            $replaceTo = '<?php echo $variables->get("fields.' . $name . '"); ?>';*/
+//            $contentHtml = str_replace($replaceFrom, $replaceTo, $contentHtml);
+//        }
+//
+//        $html .= $contentHtml;*/
+//
+//        foreach (config('app.website.js') as $js) {
+//            $jsTag = '<script src="' . $js['src'] . '"';
+//
+//            if (isset($js['integrity'])) {
+//                $jsTag .= ' integrity="' . $js['integrity'] . '"';
+//            }
+//
+//            if (isset($js['crossorigin'])) {
+//                $jsTag .= ' crossorigin="' . $js['crossorigin'] . '"';
+//            }
+//
+//            $jsTag .= "></script>\n";
+//
+//            $html .= $jsTag;
+//        }
+//
+//        foreach ($addedScriptFiles as $scriptFile) {
+//            $html .= "<script src=\"" . $scriptFile . "\"></script>\n";
+//        }
+//
+//        $html .= "</body>\n";
+//        $html .= "</html>";
+//
+//        return $html;
+//    }
+//}
 if (! function_exists('getStructureHtml')) {
     function getStructureHtml(array $block, array $structure = null): string
     {
@@ -206,3 +468,21 @@ if (! function_exists('getStructureHtml')) {
         return $contentHtml;
     }
 }*/
+if (! function_exists('getFileUrl')) {
+    function getFileUrl(array $file): string
+    {
+        return Storage::url($file['folderPath'] . '/' . $file['name'] . '.' . $file['extension']);
+    }
+}
+
+if (! function_exists('getFilesList')) {
+    function getFilesList(array $files): array
+    {
+        foreach ($files as $key => $file) {
+            $file['url'] = getFileUrl($file);
+            $files[$key] = $file;
+        }
+
+        return $files;
+    }
+}

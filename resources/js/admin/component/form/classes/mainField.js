@@ -22,6 +22,7 @@ export default class field {
         this.fieldObject.disabled = params.disabled || this.defaultObject.disabled;
         this.fieldObject.value = typeof params.value === 'undefined' ? this.defaultObject.value : params.value;
         this.fieldObject.params = params.params || this.defaultObject.params;
+        this.fieldObject.params.errorList = [];
         this.fieldObject.params.valueType = this.fieldObject.params.valueType || this.defaultObject.params.valueType;
         this.fieldObject.events = params.events || this.defaultObject.events;
         this.isConstructor = !!params.isConstructor;
@@ -94,7 +95,7 @@ export default class field {
             delete val.value;
         }
 
-        this.params = val;
+        this.params = {...this.params, ...val};
     }
 
     get fill () {

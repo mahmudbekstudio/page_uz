@@ -7,10 +7,14 @@ export default class hElement extends element {
             name: 'number',
             params: {label: 'words.number', clearable: false}
         },
+        {
+            name: 'wrapper',
+            hide: true
+        }
     ];
 
-    constructor(params, lang = null) {
-        super(params, lang);
+    constructor(params, lang = null, withAllTranslations = false) {
+        super(params, lang, withAllTranslations);
         if (typeof params.hasLang !== 'undefined') {
             this.hasLang = params.hasLang;
         }

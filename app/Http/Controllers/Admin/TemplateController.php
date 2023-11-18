@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\DataTable\TemplateDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Template\CreateTemplateRequest;
+use App\Models\Category;
+use App\Models\Post;
 use App\Models\Template;
 use App\Repositories\TemplateRepository;
 use App\Services\Admin\TemplateService;
@@ -53,12 +55,31 @@ class TemplateController extends Controller
         return responseJsonData(true, ['list' => $this->templateService->getByType($type)]);
     }
 
+    private function canDeleteTemplate(Template $template)
+    {
+        if ($template->type === Template::TYPE_LAYOUT) {
+            return !Template::firstWhere('layout_id', $template->id);
+        }
+
+        $post = Post::firstWhere('template_id', $template->id);
+
+        if ($post) {
+            return false;
+        }
+
+        return !Category::firstWhere('template_id', $template->id);
+    }
+
     public function delete(Template $template)
     {
         $result = true;
 
         if (getCurrentWebsiteId() == $template->website_id) {
-            $result = $this->templateService->detele($template);
+            if ($this->canDeleteTemplate($template)) {
+                $result = $this->templateService->delete($template);
+            } else {
+                return responseJsonMessage(false, trans('error.template_used'));
+            }
         }
 
         return responseJsonData($result, ['template' => $template]);

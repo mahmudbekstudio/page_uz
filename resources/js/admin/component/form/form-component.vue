@@ -50,7 +50,7 @@
                                             :disabled="!!field.disabled"
                                             :value="field.value"
                                             @input="fieldChanged"
-                                            :params="{...field.params, fieldObject: field.field.fieldObject, defaultObject: field.field.defaultObject}"
+                                            :params="{...field.params, hasLang: fieldHasLang(field.field), fieldObject: field.field.fieldObject, defaultObject: field.field.defaultObject}"
                                             :events="{...field.events}"
                                             :form="formObject"
                                             :has-lang="fieldHasLang(field.field)"
@@ -68,6 +68,7 @@
     import { Form as FormClass } from './classes/form';
     import fieldComponent from './field-component';
     import {FORM} from '../../constants';
+    import {mapGetters} from "vuex";
     export default {
         data() {
             return {
@@ -107,6 +108,9 @@
             this.$emit('input', this.formObject);
         },
         computed: {
+            ...mapGetters({
+                website: 'view/website',
+            }),
             showTabs() {
                 return this.formObject.children.length > 1;
             }
@@ -122,13 +126,33 @@
         },
         methods: {
             fieldHasLang(field) {
+                if (!this.website.metas.languages_list.length) {
+                    return false;
+                }
                 return typeof field.fieldObject.params.hasLang === 'undefined' ? field.hasLang : field.fieldObject.params.hasLang;
             },
             validateTab() {
-                const errors = this.$refs.form.inputs.filter(e => (e.hasError && e.$attrs.fieldObject && (e.hasFocused || e.hasInput))).map(e => e.$attrs.fieldObject.name);
+                const errorInputs = this.$refs.form.inputs
+                    .map(e => {
+                        if (e.$attrs.fieldObject?.params?.errorList) {
+                            e.$attrs.fieldObject.params.errorList = [];
+                        }
 
+                        return e;
+                    })
+                    .filter(e => (e.hasError && e.$attrs.fieldObject && (e.hasFocused || e.hasInput)));
+
+                for (const errorInput of errorInputs.filter(e => e.$attrs.hasLang)) {
+                    for (const classItem of errorInput.$el.classList) {
+                        if (classItem.startsWith('lang-')) {
+                            errorInput.$attrs.fieldObject.params.errorList.push(parseInt(classItem.replaceAll('lang-', '')))
+                        }
+                    }
+                }
+
+                const errorInputNames = errorInputs.map(e => e.$attrs.fieldObject.name)
                 for (const tab of this.formObject.children) {
-                    tab.hasError = !!tab.getFields().filter(field => errors.indexOf(field.field.fieldObject.name) > -1).length;
+                    tab.hasError = !!tab.getFields().filter(field => errorInputNames.indexOf(field.field.fieldObject.name) > -1).length;
                 }
             },
             fieldChanged(key, val, lang) {

@@ -1,14 +1,4 @@
-import element from '../mainElement';
+import baseElement from './baseElement';
 
-export default class requiredTitleElement extends element {
-    fillable = [
-        {
-            name: 'content',
-            hide: true,
-        },
-    ];
-
-    constructor(params) {
-        super(params);
-    }
+export default class textElement extends baseElement {
 }

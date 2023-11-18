@@ -63,7 +63,7 @@ class PostService extends BaseService
         $route->name = $routeName;
         $route->save();
 
-        $metaFieldsExcept = ['childOf', 'template', 'parent', 'status', 'routeName'];
+        $metaFieldsExcept = config('app.template.except_fields');
         $metaFields = Arr::except($fields, $metaFieldsExcept);
         $typeFields = getFields(getTypeById($typeId)->fields);
         $post->metas()->delete();
@@ -221,7 +221,7 @@ class PostService extends BaseService
     {
         $postFields = ['childOf' => 'category_id', 'template' => 'template_id', 'parent' => 'parent_id', 'status' => 'status'];
         $routeFields = ['routeName' => 'name'];
-        $metaFieldsExcept = ['childOf', 'template', 'parent', 'status', 'routeName'];
+        $metaFieldsExcept = config('app.template.except_fields');
 
         $postAttributes = ['type_id' => $typeId, 'url' => ''];
         foreach ($postFields as $key => $value) {

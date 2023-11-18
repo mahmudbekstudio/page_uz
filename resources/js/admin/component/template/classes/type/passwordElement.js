@@ -1,9 +1,4 @@
-import element from '../mainElement';
+import baseElement from './baseElement';
 
-export default class textElement extends element {
-    fillable = [];
-
-    constructor(params) {
-        super(params);
-    }
+export default class textElement extends baseElement {
 }

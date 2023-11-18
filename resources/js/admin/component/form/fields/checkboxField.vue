@@ -2,14 +2,14 @@
     <div>
         <label class="field-label v-label theme--light">{{labelText}}</label>
         <v-checkbox
-            v-for="(item, key) in list"
-            :key="key"
+            v-for="item of list"
+            :key="item.value"
             v-bind="params"
             v-on="events"
             v-model="checkboxValues"
             :disabled="disabled"
-            :label="$t(item)"
-            :value="key"
+            :label="$t(item.text)"
+            :value="item.value"
             hide-details
             :hint="params?.hint ? $t(params.hint) : null"
             :placeholder="params?.placeholder ? $t(params.placeholder) : null"
@@ -24,13 +24,17 @@ export default {
     props: {
         //
     },
+    created() {
+        this.initDataValue(this.dataValue);
+    },
     computed: {
         list () {
-            if (typeof this.params['options'] === 'string') {
-                const options = this.params['options'].split("\n");
+            const options = this.params['options'];
+            if (typeof options === 'string') {
+                const optionsList = options.split("\n");
                 const result = {};
 
-                for (let item of options) {
+                for (let item of optionsList) {
                     item = item.trim().split(':').map(item => item.trim());
                     if (item.length >= 2 && item[0] && item[1]) {
                         result[item[0]] = item[1];
@@ -38,20 +42,43 @@ export default {
                 }
 
                 return result;
+            } else if(Array.isArray(options) && options.length && !options[0].text && !options[0].value) {
+                const result = [];
+
+                for (const optionKey in options) {
+                    result.push({
+                        value: optionKey,
+                        text: options[optionKey]
+                    });
+                }
+
+                return result;
             }
 
-            return this.params['options'];
+            return options;
         },
         checkboxValues: {
             get: function () {
                 if (typeof this.dataValue === 'string') {
-                    this.dataValue = this.dataValue.split(',').map(item => item.trim());
+                    return this.dataValue.split(',').map(item => item.trim()).filter(item => !!item);
                 }
                 return this.dataValue;
             },
             set: function (newValue) {
                 this.dataValue = newValue;
             }
+        },
+    },
+    methods: {
+        initDataValue(value) {
+            if (typeof value === 'string') {
+                this.dataValue = value.split(',').map(item => item.trim()).filter(item => !!item);
+            }
+        }
+    },
+    watch: {
+        dataValue(value) {
+            this.initDataValue(value);
         }
     }
 }

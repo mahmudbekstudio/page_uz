@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -54,5 +53,18 @@ class Website extends Model
     public function metas(): HasMany
     {
         return $this->hasMany(WebsiteMeta::class);
+    }
+
+    public function getAllStatuses()
+    {
+        return [
+            self::STATUS_NOT_CONFIRMED,
+            self::STATUS_ACTIVE,
+            self::STATUS_BLOCKED,
+            self::STATUS_TEMPORARILY_CLOSED,
+            self::STATUS_FORBIDDEN,
+            //self::STATUS_REDIRECT,
+            self::STATUS_CLOSED,
+        ];
     }
 }
