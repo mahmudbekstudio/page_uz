@@ -128,78 +128,13 @@ class PostService extends BaseService
             }
         }
 
-        /*
-        if ($post->parent_id != $parent) {
-            foreach ($typeRoute->structure as $id) {
-                $typeRouteItem = $this->typeRouteStructure->getItem($post->type_id, $id);
-                $newParams = [];
-                foreach ($typeRouteItem->params as $paramId) {
-                    if ($paramId != $post->id) {
-                        $newParams[] = $paramId;
-                    } else {
-                        $typeRouteItemParam = $this->typeRouteStructure->getItem($post->type_id, $paramId);
-                        logger('test1', [$id, $paramId, $typeRouteItem->parent_id, $typeRouteItemParam->structure]);
-                        if (in_array($typeRouteItem->parent_id, $typeRouteItemParam->structure)) {
-                            $newParams[] = $paramId;
-                        }
-                    }
-                }
-                logger('test1', $newParams);
-                $typeRouteItem->params = array_unique($newParams);
-                $typeRouteItem->save();
-            }
-
-            $typeRouteItem = $this->typeRouteStructure->getItem($post->type_id, $parent);
-            $typeRoute->structure = array_merge($typeRouteItem->structure, [$parent]);
-            $typeRoute->save();
-
-            foreach ($typeRoute->structure as $id) {
-                $typeRouteItem = $this->typeRouteStructure->getItem($post->type_id, $id);
-                $newParams = array_merge($typeRouteItem->params, [$post->id], $typeRoute->params);
-                //$newParams[] = $post->id;
-                $typeRouteItem->params = array_unique($newParams);
-                $typeRouteItem->save();
-            }
-
-            $typeRouteParent = $this->typeRouteStructure->getItem($post->type_id, $post->parent_id);
-            $parentParams = $typeRouteParent->params;
-            $newParams = [];
-            foreach ($parentParams as $paramId) {
-                if ($paramId != $parent) {
-                    $newParams[] = $paramId;
-                } else {
-                    $typeRouteItemParam = $this->typeRouteStructure->getItem($post->type_id, $paramId);
-                    if (in_array($post->parent_id, $typeRouteItemParam->structure)) {
-                        $newParams[] = $paramId;
-                    }
-                }
-            }
-            $parentParams = $newParams;
-            $typeRouteParent->params = array_unique($parentParams);
-            $typeRouteParent->save();
-
-            foreach ($typeRoute->params as $id) {
-
-                $typeRouteItem = $this->typeRouteStructure->getItem($post->type_id, $id);
-                $structure = $typeRouteItem->structure;
-                $index = array_search($post->id, $structure);
-                $typeRouteItem->structure = array_merge($typeRoute->structure, array_slice($structure, $index));
-                $typeRouteItem->save();
-            }
-
-
-        }
-
-
-        */
-
         if ($post->route->name != $routeName || $post->parent_id != $parent) {
 
-            $url = array_merge([$post->type->name], generateRouteUrl($post->type_id, $typeRoute->structure), [$routeName]);
+            $url = array_merge([$post->type->name]/*, generateRouteUrl($post->type_id, $typeRoute->structure)*/, [$routeName]);
             $post->url = implode('/', $url);
             $post->save();
 
-            foreach ($typeRoute->params as $id) {
+            /*foreach ($typeRoute->params as $id) {
                 $typeRouteItem = $this->typeRouteStructure->getItem($post->type_id, $id);
                 $postItem = $this->postRepository->getById($id);
 
@@ -213,7 +148,7 @@ class PostService extends BaseService
                 $url = array_merge([$post->type->name], $urls, [$postItem->route->name]);
                 $postItem->url = implode('/', $url);
                 $postItem->save();
-            }
+            }*/
         }
     }
 
@@ -228,8 +163,8 @@ class PostService extends BaseService
             $postAttributes[$value] = Arr::get($fields, $key, 0);
         }
         $post = $this->postRepository->create($postAttributes);
-        $typeRoute = $this->createTypeRouteStructure($post);
-        $url = array_merge([$post->type->name], generateRouteUrl($post->type_id, $typeRoute->structure), [Arr::get($fields, 'routeName', '')]);
+        //$typeRoute = $this->createTypeRouteStructure($post);
+        $url = array_merge([$post->type->name]/*, generateRouteUrl($post->type_id, $typeRoute->structure)*/, [Arr::get($fields, 'routeName', '')]);
         $post->url = implode('/', $url);
         $post->save();
 
@@ -257,7 +192,7 @@ class PostService extends BaseService
         return $post;
     }
 
-    private function createTypeRouteStructure(Post $post): TypeRouteStructure
+    /*private function createTypeRouteStructure(Post $post): TypeRouteStructure
     {
         $structure = [];
         $mainPost = $post;
@@ -278,7 +213,7 @@ class PostService extends BaseService
             'params' => [],
             'structure' => array_reverse($structure)
         ]);
-    }
+    }*/
 
     public function delete($type, Post $post): Post
     {
@@ -300,7 +235,7 @@ class PostService extends BaseService
     {
         $typeRoute = $this->typeRouteStructure->getItem($post->type_id, $post->id);
 
-        foreach ($typeRoute->params as $id) {
+        /*foreach ($typeRoute->params as $id) {
             $typeRouteItem = $this->typeRouteStructure->getItem($post->type_id, $id);
             $structure = $typeRouteItem->structure;
             $index = array_search($post->id, $structure);
@@ -325,7 +260,7 @@ class PostService extends BaseService
             $url = array_merge([$post->type->name], generateRouteUrl($post->type_id, $newStructure), [$route->name]);
             $childPost->url = implode('/', $url);
             $childPost->save();
-        }
+        }*/
 
         $typeRoute->delete();
         return $typeRoute;

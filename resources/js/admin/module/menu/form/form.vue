@@ -239,7 +239,13 @@ export default {
         },
         loadLinks () {
             this.$options.service.links(response => {
-                this.links = response.data.links;
+                this.links = response.data.links.map(item => {
+                    item.children = item.children.map(subItem => {
+                        subItem.canHasChild = true;
+                        return subItem;
+                    })
+                    return item;
+                });
             })
         },
         backClick () {
