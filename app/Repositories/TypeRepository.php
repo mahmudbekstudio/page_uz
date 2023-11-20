@@ -26,7 +26,6 @@ class TypeRepository extends BaseRepository {
             $attributes,
             ['title', 'name', 'status', 'type', 'has_parent', 'child_of', 'structure', 'fields']
         );
-        $attributes['title'] = json_encode($attributes['title']);
 
         return parent::create($attributes);
     }

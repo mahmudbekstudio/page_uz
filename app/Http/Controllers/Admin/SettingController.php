@@ -6,6 +6,7 @@ use App\Helpers\DataFormat;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Setting\UpdateSettingRequest;
 use App\Models\Template;
+use App\Models\Type;
 use App\Models\Website;
 use App\Repositories\PostRepository;
 use App\Repositories\TypeRepository;
@@ -15,7 +16,8 @@ use Illuminate\Support\Arr;
 
 class SettingController extends Controller
 {
-    protected $list = [
+    private $activeTypesList = null;
+    protected $metaList = [
         'name' => DataFormat::FORMAT_STRING,
         'logo' => DataFormat::FORMAT_ARRAY,
         'pageHome' => DataFormat::FORMAT_INT,
@@ -32,8 +34,6 @@ class SettingController extends Controller
         'date_format' => DataFormat::FORMAT_STRING,
         'time_format' => DataFormat::FORMAT_STRING,
         'items_per_page' => DataFormat::FORMAT_INT,
-        'post_template' => DataFormat::FORMAT_INT,
-        'category_template' => DataFormat::FORMAT_INT,
 
         'seoDescription' => DataFormat::FORMAT_STRING,
         'indexing' => DataFormat::FORMAT_BOOL,
@@ -62,6 +62,46 @@ class SettingController extends Controller
         );
 
         return $data;
+    }
+
+    private function getActiveTypesList()
+    {
+        if (!$this->activeTypesList) {
+            $this->activeTypesList = app(TypeRepository::class)->getActiveList()->toArray();
+        }
+
+        return $this->activeTypesList;
+    }
+
+    private function getActiveType($name) {
+        $list = $this->getActiveTypesList();
+
+        foreach ($list as $item) {
+            if ($item['name'] === $name) {
+                return $item;
+            }
+        }
+
+        return [];
+    }
+
+    public function __get(string $name)
+    {
+        if ($name === 'list') {
+            $list = $this->getActiveTypesList();
+            foreach ($list as $type) {
+                $typePostfix =
+                    $type['type'] === Type::TYPE_POST ?
+                        config('app.template.postfix.post') :
+                        config('app.template.postfix.category');
+                $typeKey = $type['name'] . $typePostfix;
+
+                if (!isset($this->metaList[$typeKey])) {
+                    $this->metaList[$typeKey] = DataFormat::FORMAT_INT;
+                }
+            }
+            return $this->metaList;
+        }
     }
 
     public function update(UpdateSettingRequest $request)
@@ -263,30 +303,61 @@ class SettingController extends Controller
             $categoryTemplates[$item->id] = $item->name;
         }
 
-        return [
-            [
-                "type" => "select",
-                "name" => "post_template",
-                "value" => Arr::get($metas, 'post_template', 0),
-                "params" => [
-                    "options" => $postTemplates,
-                    "multiple" => false,
-                    "valueType" => DataFormat::FORMAT_ARRAY,
-                    "label" => "words.post_template"
-                ],
-            ],
-            [
-                "type" => "select",
-                "name" => "category_template",
-                "value" => Arr::get($metas, 'category_template', 0),
-                "params" => [
-                    "options" => $categoryTemplates,
-                    "multiple" => false,
-                    "valueType" => DataFormat::FORMAT_ARRAY,
-                    "label" => "words.category_template"
-                ],
-            ],
-        ];
+        $result = [];
+
+        foreach ($this->list as $key => $item) {
+            if (str_ends_with($key, config('app.template.postfix.post'))) {
+                $name = substr($key, 0, strlen($key) - strlen(config('app.template.postfix.post')));
+                $activeType = $this->getActiveType($name);
+
+                if (gettype($activeType['title']) === 'string') {
+                    $activeType['title'] .= ' ' . trans('words.template');
+                } else {
+                    foreach ($activeType['title'] as $lang => $value) {
+                        $activeType['title'][$lang] = $value . ' ' . trans('words.template', [], $lang);
+                    }
+                }
+
+                $result[] = [
+                    "type" => "select",
+                    "name" => $key,
+                    "value" => Arr::get($metas, $key, 0),
+                    "params" => [
+                        "options" => $postTemplates,
+                        "multiple" => false,
+                        "valueType" => DataFormat::FORMAT_ARRAY,
+                        "label" => $activeType['title']
+                    ],
+                ];
+            }
+
+            if (str_ends_with($key, config('app.template.postfix.category'))) {
+                $name = substr($key, 0, strlen($key) - strlen(config('app.template.postfix.category')));
+                $activeType = $this->getActiveType($name);
+
+                if (gettype($activeType['title']) === 'string') {
+                    $activeType['title'] .= ' ' . trans('words.template');
+                } else {
+                    foreach ($activeType['title'] as $lang => $value) {
+                        $activeType['title'][$lang] = $value . ' ' . trans('words.template', [], $lang);
+                    }
+                }
+
+                $result[] = [
+                    "type" => "select",
+                    "name" => $key,
+                    "value" => Arr::get($metas, $key, 0),
+                    "params" => [
+                        "options" => $categoryTemplates,
+                        "multiple" => false,
+                        "valueType" => DataFormat::FORMAT_ARRAY,
+                        "label" => $activeType['title']
+                    ],
+                ];
+            }
+        }
+
+        return $result;
     }
 
     private function getSeoFields($metas): array

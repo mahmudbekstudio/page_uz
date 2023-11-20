@@ -417,7 +417,9 @@ if (! function_exists('viewTemplate')) {
         $websiteMetas = $websiteRepository->getMetas();
 
         if (!$templateId) {
-            $defaultTemplateId = Arr::get($websiteMetas, ($isPost ? 'post' : 'category') . '_template');
+            $templateKeyPostFix = $isPost ? config('app.template.postfix.post') : config('app.template.postfix.category');
+            $templateKey = $typeItem->name . $templateKeyPostFix;
+            $defaultTemplateId = Arr::get($websiteMetas, $templateKey);
 
             if ($defaultTemplateId) {
                 $templateId = $defaultTemplateId;

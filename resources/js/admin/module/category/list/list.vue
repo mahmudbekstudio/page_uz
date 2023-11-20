@@ -13,6 +13,9 @@
             @click:row="clickRow"
             @reloadCallback="listReloadCallback = $event"
         >
+            <template v-slot:item.title="props">
+                {{ $t(props.value) }}
+            </template>
             <template v-slot:item.status="props">
                 <v-chip
                     :color="props.value ? 'green' : 'red'"
@@ -22,7 +25,7 @@
                 </v-chip>
             </template>
             <template v-slot:item.parent="props">
-                {{ props.value || '-' }}
+                {{ $t(props.value) || '-' }}
             </template>
             <template v-slot:item.created_at="props">{{ $moment(props.value).format(mainConfig.app.timeFormat.full) }}</template>
             <template v-slot:item.actions="props">

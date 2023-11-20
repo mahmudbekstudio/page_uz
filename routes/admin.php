@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::get('get/{post}', [PostController::class, 'get'])->name('get');
                 Route::delete('delete/{post}', [PostController::class, 'delete'])->name('delete');
 
-                Route::get('active-list', [PostController::class, 'activeList'])->name('active-list');
+                Route::get('active-list/{selectedId}', [PostController::class, 'activeList'])->name('active-list');
             });
 
             Route::group(['prefix' => 'category/{type}', 'as' => 'category.'], function () {
@@ -68,7 +68,7 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::get('get/{category}', [CategoryController::class, 'get'])->name('get');
                 Route::delete('delete/{category}', [CategoryController::class, 'delete'])->name('delete');
 
-                Route::get('active-list', [CategoryController::class, 'activeList'])->name('active-list');
+                Route::get('active-list/{selectedId}', [CategoryController::class, 'activeList'])->name('active-list');
             });
 
             Route::group(['prefix' => 'user', 'as' => 'user.'], function () {

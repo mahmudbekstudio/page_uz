@@ -61,7 +61,7 @@ class CategoryService extends BaseService
         $route->name = $routeName;
         $route->save();
 
-        $metaFieldsExcept = ['template', 'parent', 'status', 'routeName'];
+        $metaFieldsExcept = config('app.template.except_fields');
         $metaFields = Arr::except($fields, $metaFieldsExcept);
         $typeFields = getFields(getTypeById($typeId)->fields);
         $category->metas()->delete();
@@ -85,8 +85,12 @@ class CategoryService extends BaseService
         $newParentTypeRoute = $this->typeRouteStructure->getItem($category->type_id, $parent);
         $oldParentTypeRoute = $this->typeRouteStructure->getItem($category->type_id, $category->parent_id);
 
-        $structure = $newParentTypeRoute->structure;
-        $structure[] = $newParentTypeRoute->parent_id;
+        $structure = $newParentTypeRoute ? $newParentTypeRoute->structure : [];
+
+        if ($newParentTypeRoute) {
+            $structure[] = $newParentTypeRoute->parent_id;
+        }
+
         $typeRoute->structure = $structure;
         $typeRoute->save();
         foreach ($typeRoute->params as $id) {
@@ -100,22 +104,28 @@ class CategoryService extends BaseService
         $typeRouteParams[] = $typeRoute->parent_id;
         $params = [];
 
-        foreach ($oldParentTypeRoute->params as $id) {
-            if (!in_array($id, $typeRouteParams)) {
-                $params[] = $id;
+        if ($oldParentTypeRoute) {
+            foreach ($oldParentTypeRoute->params as $id) {
+                if (!in_array($id, $typeRouteParams)) {
+                    $params[] = $id;
+                }
+            }
+
+            $oldParentTypeRoute->params = $params;
+            $oldParentTypeRoute->save();
+        }
+
+        if ($newParentTypeRoute) {
+            $newParentTypeRoute->params = array_unique(array_merge($newParentTypeRoute->params, $typeRouteParams));
+            $newParentTypeRoute->save();
+
+            foreach ($newParentTypeRoute->structure as $id) {
+                $newParentTypeRouteItem = $this->typeRouteStructure->getItem($category->type_id, $id);
+                $newParentTypeRouteItem->params = array_unique(array_merge($newParentTypeRouteItem->params, $typeRouteParams));
+                $newParentTypeRouteItem->save();
             }
         }
 
-        $oldParentTypeRoute->params = $params;
-        $oldParentTypeRoute->save();
-        $newParentTypeRoute->params = array_unique(array_merge($newParentTypeRoute->params, $typeRouteParams));
-        $newParentTypeRoute->save();
-
-        foreach ($newParentTypeRoute->structure as $id) {
-            $newParentTypeRouteItem = $this->typeRouteStructure->getItem($category->type_id, $id);
-            $newParentTypeRouteItem->params = array_unique(array_merge($newParentTypeRouteItem->params, $typeRouteParams));
-            $newParentTypeRouteItem->save();
-        }
         /*
         if ($category->parent_id != $parent) {
             foreach ($typeRoute->structure as $id) {
@@ -124,9 +134,16 @@ class CategoryService extends BaseService
                 foreach ($typeRouteItem->params as $paramId) {
                     if ($paramId != $category->id) {
                         $newParams[] = $paramId;
+                    } else {
+                        $typeRouteItemParam = $this->typeRouteStructure->getItem($category->type_id, $paramId);
+                        logger('test1', [$id, $paramId, $typeRouteItem->parent_id, $typeRouteItemParam->structure]);
+                        if (in_array($typeRouteItem->parent_id, $typeRouteItemParam->structure)) {
+                            $newParams[] = $paramId;
+                        }
                     }
                 }
-                $typeRouteItem->params = $newParams;
+                logger('test1', $newParams);
+                $typeRouteItem->params = array_unique($newParams);
                 $typeRouteItem->save();
             }
 
@@ -138,7 +155,7 @@ class CategoryService extends BaseService
                 $typeRouteItem = $this->typeRouteStructure->getItem($category->type_id, $id);
                 $newParams = array_merge($typeRouteItem->params, [$category->id], $typeRoute->params);
                 //$newParams[] = $category->id;
-                $typeRouteItem->params = $newParams;
+                $typeRouteItem->params = array_unique($newParams);
                 $typeRouteItem->save();
             }
 
@@ -162,7 +179,6 @@ class CategoryService extends BaseService
             $typeRouteParent->params = $parentParams;
             $typeRouteParent->save();
         }*/
-
 
         if ($category->route->name != $routeName || $category->parent_id != $parent) {
 
@@ -192,7 +208,7 @@ class CategoryService extends BaseService
     {
         $categoryFields = ['template' => 'template_id', 'parent' => 'parent_id', 'status' => 'status'];
         $routeFields = ['routeName' => 'name'];
-        $metaFieldsExcept = ['template', 'parent', 'status', 'routeName'];
+        $metaFieldsExcept = config('app.template.except_fields');
 
         $categoryAttributes = ['type_id' => $typeId, 'url' => ''];
         foreach ($categoryFields as $key => $value) {
@@ -205,6 +221,7 @@ class CategoryService extends BaseService
         $category->save();
 
         $routeAttributes = ['type_id' => $typeId, 'parent_id' => $category->id];
+
         foreach ($routeFields as $key => $value) {
             $routeAttributes[$value] = Arr::get($fields, $key, '');
         }

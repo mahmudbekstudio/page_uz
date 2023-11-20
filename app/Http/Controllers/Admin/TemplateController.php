@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Template;
 use App\Repositories\TemplateRepository;
+use App\Repositories\WebsiteRepository;
 use App\Services\Admin\TemplateService;
 use Illuminate\Support\Arr;
 
@@ -67,7 +68,25 @@ class TemplateController extends Controller
             return false;
         }
 
-        return !Category::firstWhere('template_id', $template->id);
+        $category = Category::firstWhere('template_id', $template->id);
+
+        if ($category) {
+            return false;
+        }
+
+        $metasIds = WebsiteRepository::getInstance()->getCurrent()->metas->filter(function ($meta) {
+            $postPostfix = config('app.template.postfix.post');
+            $categoryPostfix = config('app.template.postfix.category');
+            return str_ends_with($meta->meta_key, $postPostfix) || str_ends_with($meta->meta_key, $categoryPostfix);
+        })->pluck('meta_value')->map(function ($id) {
+            return (int)$id;
+        })->toArray();
+
+        if (in_array($template->id, $metasIds)) {
+            return false;
+        }
+
+        return true;
     }
 
     public function delete(Template $template)

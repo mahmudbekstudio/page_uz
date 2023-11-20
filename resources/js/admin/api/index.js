@@ -33,15 +33,17 @@ const components = {
     },
     postActiveList: {
         ...route.admin('post.active-list'),
-        callback: function(typeId) {
+        callback: function(typeId, selectedId = 0) {
             this.urlParam('{type}', typeId);
+            this.urlParam('{selectedId}', selectedId);
         },
         token: true
     },
     categoryActiveList: {
         ...route.admin('category.active-list'),
-        callback: function(typeId) {
+        callback: function(typeId, selectedId = 0) {
             this.urlParam('{type}', typeId);
+            this.urlParam('{selectedId}', selectedId);
         },
         token: true
     },

@@ -48,8 +48,8 @@ class CategoryController extends Controller
         return responseJsonData(true, ['category' => $this->categoryService->delete($type, $category)]);
     }
 
-    public function activeList(int $type, CategoryRepository $categoryRepository)
+    public function activeList(int $type, int $selectedId, CategoryRepository $categoryRepository)
     {
-        return responseJsonData(true, ['categories' => $categoryRepository->getActiveList($type)]);
+        return responseJsonData(true, ['categories' => $categoryRepository->getActiveList($type, [$selectedId])]);
     }
 }

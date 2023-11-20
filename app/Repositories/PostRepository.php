@@ -21,10 +21,11 @@ class PostRepository extends BaseRepository {
         return Post::class;
     }
 
-    public function getActiveList($typeId)
+    public function getActiveList($typeId, $except = [])
     {
         return $this
             ->with('metas')
+            ->whereNotIn('id', $except)
             ->where('type_id', $typeId)
             ->where('status', 1)
             ->get(['id', 'parent_id'])

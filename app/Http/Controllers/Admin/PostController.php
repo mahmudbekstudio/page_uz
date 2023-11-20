@@ -48,8 +48,8 @@ class PostController extends Controller
         return responseJsonData(true, ['post' => $this->postService->delete($type, $post)]);
     }
 
-    public function activeList(int $type, PostRepository $postRepository)
+    public function activeList(int $type, int $selectedId, PostRepository $postRepository)
     {
-        return responseJsonData(true, ['posts' => $postRepository->getActiveList($type)]);
+        return responseJsonData(true, ['posts' => $postRepository->getActiveList($type, [$selectedId])]);
     }
 }

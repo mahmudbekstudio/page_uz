@@ -17,13 +17,13 @@ export default class advancedParentField extends field {
         this.fieldObject.value = this.fieldObject.value || this.defaultObject.value;
 
         if (typeof params.isConstructor !== 'undefined' && !this.isConstructor) {
-
+            const selectedId = route.currentRoute.params.id ?? 0;
             const routeNames = route.currentRoute.name.split('.');
             const name = routeNames.length && routeNames[0] === 'category' ? 'category' : 'post';
 
             this.setParam('options', {});
             http(api.components[name + 'ActiveList'])
-                .callback(route.currentRoute.params.typeId)
+                .callback(route.currentRoute.params.typeId, selectedId)
                 .send()
                 .then(response => {
                     const result = [];
@@ -32,7 +32,7 @@ export default class advancedParentField extends field {
 
                     for (const item of tree) {
                         const disabled = mainConfig.app.parentPageDeepLimit < item.deep || item.ids.indexOf(parseInt(route.currentRoute.params?.id)) > -1;
-                        result.push({text: item.name, value: String(item.id), disabled});
+                        result.push({text: item.name, prefix: item.prefix, value: String(item.id), disabled});
                     }
 
                     this.setParam('options', result);

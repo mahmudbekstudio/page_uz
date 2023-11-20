@@ -30,7 +30,8 @@
 
                     if(typeof item === 'object') {
                         if(typeof item.text !== 'undefined' && typeof item.value !== 'undefined') {
-                            result.push({text: this.$t(item.text), value: item.value});
+                            const prefix = item.prefix ? item.prefix + ' ' : '' ;
+                            result.push({text: prefix + this.$t(item.text), value: item.value});
                         } else {
                             if(!isFirst) {
                                 result.push({divider: true});

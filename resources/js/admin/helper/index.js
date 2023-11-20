@@ -74,7 +74,8 @@ export let listToTree = function (list, parentId = 0, prefix = '', deep = 1, ids
     for (const item of list) {
         const itemParentId = parseInt(item['parent_id']);
         if(itemParentId === parentId) {
-            item['name'] = prefix + item['name'];
+            item['name'] = item['name'];
+            item['prefix'] = prefix;
             item['deep'] = deep;
             item['ids'] = [...ids, parseInt(item['id'])];
             result = [...result, item, ...listToTree(list, parseInt(item['id']), prefix + '- | -', deep + 1, item['ids'])];

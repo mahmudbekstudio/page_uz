@@ -80,6 +80,7 @@ export default {
     service: new Service(),
     data () {
         return {
+            itemType: 'post',
             contentField: null,
             layoutFieldLoaded: false,
             typeFieldLoaded: false,
@@ -192,7 +193,7 @@ export default {
             this.layoutFieldLoaded = true;
             this.layoutField.value = this.templateValue.layout_id;
         });
-        this.$options.service.getAllTypes('post', response => {
+        this.$options.service.getAllTypes(this.itemType, response => {
             const result = {};
 
             for (const item of response.data.list) {
@@ -247,7 +248,7 @@ export default {
                     name: values.title,
                     layout_id: values.layout,
                     type_id: values.type,
-                    type: 'post',
+                    type: this.itemType,
                     content: websiteHtmlObj.blocks,
                     params: {styles, customStyles, contentHtml},
                 });

@@ -311,13 +311,19 @@ export default {
         },
         templateChanged() {
             this.templateValue.type = 'layout';
-            const websiteHtmlObj = new WebsiteHtml(this.websiteHtmlObject?.blocks)
+            const blocks = JSON.parse(JSON.stringify(this.websiteHtmlObject?.blocks));
+            for (const block of blocks) {
+                block.isActive = false;
+            }
+            const websiteHtmlObj = new WebsiteHtml(blocks);
+            console.log('websiteHtmlObj', websiteHtmlObj.blocks);
             websiteHtmlObj.htmlDocument(false, null, null, true);
             const contentHtml = websiteHtmlObj.contentHtml;
             const styles = websiteHtmlObj.structureStyles;
             const customStyles = websiteHtmlObj.customStyles;
 
             this.templateValue.params = {styles, customStyles, contentHtml};
+            this.templateValue.content = blocks;
             this.$emit('input', this.templateValue);
         }
     },
