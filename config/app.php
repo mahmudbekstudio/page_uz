@@ -102,10 +102,6 @@ return [
     ],
     'template' => [
         'except_fields' => ['childOf', 'template', 'parent', 'status', 'routeName'],
-        'postfix' => [
-            'post' => '---post-template',
-            'category' => '---category-template',
-        ],
     ],
 
     /*

@@ -18,6 +18,12 @@ class WebsiteMeta extends Model
      */
     protected $fillable = ['website_id', 'user_id', 'meta_key', 'meta_value', 'meta_format'];
 
+    /**
+     * Selected default templates in settings
+     */
+    public const POST_TEMPLATE_POSTFIX = '---post-template';
+    public const CATEGORY_TEMPLATE_POSTFIX = '---category-template';
+
     protected static function booted()
     {
         parent::booted();

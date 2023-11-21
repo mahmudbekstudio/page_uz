@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\DataFormat;
+use App\Models\WebsiteMeta;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -417,7 +418,7 @@ if (! function_exists('viewTemplate')) {
         $websiteMetas = $websiteRepository->getMetas();
 
         if (!$templateId) {
-            $templateKeyPostFix = $isPost ? config('app.template.postfix.post') : config('app.template.postfix.category');
+            $templateKeyPostFix = $isPost ? WebsiteMeta::POST_TEMPLATE_POSTFIX : WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX;
             $templateKey = $typeItem->name . $templateKeyPostFix;
             $defaultTemplateId = Arr::get($websiteMetas, $templateKey);
 

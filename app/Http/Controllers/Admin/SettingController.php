@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Setting\UpdateSettingRequest;
 use App\Models\Template;
 use App\Models\Type;
 use App\Models\Website;
+use App\Models\WebsiteMeta;
 use App\Repositories\PostRepository;
 use App\Repositories\TypeRepository;
 use App\Repositories\WebsiteRepository;
@@ -92,8 +93,8 @@ class SettingController extends Controller
             foreach ($list as $type) {
                 $typePostfix =
                     $type['type'] === Type::TYPE_POST ?
-                        config('app.template.postfix.post') :
-                        config('app.template.postfix.category');
+                        WebsiteMeta::POST_TEMPLATE_POSTFIX :
+                        WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX;
                 $typeKey = $type['name'] . $typePostfix;
 
                 if (!isset($this->metaList[$typeKey])) {
@@ -306,8 +307,8 @@ class SettingController extends Controller
         $result = [];
 
         foreach ($this->list as $key => $item) {
-            if (str_ends_with($key, config('app.template.postfix.post'))) {
-                $name = substr($key, 0, strlen($key) - strlen(config('app.template.postfix.post')));
+            if (str_ends_with($key, WebsiteMeta::POST_TEMPLATE_POSTFIX)) {
+                $name = substr($key, 0, strlen($key) - strlen(WebsiteMeta::POST_TEMPLATE_POSTFIX));
                 $activeType = $this->getActiveType($name);
 
                 if (gettype($activeType['title']) === 'string') {
@@ -331,8 +332,8 @@ class SettingController extends Controller
                 ];
             }
 
-            if (str_ends_with($key, config('app.template.postfix.category'))) {
-                $name = substr($key, 0, strlen($key) - strlen(config('app.template.postfix.category')));
+            if (str_ends_with($key, WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX)) {
+                $name = substr($key, 0, strlen($key) - strlen(WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX));
                 $activeType = $this->getActiveType($name);
 
                 if (gettype($activeType['title']) === 'string') {

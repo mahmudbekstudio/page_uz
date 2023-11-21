@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Template\CreateTemplateRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Template;
+use App\Models\WebsiteMeta;
 use App\Repositories\TemplateRepository;
 use App\Repositories\WebsiteRepository;
 use App\Services\Admin\TemplateService;
@@ -75,8 +76,8 @@ class TemplateController extends Controller
         }
 
         $metasIds = WebsiteRepository::getInstance()->getCurrent()->metas->filter(function ($meta) {
-            $postPostfix = config('app.template.postfix.post');
-            $categoryPostfix = config('app.template.postfix.category');
+            $postPostfix = WebsiteMeta::POST_TEMPLATE_POSTFIX;
+            $categoryPostfix = WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX;
             return str_ends_with($meta->meta_key, $postPostfix) || str_ends_with($meta->meta_key, $categoryPostfix);
         })->pluck('meta_value')->map(function ($id) {
             return (int)$id;

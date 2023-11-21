@@ -226,6 +226,7 @@ export default {
             changeTitle: 'view/changeTitle',
         }),
         currentLangChanged () {
+            this.actions = [];
             this.actions.push(getPageBoxAction('words.back', '', {color: 'default'}, {click: this.backClick}));
             this.actions.push(getPageBoxAction('words.' + (this.$options.service.id ? 'update' : 'create'), '', {color: 'primary'}, {click: this.saveForm}));
         },

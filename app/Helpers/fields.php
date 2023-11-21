@@ -100,7 +100,7 @@ if (! function_exists('getFilesField')) {
             $fileUrl = getFileUrl($file);
             $fileName = $file['name'] . '.' . $file['extension'];
             $list[] = ($fileType === 'image') ?
-                '<img alt="' . $fileName . '" src="' .  $fileUrl. '">' :
+                '<img class="img-fluid" alt="' . $fileName . '" src="' .  $fileUrl. '">' :
                 '<a href="' . $fileUrl . '" target="_blank">' . $fileName . '</a>';
         }
         $div = '<div class="' . $fileClassName . '">';
