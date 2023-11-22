@@ -285,4 +285,8 @@ return [
         'uz' => 'O\'zbekcha',
         'en' => 'Inglizcha',
     ],
+    'feature' => [
+        'post' => 'Post',
+        'post-list' => 'Postlar ro\'yxati',
+    ],
 ];

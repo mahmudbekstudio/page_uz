@@ -27,6 +27,7 @@ export default {
         {text: 'words.menus', icon: 'mdi-menu', route: {name: 'menu.list'}, active: ['menu.list', 'menu.create', 'menu.edit']},
         {text: 'words.users', icon: 'mdi-account-group', route: {name: 'user.list'}},
         {text: 'words.template', icon: 'mdi-text-box-multiple-outline', route: {name: 'template.list'}},
+        {text: 'words.feature', icon: 'mdi-text-box-multiple-outline', route: {name: 'feature.list'}},
         {text: 'words.websites', icon: 'mdi-web', route: {name: 'website.list'}},
         {
             icon: 'settings',

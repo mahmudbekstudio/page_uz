@@ -4,12 +4,13 @@ namespace App\Repositories;
 
 use App\Models\Post;
 use App\Models\PostMeta;
+use App\Repositories\Traits\GetById;
 use App\Repositories\Traits\Vars;
 use Illuminate\Support\Arr;
 
 class PostRepository extends BaseRepository {
 
-    use Vars;
+    use Vars, GetById;
 
     /**
      * model
@@ -36,21 +37,5 @@ class PostRepository extends BaseRepository {
 
                 return ['id' => $post->id, 'parent_id' => $post->parent_id, 'name'=> Arr::get($metas, 'title')];
             });
-    }
-
-    /**
-     * @param int $id
-     * @return Post|null
-     */
-    public function getById(int $id)
-    {
-        $result = $this->getVar($id);
-
-        if (!$result) {
-            $result = $this->find($id);
-            $this->setVar($id, $result);
-        }
-
-        return $result;
     }
 }

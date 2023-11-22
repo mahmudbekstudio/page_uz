@@ -4,12 +4,13 @@ namespace App\Repositories;
 
 use App\Models\Category;
 use App\Models\CategoryMeta;
+use App\Repositories\Traits\GetById;
 use App\Repositories\Traits\Vars;
 use Illuminate\Support\Arr;
 
 class CategoryRepository extends BaseRepository {
 
-    use Vars;
+    use Vars, GetById;
 
     /**
      * model
@@ -36,21 +37,5 @@ class CategoryRepository extends BaseRepository {
 
                 return ['id' => $category->id, 'parent_id' => $category->parent_id, 'name'=> Arr::get($metas, 'title')];
             });
-    }
-
-    /**
-     * @param int $id
-     * @return Category|null
-     */
-    public function getById(int $id)
-    {
-        $result = $this->getVar($id);
-
-        if (!$result) {
-            $result = $this->find($id);
-            $this->setVar($id, $result);
-        }
-
-        return $result;
     }
 }

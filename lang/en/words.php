@@ -285,4 +285,8 @@ return [
         'uz' => 'Uzbek',
         'en' => 'English',
     ],
+    'feature' => [
+        'post' => 'Post',
+        'post-list' => 'Posts list',
+    ],
 ];

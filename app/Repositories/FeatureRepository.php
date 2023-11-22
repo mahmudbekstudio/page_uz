@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Models\Menu;
+use App\Models\Feature;
 use App\Repositories\Traits\GetById;
 use App\Repositories\Traits\Vars;
 
-class MenuRepository extends BaseRepository {
+class FeatureRepository extends BaseRepository {
 
     use Vars, GetById;
 
@@ -17,6 +17,6 @@ class MenuRepository extends BaseRepository {
      */
     public function model()
     {
-        return Menu::class;
+        return Feature::class;
     }
 }

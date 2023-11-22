@@ -4,13 +4,14 @@ namespace App\Repositories;
 use App\Helpers\DataFormat;
 use App\Models\Website;
 use App\Models\WebsiteMeta;
+use App\Repositories\Traits\GetById;
 use App\Repositories\Traits\StaticInstance;
 use App\Repositories\Traits\Vars;
 use Illuminate\Support\Arr;
 
 class WebsiteRepository extends BaseRepository {
 
-    use StaticInstance, Vars;
+    use StaticInstance, Vars, GetById;
 
     /**
      * model
@@ -20,23 +21,6 @@ class WebsiteRepository extends BaseRepository {
     public function model()
     {
         return Website::class;
-    }
-
-    /**
-     * Get website mode by id
-     *
-     * @param string $id
-     * @return Website|null
-     */
-    public function getById(int $id) {
-        $result = $this->getVar($id);
-
-        if(!$result) {
-            $result = $this->find($id);
-            $this->setVar($id, $result);
-        }
-
-        return $result;
     }
 
     public static function changeStatusOfCurrentWebsite(int $status)

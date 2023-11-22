@@ -3,11 +3,12 @@
 namespace App\Repositories;
 
 use App\Models\Template;
+use App\Repositories\Traits\GetById;
 use App\Repositories\Traits\Vars;
 
 class TemplateRepository extends BaseRepository {
 
-    use Vars;
+    use Vars, GetById;
 
     /**
      * model
@@ -17,21 +18,5 @@ class TemplateRepository extends BaseRepository {
     public function model()
     {
         return Template::class;
-    }
-
-    /**
-     * @param int $id
-     * @return Template|null
-     */
-    public function getById(int $id)
-    {
-        $result = $this->getVar($id);
-
-        if (!$result) {
-            $result = $this->find($id);
-            $this->setVar($id, $result);
-        }
-
-        return $result;
     }
 }

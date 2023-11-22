@@ -3,13 +3,13 @@ namespace App\Repositories;
 
 use App\Helpers\DataFormat;
 use App\Models\User;
-use App\Models\Website;
+use App\Repositories\Traits\GetById;
 use App\Repositories\Traits\StaticInstance;
 use App\Repositories\Traits\Vars;
 
 class UserRepository extends BaseRepository {
 
-    use StaticInstance, Vars;
+    use StaticInstance, Vars, GetById;
 
     /**
      * model
@@ -36,23 +36,6 @@ class UserRepository extends BaseRepository {
         $this->setVar($user->id, $user);
 
         return $user;
-    }
-
-    /**
-     * Get website mode by id
-     *
-     * @param int $id
-     * @return Website|null
-     */
-    public function getById(int $id) {
-        $result = $this->getVar($id);
-
-        if(!$result) {
-            $result = $this->find($id);
-            $this->setVar($id, $result);
-        }
-
-        return $result;
     }
 
     public function getAuthed()

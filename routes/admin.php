@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\Admin\FeatureController;
 
 Route::group(['middleware' => ['auth:api']], function() {
     Route::get('settings', [MainController::class, 'settings'])->name('settings');
@@ -98,6 +99,15 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::delete('delete/{template}', [TemplateController::class, 'delete'])->name('delete');
 
                 Route::get('blocks', [TemplateController::class, 'blocks'])->name('blocks');
+            });
+
+            Route::group(['prefix' => 'feature', 'as' => 'feature.'], function () {
+                Route::get('list', [FeatureController::class, 'list'])->name('list');
+                Route::get('get/{feature}', [FeatureController::class, 'get'])->name('get');
+                Route::get('get-by-type/{type}', [FeatureController::class, 'getByType'])->name('get-by-type');
+                Route::post('create', [FeatureController::class, 'create'])->name('create');
+                Route::put('edit/{feature}', [FeatureController::class, 'edit'])->name('edit');
+                Route::delete('delete/{feature}', [FeatureController::class, 'delete'])->name('delete');
             });
 
             Route::group(['middleware' => [
