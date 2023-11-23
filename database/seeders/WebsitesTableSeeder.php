@@ -107,7 +107,7 @@ class WebsitesTableSeeder extends Seeder
             'has_parent' => 1,
             'child_of' => 0,
         ], [
-            'title' => json_encode(['en' => 'Page', 'ru' =>  'Страница', 'uz' => 'Sahifa']),
+            'title' => ['en' => 'Page', 'ru' =>  'Страница', 'uz' => 'Sahifa'],
             'name' => config('app.main_page.name'),
             'structure' => json_decode(config('app.main_page.structure'), true),
             'fields' => json_decode(config('app.main_page.fields'), true),
