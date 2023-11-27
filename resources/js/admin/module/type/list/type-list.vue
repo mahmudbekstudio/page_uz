@@ -1,8 +1,33 @@
 <template>
-    <page-box
-        class="module-type-list"
-        :actions="actions"
-    >
+    <page-box class="module-type-list">
+        <template #actions>
+            <v-menu
+                left
+                bottom
+            >
+                <template v-slot:activator="{ on }">
+                    <v-btn
+                        depressed
+                        color="primary"
+                        v-on="on"
+                    >
+                        {{$t('words.create')}}
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item
+                        v-for="(btn, i) in actions"
+                        :key="i"
+                        v-on="btn.on"
+                        v-bind="btn.bind"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>{{$t(btn.title)}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+        </template>
         <data-table
             :headers="headers"
             route="admin.type.list"
@@ -53,6 +78,9 @@
             </template>
             <template v-slot:item.title="props">
                 {{ $t(props.value) }}
+            </template>
+            <template v-slot:item.name="props">
+                {{ props.value ? $t(props.value) : '-' }}
             </template>
             <template v-slot:item.status="props">
                 <v-chip
@@ -105,11 +133,17 @@
             }
         },
         created() {
-            this.actions.push(getPageBoxAction('words.create_category', '', {color: 'primary'}, {
+            this.actions.push(getPageBoxAction('words.create_category', '', {}, {
                 click: () => this.$router.push({name: 'type.create', params: {type: 'category'}})
             }));
-            this.actions.push(getPageBoxAction('words.create_post', '', {color: 'primary'}, {
+            this.actions.push(getPageBoxAction('words.create_post', '', {}, {
                 click: () => this.$router.push({name: 'type.create', params: {type: 'post'}})
+            }));
+            this.actions.push(getPageBoxAction('words.create_block', '', {}, {
+                click: () => this.$router.push({name: 'type.create', params: {type: 'block'}})
+            }));
+            this.actions.push(getPageBoxAction('words.create_setting', '', {}, {
+                click: () => this.$router.push({name: 'type.create', params: {type: 'setting'}})
             }));
 
             this.headers = [

@@ -1,6 +1,7 @@
 import ParentRoute from '../../view/parent-route';
 import MainSetting from './main/main-setting';
 import DomainSetting from './domain/domain-setting';
+import SettingForm from './form/form.vue';
 
 const route = {
     path: 'setting',
@@ -25,6 +26,16 @@ const route = {
                 layout: 'main',
                 requiresAuth: true,
                 title: 'words.domain_setting'
+            }
+        },
+        {
+            path: 'edit/:typeId/:id?',
+            name: 'setting.edit',
+            component: SettingForm,
+            meta: {
+                layout: 'main',
+                requiresAuth: true,
+                title: 'words.setting_edit'
             }
         },
     ]

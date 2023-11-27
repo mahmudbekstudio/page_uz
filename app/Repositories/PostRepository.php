@@ -38,4 +38,11 @@ class PostRepository extends BaseRepository {
                 return ['id' => $post->id, 'parent_id' => $post->parent_id, 'name'=> Arr::get($metas, 'title')];
             });
     }
+
+    public function getByType(int $typeId)
+    {
+        return $this
+            ->where('type_id', $typeId)
+            ->get();
+    }
 }

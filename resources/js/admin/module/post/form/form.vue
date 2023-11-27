@@ -91,13 +91,13 @@ export default {
                             app.successMessage(this.$t('words.updated'));
                         } else {
                             app.successMessage(this.$t('words.created'));
-                            this.back();
+                            this.back(response);
                         }
                     }
                 );
             }
         },
-        back() {
+        back(response = {}) {
             this.$router.push({name: 'post.list', params: {typeId: this.$options.service.typeId}});
         }
     },

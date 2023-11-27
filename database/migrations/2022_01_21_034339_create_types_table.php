@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->default(0)->index('user_id');
             $table->unsignedTinyInteger('status')->default(1)->index('status');// 0 or 1 (not active or active)
             $table->string('title');
-            $table->string('name')->default('post')->index('name');//unique in website and by type
+            $table->string('name')->nullable()->index('name');//unique in website and by type
             $table->enum('type', Type::types())->default(Type::defaultType())->index('type');
             $table->unsignedTinyInteger('has_parent')->default(0);// 0 or 1, if post or category has parent set 1
             $table->unsignedInteger('child_of')->default(0)->index('child_of');//only for post type, put category id for post, if post type has category

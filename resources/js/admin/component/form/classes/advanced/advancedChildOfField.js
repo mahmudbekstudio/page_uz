@@ -82,7 +82,7 @@ export default class advancedChildOfField extends field {
                         const tree = listToTree(response.data.data.categories);
 
                         for (const item of tree) {
-                            result.push({text: item.name, prefix: item.prefix, value: String(item.id), disabled: mainConfig.app.parentPageDeepLimit < item.deep});
+                            result.push({text: item.name, prefix: item.prefix, value: item.id, disabled: mainConfig.app.parentPageDeepLimit < item.deep});
                         }
 
                         this.setParam('options', result);

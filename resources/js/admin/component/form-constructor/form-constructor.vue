@@ -9,6 +9,7 @@
         <tabs-list
                 v-model="tab"
                 :form="formObject"
+                v-if="!hideTabs"
         />
         <v-tabs-items v-model="tab" class="custom-tabs-items">
             <v-tab-item
@@ -205,7 +206,13 @@
                 default() {
                     return false;
                 }
-            }
+            },
+            hideTabs: {
+                type: Boolean,
+                default() {
+                    return false;
+                }
+            },
         },
         computed: {
             elementForm () {

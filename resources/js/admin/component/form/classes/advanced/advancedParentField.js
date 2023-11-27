@@ -32,7 +32,7 @@ export default class advancedParentField extends field {
 
                     for (const item of tree) {
                         const disabled = mainConfig.app.parentPageDeepLimit < item.deep || item.ids.indexOf(parseInt(route.currentRoute.params?.id)) > -1;
-                        result.push({text: item.name, prefix: item.prefix, value: String(item.id), disabled});
+                        result.push({text: item.name, prefix: item.prefix, value: item.id, disabled});
                     }
 
                     this.setParam('options', result);

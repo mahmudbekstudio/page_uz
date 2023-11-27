@@ -26,7 +26,7 @@ export default class requiredTemplateField extends field {
                     const result = [];
 
                     for (const item of response.data.data.list) {
-                        result.push({text: item.name, value: String(item.id)});
+                        result.push({text: item.name, value: item.id});
                     }
 
                     this.setParam('options', result);

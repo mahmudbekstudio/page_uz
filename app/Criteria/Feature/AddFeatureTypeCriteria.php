@@ -12,7 +12,7 @@ class AddFeatureTypeCriteria implements CriteriaInterface
     {
         $model = $model->leftJoin('feature_types', function (JoinClause $join) {
             $join
-                ->on('features.type_id', '=', 'feature_types.id');
+                ->on('features.feature_type_id', '=', 'feature_types.id');
         });
 
         return $model;

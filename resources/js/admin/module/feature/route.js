@@ -1,5 +1,5 @@
 import ParentRoute from '../../view/parent-route';
-import Feature from './feature.vue';
+import Feature from "./feature.vue";
 
 const route = {
     path: 'feature',
@@ -7,7 +7,7 @@ const route = {
     children: [
         {path: '', redirect: {name: 'feature.list'}},
         {
-            path: 'list/:type?',
+            path: 'list',
             name: 'feature.list',
             component: Feature,
             meta: {
@@ -17,7 +17,7 @@ const route = {
             }
         },
         {
-            path: 'create/:type',
+            path: 'create',
             name: 'feature.create',
             component: Feature,
             meta: {

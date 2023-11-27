@@ -8,6 +8,7 @@ import UserRoute from './user/route';
 import TypeRoute from './type/route';
 import WebsiteRoute from './website/route';
 import PostRoute from './post/route';
+import BlockRoute from './block/route';
 import CategoryRoute from './category/route';
 import MenuRoute from './menu/route';
 import TemplateRoute from './template/route';
@@ -27,6 +28,7 @@ const route = [
             TypeRoute,
             WebsiteRoute,
             PostRoute,
+            BlockRoute,
             CategoryRoute,
             MenuRoute,
             TemplateRoute,

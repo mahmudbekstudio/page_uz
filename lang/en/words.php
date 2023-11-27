@@ -289,4 +289,5 @@ return [
         'post' => 'Post',
         'post-list' => 'Posts list',
     ],
+    'blocks' => 'Blocks',
 ];

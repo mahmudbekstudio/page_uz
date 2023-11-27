@@ -15,6 +15,7 @@ use App\Repositories\PostRepository;
 use App\Repositories\CategoryRepository;
 use App\Helpers\GlobalVariable;
 use App\Models\Template;
+use App\Models\Type;
 
 if (! function_exists('route')) {
     /**
@@ -258,8 +259,11 @@ if (! function_exists('typeNavigation')) {
     {
         $posts = [];
         $categories = [];
-        app(TypeRepository::class)->getActiveList()->each(function ($item) use (&$posts, &$categories) {
-            if ($item->type === 'post') {
+        $blocks = [];
+        $settings = [];
+        $postRepository = app(PostRepository::class);
+        app(TypeRepository::class)->getActiveList()->each(function ($item) use (&$posts, &$categories, &$blocks, &$settings, $postRepository) {
+            if ($item->type === Type::TYPE_POST) {
                 $posts[] = [
                     'text' => $item->title,
                     'icon' => 'article',
@@ -278,12 +282,33 @@ if (! function_exists('typeNavigation')) {
                         ]
                     ]
                 ];
-            } else {
+            } elseif ($item->type === Type::TYPE_CATEGORY) {
                 $categories[$item->id] = [
                     'text' => $item->title,
                     'icon' => 'view_list',
                     'route' => ['name' => 'category.list', 'params' => ['typeId' => $item->id]],
                     'active' => ['category.edit', 'category.create'],
+                ];
+            } elseif ($item->type === Type::TYPE_BLOCK) {
+                $blocks[$item->id] = [
+                    'text' => $item->title,
+                    'icon' => 'mdi-view-quilt',
+                    'route' => ['name' => 'block.list', 'params' => ['typeId' => $item->id]],
+                    'active' => ['block.edit', 'block.create'],
+                ];
+            } elseif ($item->type === Type::TYPE_SETTING) {
+                $params = ['typeId' => $item->id];
+                $post = $postRepository->getByType($item->id)->first();
+
+                if ($post) {
+                    $params['id'] = $post->id;
+                }
+
+                $settings[$item->id] = [
+                    'text' => $item->title,
+                    'icon' => 'mdi-file-cog',
+                    'route' => ['name' => 'setting.edit', 'params' => $params],
+                    'childrenOf' => 'settings',
                 ];
             }
         });
@@ -302,6 +327,18 @@ if (! function_exists('typeNavigation')) {
 
         foreach ($categories as $category) {
             $data[] = $category;
+        }
+
+        if (!empty($blocks)) {
+            $data[] = [
+                'text' => 'words.blocks',
+                'icon' => 'article',
+                'children' => $blocks
+            ];
+        }
+
+        foreach ($settings as $setting) {
+            $data[] = $setting;
         }
 
         return $isJson ? json_encode($data) : $data;

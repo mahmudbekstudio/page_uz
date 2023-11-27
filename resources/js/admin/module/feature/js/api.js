@@ -37,6 +37,13 @@ const api = {
         },
         token: true
     },
+    getTypesList: {
+        ...route.admin('feature.types-list'),
+        callback: function(typeId) {
+            this.urlParam('{typeId}', typeId);
+        },
+        token: true
+    },
 };
 
 export default api;

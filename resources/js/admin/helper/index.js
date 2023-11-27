@@ -1,4 +1,5 @@
 import storage from '../service/storage';
+import mainConfig from '../config/main';
 
 export let parseJson = function (str) {
     try {
@@ -96,4 +97,14 @@ export let translate = function (key, i18n, lang = null) {
     }
 
     return i18n.t(key, selectedLang);
+}
+
+export let translationObject = function (key, i18n) {
+    const result = {};
+
+    for (const lang of mainConfig.lang.list) {
+        result[lang] = translate(key, i18n, lang);
+    }
+
+    return result;
 }

@@ -84,6 +84,7 @@ class PostService extends BaseService
     private function updateTypeRouteStructure(Post $post, $parent, $routeName)
     {
         $typeRoute = $this->typeRouteStructure->getItem($post->type_id, $post->id);
+        if (!$typeRoute) return;
         $newParentTypeRoute = $this->typeRouteStructure->getItem($post->type_id, $parent);
         $oldParentTypeRoute = $this->typeRouteStructure->getItem($post->type_id, $post->parent_id);
 

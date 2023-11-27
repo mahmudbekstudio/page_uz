@@ -15,6 +15,7 @@
 </template>
 <script>
     import mixins from '../../../mixin';
+    import mainConfig from '../../../config/main';
 
     export default {
         mixins: [mixins.get('formField')],
@@ -28,10 +29,10 @@
                 for(let key in this.optionsParam) {
                     const item = this.optionsParam[key];
 
-                    if(typeof item === 'object') {
+                    if(typeof item === 'object' && !this.objectIsTranslation(item)) {
                         if(typeof item.text !== 'undefined' && typeof item.value !== 'undefined') {
                             const prefix = item.prefix ? item.prefix + ' ' : '' ;
-                            result.push({text: prefix + this.$t(item.text), value: item.value});
+                            result.push({text: prefix + this.$t(item.text), value: this.valueByType(item.value)});
                         } else {
                             if(!isFirst) {
                                 result.push({divider: true});
@@ -41,11 +42,11 @@
                             result.push({header: this.$t(key)});
 
                             for(let subKey in item) {
-                                result.push({text: this.$t(item[subKey]), value: subKey});
+                                result.push({text: this.$t(item[subKey]), value: this.valueByType(subKey)});
                             }
                         }
                     } else {
-                        result.push({text: this.$t(item), value: key});
+                        result.push({text: this.$t(item), value: this.valueByType(key)});
                     }
                 }
                 return result;
@@ -73,7 +74,7 @@
                         return this.value.split(',').map(item => item.trim());
                     }
 
-                    return this.value !== null && !this.params.multiple ? String(this.value) : this.value;
+                    return this.valueByType(this.value);
                 },
                 set: function (newValue) {
                     this.$emit('input', newValue);
@@ -81,6 +82,36 @@
             }
         },
         methods: {
+            objectIsTranslation(item) {
+                const keys = Object.keys(item);
+
+                for (const key of keys) {
+                    if (mainConfig.lang.list.indexOf(key) === -1) {
+                        return false;
+                    }
+                }
+
+                return true;
+            },
+            valueByType(value) {
+                if (value === null) {
+                    return null;
+                }
+
+                if (this.params.multiple) {
+                    return value;
+                }
+
+                if (this.params.valueType === 'int') {
+                    return parseInt(value);
+                }
+
+                if (this.params.valueType === 'string') {
+                    return String(value);
+                }
+
+                return value;
+            },
             clear() {
                 this.$nextTick(() => {
                     this.dataValue = this.params.defaultObject.value;

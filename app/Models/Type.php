@@ -28,6 +28,8 @@ class Type extends Model
 
     const TYPE_POST = 'post';
     const TYPE_CATEGORY = 'category';
+    const TYPE_BLOCK = 'block';
+    const TYPE_SETTING = 'setting';
 
     protected static function booted()
     {
@@ -43,6 +45,11 @@ class Type extends Model
     }
 
     public static function types(): array
+    {
+        return [self::TYPE_POST, self::TYPE_CATEGORY, self::TYPE_BLOCK, self::TYPE_SETTING];
+    }
+
+    public static function pageTypes(): array
     {
         return [self::TYPE_POST, self::TYPE_CATEGORY];
     }

@@ -27,13 +27,8 @@ class CreateTypeRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'title' => ['required', 'array'],
-            'name' => [
-                'required',
-                'string', 'regex:/^' . config('app.route_rules.name') . '$/i',
-                new TypeNameNotExist(request()->route('id'))
-            ],
             'status' => ['required', 'boolean'],
             'type' => ['required', Rule::in(Type::types())],
             'has_parent' => ['required', 'boolean'],
@@ -41,5 +36,15 @@ class CreateTypeRequest extends FormRequest
             'structure' => ['required', 'array'],
             'fields' => ['required', 'array']
         ];
+
+        if (in_array(request()->get('type'), Type::pageTypes())) {
+            $rules['name'] = [
+                'required',
+                'string', 'regex:/^' . config('app.route_rules.name') . '$/i',
+                new TypeNameNotExist(request()->route('id'))
+            ];
+        }
+
+        return $rules;
     }
 }

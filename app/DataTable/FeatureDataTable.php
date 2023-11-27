@@ -3,7 +3,7 @@
 namespace App\DataTable;
 
 use App\Criteria\Feature\AddFeatureTypeCriteria;
-use App\Criteria\Feature\AddParentCriteria;
+use App\Criteria\Feature\AddTypeCriteria;
 use App\Repositories\FeatureRepository;
 
 class FeatureDataTable extends DataTable
@@ -14,8 +14,8 @@ class FeatureDataTable extends DataTable
     protected array $columns = [
         'features.id' => 'id',
         'features.name' => 'name',
-        'feature_types.name' => 'type',
-        'types.title' => 'parent',
+        'feature_types.name' => 'feature_type',
+        'types.title' => 'type',
         'features.created_at' => 'created_at',
     ];
 
@@ -23,6 +23,6 @@ class FeatureDataTable extends DataTable
     {
         return $this->repository
             ->pushCriteria(AddFeatureTypeCriteria::class)
-            ->pushCriteria(AddParentCriteria::class);
+            ->pushCriteria(AddTypeCriteria::class);
     }
 }

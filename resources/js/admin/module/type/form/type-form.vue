@@ -22,13 +22,15 @@
 <script>
     import Service from './service';
     import pageBox from '../../../view/partial/page-box';
-    import { getPageBoxAction } from '../../../helper';
+    import {getPageBoxAction, translationObject} from '../../../helper';
     import formConstructor from '../../../component/form-constructor/form-constructor';
     import { Form as FormClass, Field } from '../../../component/form/classes/form';
     import { mapActions, mapGetters } from 'vuex';
     import app from "../../../service/app";
     import formComponent from '../../../component/form/form-component';
     import validation from "../../../config/validation";
+    import mainConfig from '../../../config/main';
+    import i18n from "../../../plugin/i18n";
 
     export default {
         service: new Service(),
@@ -50,19 +52,37 @@
             this.type = this.$route.params?.type;
             this.id = this.$route.params?.id;
 
-            this.advanced = {
-                parent: new Field({type: 'advancedParent'}),
-            };
-            this.required = {
-                title: new Field({type: 'requiredTitle'}),
-                routeName: new Field({type: 'requiredRouteName'}),
-                status: new Field({type: 'requiredStatus'}),
-                template: new Field({type: 'requiredTemplate'}),
-                seoKeyword: new Field({type: 'requiredSeoKeyword'}),
-                seoDescription: new Field({type: 'requiredSeoDescription'}),
-                publishEnd: new Field({type: 'requiredPublishEnd'}),
-                publishStart: new Field({type: 'requiredPublishStart'}),
-            };
+            if (!this.id && mainConfig.app.type.all.indexOf(this.type) === -1) {
+                this.backClick();
+            }
+
+            if (this.isPageType) {
+                this.advanced = {
+                    parent: new Field({type: 'advancedParent'}),
+                };
+                this.required = {
+                    title: new Field({type: 'requiredTitle'}),
+                    routeName: new Field({type: 'requiredRouteName'}),
+                    status: new Field({type: 'requiredStatus'}),
+                    template: new Field({type: 'requiredTemplate'}),
+                    seoKeyword: new Field({type: 'requiredSeoKeyword'}),
+                    seoDescription: new Field({type: 'requiredSeoDescription'}),
+                    publishEnd: new Field({type: 'requiredPublishEnd'}),
+                    publishStart: new Field({type: 'requiredPublishStart'}),
+                };
+            } else {
+                this.advanced = {};
+
+                if (this.type !== 'setting') {
+                    this.required = {
+                        title: new Field({type: 'requiredTitle'}),
+                        status: new Field({type: 'requiredStatus'}),
+                    };
+                } else {
+                    this.required = {};
+                }
+
+            }
 
             this.initAdvanced();
 
@@ -80,16 +100,24 @@
             } else {
                 this.formValue = new FormClass({}, true);
                 const mainTab = this.formValue.getTab();
-                mainTab.addField({type: 'requiredTitle'});
-                mainTab.addField({type: 'requiredRouteName'});
-                mainTab.addField({type: 'requiredStatus'});
-                const seoTab = this.formValue.addTab({title: 'words.seo'});
-                seoTab.addField({type: 'requiredSeoKeyword'});
-                seoTab.addField({type: 'requiredSeoDescription'});
-                const advancedTab = this.formValue.addTab({title: 'words.advanced'});
-                advancedTab.addField({type: 'requiredTemplate'});
-                advancedTab.addField({type: 'requiredPublishEnd'});
-                advancedTab.addField({type: 'requiredPublishStart'});
+
+                if (this.type !== 'setting') {
+                    mainTab.addField({type: 'requiredTitle'});
+                    mainTab.addField({type: 'requiredStatus'});
+                }
+
+                if (this.isPageType) {
+                    mainTab.addField({type: 'requiredRouteName'});
+
+                    const seoTab = this.formValue.addTab({title: translationObject('words.seo', i18n)});
+                    seoTab.addField({type: 'requiredSeoKeyword'});
+                    seoTab.addField({type: 'requiredSeoDescription'});
+
+                    const advancedTab = this.formValue.addTab({title: translationObject('words.advanced', i18n)});
+                    advancedTab.addField({type: 'requiredTemplate'});
+                    advancedTab.addField({type: 'requiredPublishEnd'});
+                    advancedTab.addField({type: 'requiredPublishStart'});
+                }
             }
 
             if (this.type) {
@@ -118,7 +146,10 @@
                 }
 
                 return result;
-            }
+            },
+            isPageType () {
+                return mainConfig.app.type.page.indexOf(this.type) > -1
+            },
         },
         watch: {
             formValue: {
@@ -156,7 +187,11 @@
             createTypeForm () {
                 this.typeForm = new FormClass();
                 const typeTitle = this.typeForm.addField({type: 'text', name: 'title', value: this.typeFormValues?.title || '', params: {label: 'words.title', rules: [validation.required('words.title')]}});
-                const routeName = this.typeForm.addField({type: 'requiredRouteName', name: 'name', value: this.typeFormValues?.name || '', params: {label: 'words.type_name'}});
+
+                if (this.isPageType) {
+                    const routeName = this.typeForm.addField({type: 'requiredRouteName', name: 'name', value: this.typeFormValues?.name || '', params: {label: 'words.type_name'}});
+                }
+
                 const status = this.typeForm.addField({type: 'switch', name: 'status', value: (typeof this.typeFormValues?.status === 'undefined' ? true : this.typeFormValues?.status), params: {label: 'words.status'}});
             },
             saveForm() {

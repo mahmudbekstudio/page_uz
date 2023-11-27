@@ -3,6 +3,7 @@
         <v-tabs
             v-model="currentTab"
             align-with-title
+            v-if="showTabs"
         >
             <v-tabs-slider color="yellow" class="tab-active-line"></v-tabs-slider>
             <v-tab
@@ -49,6 +50,23 @@ export default {
                 ghostClass: 'ghost',
                 sort: false,
             },
+        }
+    },
+    computed: {
+        showTabs () {
+            const result = [];
+
+            for (const tabKey in this.list) {
+                if (this.list[tabKey].length) {
+                    result.push(tabKey)
+                }
+            }
+
+            if (!result[this.currentTab]) {
+                this.currentTab = 0;
+            }
+
+            return result.length > 1;
         }
     },
     props: {

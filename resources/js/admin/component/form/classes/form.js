@@ -32,6 +32,7 @@ import * as _ from 'lodash';
 import i18n from "../../../plugin/i18n";
 import validation from "../../../config/validation";
 import store from "../../../plugin/store";
+import {translationObject} from "../../../helper";
 
 export class Form {
     children = [];
@@ -41,7 +42,7 @@ export class Form {
         this.isConstructor = isConstructor;
 
         if(!Object.keys(params).length) {
-            this.addTab({title: 'words.main'}, {}, {});
+            this.addTab({title: translationObject('words.main', i18n)}, {}, {});
         } else {
             this.json = params;
         }

@@ -108,6 +108,8 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::post('create', [FeatureController::class, 'create'])->name('create');
                 Route::put('edit/{feature}', [FeatureController::class, 'edit'])->name('edit');
                 Route::delete('delete/{feature}', [FeatureController::class, 'delete'])->name('delete');
+
+                Route::delete('types-list/{typeId}', [FeatureController::class, 'typesList'])->name('types-list');
             });
 
             Route::group(['middleware' => [

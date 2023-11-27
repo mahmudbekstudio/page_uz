@@ -115,9 +115,12 @@
                 website: 'view/website',
             }),
             hasError() {
-                if (!this.params.fieldObject.params.errorList || !Array.isArray(this.params.fieldObject.params.errorList) || !this.params.fieldObject.params.errorList.length) {
+                const errorList = this.params?.fieldObject?.params?.errorList;
+
+                if (!errorList || !Array.isArray(errorList) || !errorList.length) {
                     return false;
                 }
+                
                 return true;
             },
             typeComponent() {

@@ -73,6 +73,10 @@ class MainController extends Controller
             return goHome($lang);
         }
 
+        if (!in_array($typeName, Type::pageTypes())) {
+            return go404($lang);
+        }
+
         $typeItem = $this->typeRepository->getByName($typeName);
 
         if (!$typeItem) {

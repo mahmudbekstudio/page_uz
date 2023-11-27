@@ -21,9 +21,9 @@
     </data-table>
 </template>
 <script>
-import dataTable from '../../../component/table/data-table';
-import mainConfig from '../../../config/main';
+import dataTable from "../../../component/table/data-table.vue";
 import Service from "../js/service";
+import mainConfig from "../../../config/main";
 import app from "../../../service/app";
 
 export default {
@@ -39,8 +39,8 @@ export default {
         this.headers = [
             { text: 'Id', value: 'id' },
             { text: 'words.name', value: 'name' },
+            { text: 'words.feature_type', value: 'feature_type' },
             { text: 'words.type', value: 'type' },
-            { text: 'words.parent', value: 'parent' },
             { text: 'words.created', value: 'created_at' },
             { text: 'words.actions', value: 'actions' },
         ];
@@ -63,7 +63,7 @@ export default {
         },
     },
     components: {
-        dataTable
+        dataTable,
     }
 }
 </script>

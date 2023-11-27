@@ -30,6 +30,29 @@ export default class Service {
         });
     }
 
+    getTypesList(id, successCallback, errorCallback) {
+        this.loading(true);
+        http(api.getTypesList)
+            .callback(id)
+            .send()
+            .then(response => {
+                if (typeof successCallback === 'function') {
+                    successCallback(response.data);
+                }
+            })
+            .catch(error => {
+                logger.error('get types list delete', error);
+                if (typeof errorCallback === 'function') {
+                    errorCallback(error);
+                } else {
+                    app.errorMessage(i18n.t('words.error'));
+                }
+            })
+            .then(() => {
+                this.loading(false);
+            });
+    }
+
     loading(isStart) {
         app.loading(isStart);
     }

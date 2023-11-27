@@ -289,4 +289,5 @@ return [
         'post' => 'Post',
         'post-list' => 'Postlar ro\'yxati',
     ],
+    'blocks' => 'Bloklar',
 ];

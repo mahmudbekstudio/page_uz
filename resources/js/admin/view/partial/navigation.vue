@@ -114,12 +114,28 @@
                 typeNavigation: 'view/typeNavigation',
             }),
             items() {
-                return [navigationList[this.user.role][0], ...this.typeNavigation.map(item => {
+                const typeNavigation = this.typeNavigation.map(item => {
                     if (['string', 'number'].indexOf(typeof item.text) === -1) {
                         item.text = JSON.stringify(item.text);
                     }
                     return item;
-                }), ...navigationList[this.user.role].slice(1)];
+                });
+                const childrenOfList = typeNavigation.filter(item => item.childrenOf);
+                const navigation = [navigationList[this.user.role][0], ...typeNavigation.filter(item => !item.childrenOf), ...navigationList[this.user.role].slice(1)];
+
+                if (childrenOfList.length) {
+                    for (const navigationKey in navigation) {
+                        if (navigation[navigationKey].key) {
+                            for (const childrenOfItem of childrenOfList) {
+                                if (childrenOfItem.childrenOf === navigation[navigationKey].key && !this.childrenExist(navigation[navigationKey].children, childrenOfItem)) {
+                                    navigation[navigationKey].children.push(childrenOfItem);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return navigation;
             },
             drawer: {
                 get() {
@@ -135,6 +151,15 @@
             ...mapActions({
                 updateDrawer: 'view/updateDrawer'
             }),
+            childrenExist(list, item) {
+                for (const listElement of list) {
+                    if (listElement.childrenOf && JSON.stringify(listElement.route.params) === JSON.stringify(item.route.params)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            },
             isActiveExist(list) {
                 for(let i = 0; i < list.length; i++) {
                     if(this.isActive(list[i])) {
