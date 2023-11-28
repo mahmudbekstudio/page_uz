@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Facade;
 use App\Models\User;
 use App\Models\Website;
-use App\Models\FeatureType;
 use App\Models\Type;
 
 return [
@@ -105,7 +104,7 @@ return [
     'template' => [
         'except_fields' => ['childOf', 'template', 'parent', 'status', 'routeName'],
     ],
-    'feature_types' => FeatureType::getList(),
+    'feature_types' => Type::types(),
     'type' => [
         'all' => Type::types(),
         'page' => Type::pageTypes(),

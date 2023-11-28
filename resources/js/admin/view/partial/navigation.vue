@@ -176,7 +176,7 @@
                     this.isExistEqual(item.route.params, this.$route.params);
             },
             listItemClick(route) {
-                if(this.$route.name !== route.name || !this.isEqual(this.$route.params, route.params)) {
+                if(this.$route.name !== route.name || !this.isEqual(this.$route.params || {}, route.params || {})) {
                     this.$router.push(route);
                 }
             },

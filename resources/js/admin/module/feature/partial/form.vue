@@ -5,7 +5,7 @@
             :disabled="isLoading"
             @input="formChanged($event)"
         ></form-component>
-        <v-container fluid>
+        <v-container fluid v-if="typeField.value">
             <v-row>
                 <v-col
                     cols="12"
@@ -37,6 +37,7 @@ export default {
     data () {
         return {
             featureForm: null,
+            featureTypeField: null,
             typeField: null,
             domsList: [],
         }
@@ -70,15 +71,20 @@ export default {
             nameField.setParams('label', 'words.name');
             nameField.setParams('rules', [validation.required('words.name')]);
             nameField.name = 'name';
-            //nameField.value = formValue.name || '';
+            nameField.value = formValue.name || '';
+
+            this.featureTypeField = this.featureForm.addField({type: 'select'});
+            this.featureTypeField.setParams('label', 'words.featureType');
+            this.featureTypeField.name = 'feature_type';
+            this.featureTypeField.setParams('clearable', false);
+            const typeOptions = mainConfig.app.feature_types.map(item => ({value: item, text: 'words.feature.' + item}));
+            this.featureTypeField.setParams('options', typeOptions);
+            this.featureTypeField.value = formValue.feature_type || '';
 
             this.typeField = this.featureForm.addField({type: 'select'});
             this.typeField.setParams('label', 'words.type');
             this.typeField.name = 'type_id';
             this.typeField.setParams('clearable', false);
-            const typeOptions = mainConfig.app.feature_types.map(item => ({value: item.id, text: 'words.feature.' + item.name}));
-            this.typeField.setParams('options', typeOptions);
-            this.typeField.setParams('valueType', 'int');
             this.typeField.value = formValue.type_id || 0;
         },
         formChanged (e) {
@@ -86,11 +92,19 @@ export default {
         },
     },
     watch: {
-        'typeField.value' (newValue) {
+        'featureTypeField.value' (newValue) {
             if (newValue) {
                 this.$options.service.getTypesList(newValue, response => {
-                    console.log('response', response.data.typesList);
+                    this.typeField.value = 0;
+                    this.typeField.setParams('options', response.data.typesList.map(item => ({value: item.id, text: item.title})));
                 })
+            }
+        },
+        'typeField.value' (typeId) {
+            if (typeId) {
+                this.$options.service.getTypeDetail(typeId, response => {
+                    console.log('response', response);
+                });
             }
         }
     },

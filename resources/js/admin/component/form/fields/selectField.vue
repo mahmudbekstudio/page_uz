@@ -86,12 +86,12 @@
                 const keys = Object.keys(item);
 
                 for (const key of keys) {
-                    if (mainConfig.lang.list.indexOf(key) === -1) {
-                        return false;
+                    if (mainConfig.lang.list.indexOf(key) > -1) {
+                        return true;
                     }
                 }
 
-                return true;
+                return false;
             },
             valueByType(value) {
                 if (value === null) {

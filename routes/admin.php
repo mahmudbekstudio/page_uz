@@ -109,7 +109,8 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::put('edit/{feature}', [FeatureController::class, 'edit'])->name('edit');
                 Route::delete('delete/{feature}', [FeatureController::class, 'delete'])->name('delete');
 
-                Route::delete('types-list/{typeId}', [FeatureController::class, 'typesList'])->name('types-list');
+                Route::get('types-list/{featureType}', [FeatureController::class, 'typesList'])->name('types-list');
+                Route::get('type-detail/{typeId}', [FeatureController::class, 'typeDetail'])->name('type-detail');
             });
 
             Route::group(['middleware' => [

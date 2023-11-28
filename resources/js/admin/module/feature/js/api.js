@@ -39,6 +39,13 @@ const api = {
     },
     getTypesList: {
         ...route.admin('feature.types-list'),
+        callback: function(featureType) {
+            this.urlParam('{featureType}', featureType);
+        },
+        token: true
+    },
+    getTypeDetail: {
+        ...route.admin('feature.type-detail'),
         callback: function(typeId) {
             this.urlParam('{typeId}', typeId);
         },

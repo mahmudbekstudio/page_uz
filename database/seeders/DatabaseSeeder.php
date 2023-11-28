@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
             WebsitesTableSeeder::class,
             UsersTableSeeder::class,
             FileManagerSeeder::class,
-            FeatureTypeSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
 

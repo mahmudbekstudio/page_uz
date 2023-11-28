@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->default(0)->index('user_id');
             $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
             $table->string('name');
-            $table->unsignedBigInteger('feature_type_id')->default(0)->index('feature_type_id');
+            $table->string('feature_type')->index('feature_type');
             $table->unsignedBigInteger('type_id')->default(0)->index('type_id');
             $table->json('content');
             $table->json('params');
@@ -26,7 +26,6 @@ return new class extends Migration
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
-            $table->foreign('feature_type_id')->references('id')->on('feature_types');
         });
     }
 

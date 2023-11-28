@@ -64,9 +64,10 @@ class FeatureController extends Controller
         return responseJsonData($result, ['feature' => []]);
     }
 
-    public function typesList(int $typeId, TypeRepository $typeRepository)
+    public function typesList(string $featureType, TypeRepository $typeRepository)
     {
         $result = [];
+        // TODO: custom types
         /*switch ($typeId)
         {
             case [FeatureType::POST_TYPE_ID]:
@@ -76,6 +77,11 @@ class FeatureController extends Controller
                 return [];
         }*/
 
-        return responseJsonData(true, ['typesList' => $typeRepository->getByType('post')]);
+        return responseJsonData(true, ['typesList' => $typeRepository->getByType($featureType)]);
+    }
+
+    public function typeDetail(int $typeId, TypeRepository $typeRepository)
+    {
+        return responseJsonData(true, ['type' => $typeRepository->getById($typeId)]);
     }
 }

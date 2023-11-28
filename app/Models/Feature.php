@@ -14,7 +14,7 @@ class Feature extends Model
 {
     use BelongsToWebsite, BelongsToUser, HasFactory, WebsiteAddScopeTrait, UserAddScopeTrait;
 
-    protected $fillable = ['user_id', 'website_id', 'name', 'type_id', 'feature_type_id', 'content', 'params'];
+    protected $fillable = ['user_id', 'website_id', 'name', 'type_id', 'feature_type', 'content', 'params'];
 
     protected $casts = [
         'content' => 'array',
@@ -32,11 +32,6 @@ class Feature extends Model
         parent::boot();
         static::setWebsiteAttr();
         static::setUserAttr();
-    }
-
-    public function featureType(): BelongsTo
-    {
-        return $this->belongsTo(FeatureType::class, 'feature_type_id', 'id');
     }
 
     public function type(): BelongsTo

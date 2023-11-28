@@ -30,10 +30,10 @@ export default class Service {
         });
     }
 
-    getTypesList(id, successCallback, errorCallback) {
+    getTypesList(featureType, successCallback, errorCallback) {
         this.loading(true);
         http(api.getTypesList)
-            .callback(id)
+            .callback(featureType)
             .send()
             .then(response => {
                 if (typeof successCallback === 'function') {
@@ -42,6 +42,29 @@ export default class Service {
             })
             .catch(error => {
                 logger.error('get types list delete', error);
+                if (typeof errorCallback === 'function') {
+                    errorCallback(error);
+                } else {
+                    app.errorMessage(i18n.t('words.error'));
+                }
+            })
+            .then(() => {
+                this.loading(false);
+            });
+    }
+
+    getTypeDetail(typeId, successCallback, errorCallback) {
+        this.loading(true);
+        http(api.getTypeDetail)
+            .callback(typeId)
+            .send()
+            .then(response => {
+                if (typeof successCallback === 'function') {
+                    successCallback(response.data);
+                }
+            })
+            .catch(error => {
+                logger.error('get type detail', error);
                 if (typeof errorCallback === 'function') {
                     errorCallback(error);
                 } else {
