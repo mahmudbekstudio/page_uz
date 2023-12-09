@@ -7,6 +7,7 @@ export default class field {
         type: 'text',
         name: '',
         disabled: false,
+        hide: false,
         value: '',
         params: {
             valueType: 'string',
@@ -20,6 +21,7 @@ export default class field {
         this.fieldObject.type = params.type || this.defaultObject.type;
         this.fieldObject.name = params.name || this.defaultObject.name;
         this.fieldObject.disabled = params.disabled || this.defaultObject.disabled;
+        this.fieldObject.hide = params.hide || this.defaultObject.hide;
         this.fieldObject.value = typeof params.value === 'undefined' ? this.defaultObject.value : params.value;
         this.fieldObject.params = params.params || this.defaultObject.params;
         this.fieldObject.params.errorList = [];
@@ -50,6 +52,14 @@ export default class field {
 
     set disabled(val) {
         this.fieldObject.disabled = !!val;
+    }
+
+    get hide() {
+        return this.fieldObject.hide;
+    }
+
+    set hide(val) {
+        this.fieldObject.hide = !!val;
     }
 
     get value() {

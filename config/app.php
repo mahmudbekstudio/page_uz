@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Facade;
 use App\Models\User;
 use App\Models\Website;
 use App\Models\Type;
+use App\Models\Feature;
 
 return [
     'version' => '1',
@@ -66,24 +67,24 @@ return [
     'website' => [
         'js' => [
             [
-                'src' => 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js',
-                'integrity' => 'sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj',
-                'crossorigin' => 'anonymous'
+                'src' => 'https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
+                /*'integrity' => 'sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj',
+                'crossorigin' => 'anonymous'*/
             ],
             [
-                'src' => 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
-                'integrity' => 'sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct',
-                'crossorigin' => 'anonymous'
+                'src' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js',
+                /*'integrity' => 'sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct',
+                'crossorigin' => 'anonymous'*/
             ],
         ],
         'css' => [
             [
-                'href' => 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css',
-                'integrity' => 'sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N',
-                'crossorigin' => 'anonymous'
+                'href' => 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
+                /*'integrity' => 'sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N',
+                'crossorigin' => 'anonymous'*/
             ],
             [
-                'href' => 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css'
+                'href' => 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css'
             ]
         ],
     ],
@@ -104,7 +105,20 @@ return [
     'template' => [
         'except_fields' => ['childOf', 'template', 'parent', 'status', 'routeName'],
     ],
-    'feature_types' => Type::types(),
+    'feature_types' => [
+        ...Type::pageTypes(),
+        ...Feature::typesList(),
+    ],
+    'default_feature_type' => Feature::TYPE_LAYOUT,
+    'feature_types_list' => [
+        Feature::TYPE_LAYOUT => [
+            ['id' => 0, 'title' => 'words.feature.block'],
+            /*'slider',
+            'header',
+            'cover',
+            'footer'*/
+        ],
+    ],
     'type' => [
         'all' => Type::types(),
         'page' => Type::pageTypes(),

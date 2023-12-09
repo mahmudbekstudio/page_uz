@@ -56,48 +56,21 @@
                 this.backClick();
             }
 
-            if (this.isPageType) {
-                this.advanced = {
-                    parent: new Field({type: 'advancedParent'}),
-                };
-                this.required = {
-                    title: new Field({type: 'requiredTitle'}),
-                    routeName: new Field({type: 'requiredRouteName'}),
-                    status: new Field({type: 'requiredStatus'}),
-                    template: new Field({type: 'requiredTemplate'}),
-                    seoKeyword: new Field({type: 'requiredSeoKeyword'}),
-                    seoDescription: new Field({type: 'requiredSeoDescription'}),
-                    publishEnd: new Field({type: 'requiredPublishEnd'}),
-                    publishStart: new Field({type: 'requiredPublishStart'}),
-                };
-            } else {
-                this.advanced = {};
-
-                if (this.type !== 'setting') {
-                    this.required = {
-                        title: new Field({type: 'requiredTitle'}),
-                        status: new Field({type: 'requiredStatus'}),
-                    };
-                } else {
-                    this.required = {};
-                }
-
-            }
-
-            this.initAdvanced();
-
             if (this.id) {
                 this.$options.service.get(
                     this.id,
                     response => {
                         this.formValue = new FormClass(response.data.type.structure, true);
                         this.type = response.data.type.type;
+                        this.initComponents();
                         this.initAdvanced();
                         this.typeFormValues = response.data.type;
                         this.createTypeForm();
                     }
                 );
             } else {
+                this.initComponents();
+                this.initAdvanced();
                 this.formValue = new FormClass({}, true);
                 const mainTab = this.formValue.getTab();
 
@@ -174,6 +147,35 @@
 
                 if (this.formValue && this.formValue.json) {
                     this.formValue = new FormClass(this.formValue.json, true);
+                }
+            },
+            initComponents() {
+                if (this.isPageType) {
+                    this.advanced = {
+                        parent: new Field({type: 'advancedParent'}),
+                    };
+                    this.required = {
+                        title: new Field({type: 'requiredTitle'}),
+                        routeName: new Field({type: 'requiredRouteName'}),
+                        status: new Field({type: 'requiredStatus'}),
+                        template: new Field({type: 'requiredTemplate'}),
+                        seoKeyword: new Field({type: 'requiredSeoKeyword'}),
+                        seoDescription: new Field({type: 'requiredSeoDescription'}),
+                        publishEnd: new Field({type: 'requiredPublishEnd'}),
+                        publishStart: new Field({type: 'requiredPublishStart'}),
+                    };
+                } else {
+                    this.advanced = {};
+
+                    if (this.type !== 'setting') {
+                        this.required = {
+                            title: new Field({type: 'requiredTitle'}),
+                            status: new Field({type: 'requiredStatus'}),
+                        };
+                    } else {
+                        this.required = {};
+                    }
+
                 }
             },
             initAdvanced() {

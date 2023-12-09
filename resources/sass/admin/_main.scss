@@ -39,3 +39,16 @@
 .text-nowrap {
     white-space: nowrap;
 }
+
+.container.container-without-padding {
+    padding: 0;
+}
+
+.cell-field-component .container.container-without-padding .cell-field-component {
+    &:first-child {
+        margin-top: 0;
+    }
+    &:last-child {
+        margin-bottom: 0;
+    }
+}

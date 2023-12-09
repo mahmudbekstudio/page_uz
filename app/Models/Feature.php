@@ -21,6 +21,8 @@ class Feature extends Model
         'params' => 'array',
     ];
 
+    const TYPE_LAYOUT = 'layout';
+
     protected static function booted()
     {
         parent::booted();
@@ -37,5 +39,10 @@ class Feature extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(Type::class, 'type_id', 'id');
+    }
+
+    public static function typesList(): array
+    {
+        return [self::TYPE_LAYOUT];
     }
 }

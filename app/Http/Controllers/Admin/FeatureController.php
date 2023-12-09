@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\DataTable\FeatureDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Feature;
-use App\Models\FeatureType;
-use App\Models\Type;
 use App\Repositories\TypeRepository;
 use App\Services\Admin\FeatureService;
 
@@ -64,20 +62,9 @@ class FeatureController extends Controller
         return responseJsonData($result, ['feature' => []]);
     }
 
-    public function typesList(string $featureType, TypeRepository $typeRepository)
+    public function typesList(string $featureType)
     {
-        $result = [];
-        // TODO: custom types
-        /*switch ($typeId)
-        {
-            case [FeatureType::POST_TYPE_ID]:
-                $result = Type::where('type', 'post')->get();
-                break;
-            case [FeatureType::POST_LIST_TYPE_ID]:
-                return [];
-        }*/
-
-        return responseJsonData(true, ['typesList' => $typeRepository->getByType($featureType)]);
+        return responseJsonData(true, ['typesList' => $this->featureService->getTypes($featureType)]);
     }
 
     public function typeDetail(int $typeId, TypeRepository $typeRepository)

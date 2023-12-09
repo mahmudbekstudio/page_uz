@@ -7,6 +7,7 @@
             :plugins1="plugins"
             :toolbar1="toolbarFull"
             v-model="content"
+            api-key="s3vlgj779os2tcr8oyv1rjzieexvnvw5ffv0oxayighq4a7j"
         />
         <dialog-component
             title=""
@@ -91,7 +92,8 @@ export default {
         initConfig () {
             this.init.menubar = '';
             this.init.plugins = this.plugins;
-            this.init.toolbar = this.type === 'simple' ? this.toolbarSimple : this.toolbarFull;
+            const type = 'toolbar' + this.type[0].toUpperCase() + this.type.slice(1);
+            this.init.toolbar = this[type] || this.toolbarFull;
             this.init.language = this.$i18n.locale;
             this.init.forced_root_block = this.type === 'full';
             this.init.file_picker_callback = (callback, value, meta) => {
@@ -143,8 +145,8 @@ export default {
         },
         toolbarSimple () {
             return [
-                'bold italic underline strikethrough | link | fontsizeselect',
-                'alignleft aligncenter alignright alignjustify | forecolor backcolor | image media'
+                'bold italic underline strikethrough | fontsizeselect | link image media',
+                'alignleft aligncenter alignright alignjustify | forecolor backcolor | numlist bullist | table'
             ];
         },
     },

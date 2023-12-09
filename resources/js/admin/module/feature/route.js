@@ -13,7 +13,7 @@ const route = {
             meta: {
                 layout: 'main',
                 requiresAuth: true,
-                title: 'words.feature_list'
+                title: 'words.features_list'
             }
         },
         {

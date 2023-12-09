@@ -290,13 +290,9 @@ export default {
         },
         deleteListItem(item, indexes) {
             const path = indexes.slice(0, indexes.length - 1).join('.');
+            const list = path ? _.get(this.list, path) : this.list;
 
-            if (path) {
-                const list = _.get(this.list, path);
-                list.splice(list.indexOf(item), 1);
-            } else {
-                this.list.splice(this.list.indexOf(item), 1);
-            }
+            list.splice(list.indexOf(item), 1);
         },
         clickEdit (item) {
             this.selectedElement = item;

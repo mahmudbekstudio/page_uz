@@ -28,11 +28,12 @@
                     </div>
                     <sort-list
                         disabled
-                        v-if="item.canHasChild || item.children.length"
+                        v-if="hasChild(item)"
                         v-model="item.children"
                         is-sub-list
                         @add="addElement({...$event})"
                         :indexes="[...indexes, index, 'children']"
+                        :can-has-child="canHasChild"
                     >
                         <template v-slot:actions="{item, index, indexes}">
                             <slot name="actions" :item="item" :index="index" :indexes="[...indexes]"></slot>
@@ -76,6 +77,11 @@ export default {
             type: Array,
             default () {
                 return [];
+            }
+        },
+        canHasChild: {
+            default () {
+                return null;
             }
         }
     },
@@ -134,6 +140,17 @@ export default {
         }
     },
     methods: {
+        hasChild(item) {
+            if (this.canHasChild !== null) {
+                if (typeof item.canHasChild === 'undefined') {
+                    return this.canHasChild || item.children.length;
+                } else if (!this.canHasChild) {
+                    return this.canHasChild || item.canHasChild || item.children.length;
+                }
+            }
+
+            return item.canHasChild || item.children.length;
+        },
         addElement(e) {
             this.$emit('add', e);
         },

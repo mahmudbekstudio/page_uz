@@ -316,7 +316,6 @@ export default {
                 block.isActive = false;
             }
             const websiteHtmlObj = new WebsiteHtml(blocks);
-            console.log('websiteHtmlObj', websiteHtmlObj.blocks);
             websiteHtmlObj.htmlDocument(false, null, null, true);
             const contentHtml = websiteHtmlObj.contentHtml;
             const styles = websiteHtmlObj.structureStyles;

@@ -1,5 +1,5 @@
 <template>
-    <div class="field-component">
+    <div class="field-component" v-if="!hide">
         <div class="lang-list" v-if="hasLang && (website.metas.languages_list.length > 1)">
             <v-btn-toggle v-model="langToggle">
                 <v-btn
@@ -103,6 +103,10 @@
                 type: Boolean,
                 default: false
             },
+            hide: {
+                type: Boolean,
+                default: false
+            },
             hasLang: {
                 type: Boolean,
                 default() {
@@ -120,7 +124,7 @@
                 if (!errorList || !Array.isArray(errorList) || !errorList.length) {
                     return false;
                 }
-                
+
                 return true;
             },
             typeComponent() {

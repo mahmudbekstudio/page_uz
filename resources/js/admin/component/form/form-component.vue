@@ -28,7 +28,10 @@
                         :key="'tab' + index"
                         eager
                 >
-                    <v-container :fluid="fluid">
+                    <v-container
+                        :fluid="fluid"
+                        :class="containerClass"
+                    >
                         <v-row
                                 v-for="(row, rowIndex) in tab.children"
                                 :key="'row' + rowIndex"
@@ -48,6 +51,7 @@
                                             :fieldKey="[index, rowIndex, colIndex, fieldIndex].join(fieldSplitter)"
                                             :type="field.type"
                                             :disabled="!!field.disabled"
+                                            :hide="!!field.hide"
                                             :value="field.value"
                                             @input="fieldChanged"
                                             :params="{...field.params, hasLang: fieldHasLang(field.field), fieldObject: field.field.fieldObject, defaultObject: field.field.defaultObject}"
@@ -95,7 +99,13 @@
                 default() {
                     return []
                 }
-            }
+            },
+            containerClass: {
+                type: String,
+                default () {
+                    return '';
+                }
+            },
         },
         created() {
             this.$emit('validate', () => {

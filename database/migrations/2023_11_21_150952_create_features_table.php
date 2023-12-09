@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
             $table->string('name');
             $table->string('feature_type')->index('feature_type');
-            $table->unsignedBigInteger('type_id')->default(0)->index('type_id');
+            $table->unsignedBigInteger('type_id')->nullable()->default(0)->index('type_id');
             $table->json('content');
             $table->json('params');
             $table->timestamps();

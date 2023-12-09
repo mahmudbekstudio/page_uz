@@ -8,6 +8,7 @@
                 :scrollable="scrollableValue"
                 :width="width"
                 :max-width="maxWidthValue"
+                :retain-focus="false"
         >
             <v-card
                 v-if="fullscreen"

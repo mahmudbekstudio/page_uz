@@ -87,8 +87,8 @@ export default {
             html += '<head>';
             html += '<meta charset="utf-8">';
             html += '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">';
-            html += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">';
-            html += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">\n';
+            html += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">';
+            html += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">\n';
 
             for (const styleFile of this.styleFiles) {
                 html += '<link rel="stylesheet" href="' + styleFile + '?t=' + (new Date()).getTime() + '">\n';
@@ -100,8 +100,8 @@ export default {
 
             html += structureHtml;
             //html += '<div id="website-main-popup"></div>';
-            html += "<script src=\"https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js\" integrity=\"sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj\" crossorigin=\"anonymous\"><\/script>\n";
-            html += "<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct\" crossorigin=\"anonymous\"><\/script>\n";
+            html += "<script src=\"https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js\"><\/script>\n";
+            html += "<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js\"><\/script>\n";
 
             for (const scriptFile of this.scriptFiles) {
                 html += "<script src=\"" + scriptFile + "?t=" + (new Date()).getTime() + "\"><\/script>\n";
@@ -124,9 +124,6 @@ export default {
         }
     },
     methods: {
-        clickItem(e) {
-            console.log('e', e);
-        },
         generateStyles(stylesList, classesList) {
             let styles = '';
 

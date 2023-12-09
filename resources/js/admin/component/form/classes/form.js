@@ -26,6 +26,7 @@ import requiredSeoDescriptionField from './required/requiredSeoDescriptionField'
 import requiredStatusField from './required/requiredStatusField';
 import requiredTemplateField from './required/requiredTemplateField';
 import requiredTitleField from './required/requiredTitleField';
+import featureContentField from './featureContentField';
 import validationField from './validationField';
 import { FORM } from '../../../constants';
 import * as _ from 'lodash';
@@ -525,6 +526,8 @@ export class Field {
             case 'requiredTitle':
                 this.field = new requiredTitleField(fieldObj);
                 break;
+            case 'featureContent':
+                this.field = new featureContentField(fieldObj);
         }
     }
 
@@ -588,6 +591,14 @@ export class Field {
 
     set disabled(val) {
         this.field.disabled = val;
+    }
+
+    get hide() {
+        return this.field.hide || false;
+    }
+
+    set hide(val) {
+        this.field.hide = val;
     }
 
     get value() {
