@@ -23,6 +23,8 @@ class WebsiteMeta extends Model
      */
     public const POST_TEMPLATE_POSTFIX = '---post-template';
     public const CATEGORY_TEMPLATE_POSTFIX = '---category-template';
+    public const SETTING_TEMPLATE_POSTFIX = '---setting-template';
+    public const BLOCK_TEMPLATE_POSTFIX = '---block-template';
 
     protected static function booted()
     {

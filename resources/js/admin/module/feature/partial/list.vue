@@ -7,6 +7,9 @@
         @click:row="clickRow"
         @reloadCallback="listReloadCallback=$event"
     >
+        <template v-slot:filter="params">
+            <slot name="filter" v-bind="params" />
+        </template>
         <template v-slot:item.created_at="props">{{ $moment(props.value).format(mainConfig.app.timeFormat.full) }}</template>
         <template v-slot:item.type="props">{{ $t('words.feature.' + props.value) }}</template>
         <template v-slot:item.actions="props">

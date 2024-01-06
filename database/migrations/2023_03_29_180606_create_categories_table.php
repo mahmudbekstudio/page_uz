@@ -15,15 +15,22 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->default(0)->index('user_id');
-            $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
-            $table->unsignedBigInteger('template_id')->default(0)->index('template_id');
-            $table->unsignedTinyInteger('status')->default(0)->index('status');
-            $table->unsignedBigInteger('parent_id')->default(0)->index('parent_id');
-            $table->unsignedBigInteger('type_id')->default(0)->index('type_id');
-            $table->string('url')->index('url');
+            $table->unsignedBigInteger('user_id')->default(0);
+            $table->unsignedBigInteger('website_id')->default(0);
+            $table->unsignedBigInteger('template_id')->default(0);
+            $table->unsignedTinyInteger('status')->default(0);
+            $table->unsignedBigInteger('parent_id')->default(0);
+            $table->unsignedBigInteger('type_id')->default(0);
+            $table->string('url');
             $table->timestamps();
 
+            $table->index('user_id');
+            $table->index('website_id');
+            $table->index('template_id');
+            $table->index('status');
+            $table->index('parent_id');
+            $table->index('type_id');
+            $table->index('url');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('types');

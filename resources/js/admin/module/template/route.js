@@ -5,10 +5,10 @@ const route = {
     path: 'template',
     component: ParentRoute,
     children: [
-        {path: '', redirect: {name: 'template.list'}},
+        {path: '', redirect: {name: 'template.tab'}},
         {
-            path: 'list/:type?',
-            name: 'template.list',
+            path: 'tab/:tab?',
+            name: 'template.tab',
             component: Template,
             meta: {
                 layout: 'main',
@@ -19,6 +19,16 @@ const route = {
         {
             path: 'create/:type',
             name: 'template.create',
+            component: Template,
+            meta: {
+                layout: 'main',
+                requiresAuth: true,
+                title: 'words.template_create'
+            }
+        },
+        {
+            path: 'create-feature',
+            name: 'template.create-feature',
             component: Template,
             meta: {
                 layout: 'main',

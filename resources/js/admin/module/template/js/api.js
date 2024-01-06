@@ -40,6 +40,14 @@ const api = {
     blocks: {
         ...route.admin('template.blocks'),
         token: true
+    },
+    settings: {
+        ...route.admin('template.settings'),
+        token: true
+    },
+    themes: {
+        ...route.admin('template.themes'),
+        token: true
     }
 };
 

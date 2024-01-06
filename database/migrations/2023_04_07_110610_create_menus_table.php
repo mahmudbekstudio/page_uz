@@ -15,12 +15,14 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->default(0)->index('user_id');
-            $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
+            $table->unsignedBigInteger('user_id')->default(0);
+            $table->unsignedBigInteger('website_id')->default(0);
             $table->string('name', 255);
             $table->json('items');
             $table->timestamps();
 
+            $table->index('user_id');
+            $table->index('website_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
         });

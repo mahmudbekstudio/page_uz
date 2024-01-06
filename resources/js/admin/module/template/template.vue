@@ -1,6 +1,6 @@
 <template>
     <page-box>
-        <template #actions v-if="type === 'list'">
+        <template #actions>
             <v-menu
                 left
                 bottom
@@ -8,7 +8,7 @@
                 <template v-slot:activator="{ on }">
                     <v-btn
                         depressed
-                        color="primary"
+                        color="default"
                         v-on="on"
                     >
                         {{$t('words.create')}}
@@ -28,9 +28,29 @@
                     </v-list-item>
                 </v-list>
             </v-menu>
+            <v-btn
+                color="primary"
+                icon
+                @click="openThemeDialog()"
+            ><v-icon>mdi-plus</v-icon></v-btn>
         </template>
 
         <list v-if="type === 'list'"></list>
+
+        <dialog-component
+            :title="themeDialog.title"
+            v-model="themeDialog.show"
+            :actions="themeDialog.actions"
+            @close="gotoList()"
+            :overlay="isLoading"
+            size="small"
+        >
+            <form-component
+                :value="themeForm"
+                :disabled="isLoading"
+                @validate="themeFormValidation = $event"
+            />
+        </dialog-component>
 
         <dialog-component
             :title="dialog.title"
@@ -59,13 +79,17 @@ import dialogComponent from "../../component/dialog-component";
 import Service from './js/service';
 import {mapGetters} from "vuex";
 import app from "../../service/app";
+import formComponent from "../../component/form/form-component.vue";
+import {Form as FormClass} from "../../component/form/classes/form";
 
 export default {
     service: new Service(),
     data() {
         return {
+            themeForm: null,
+            themeFormValidation: null,
             templateValue: {},
-            actions: [],
+            //actions: [],
             types: {
                 layout: 'layout',
                 block: 'block',
@@ -74,6 +98,31 @@ export default {
             },
             type: null,
             id: null,
+            themeDialog: {
+                title: 'words.create',
+                show: false,
+                actions: [
+                    {
+                        color: 'default',
+                        text: 'words.cancel',
+                        click: () => this.themeDialog.show = false
+                    },
+                    {
+                        color: 'primary',
+                        text: 'words.create',
+                        click: () => {
+                            this.themeDialog.show = false;
+                            /*this.$options.service.submit(this.templateValue, response => {
+                                if (!this.id) {
+                                    this.dialog.show = false;
+                                }
+
+                                app.openMessage(this.$t('words.' + (this.id ? 'save' : 'create') + 'd'))
+                            });*/
+                        }
+                    }
+                ],
+            },
             dialog: {
                 title: '',
                 show: false,
@@ -102,17 +151,25 @@ export default {
         this.init();
     },
     methods: {
+        openThemeDialog() {
+            this.themeDialog.show = true;
+            this.themeForm = new FormClass();
+        },
         init() {
             this.type = this.$route.params.type || 'list';
             this.id = parseInt(this.$route.params.id) || 0;
             this.dialog.show = false;
+            this.themeDialog.show = false;
 
             if (this.type === 'list' && !this.id) {
-                this.actions = [];
+                this.$options.service.loadThemes(response => {
+                    console.log('response', response);
+                });
+                /*this.actions = [];
                 this.actions.push({title: 'words.layout', on: {click: () => this.gotoCreateType(this.types.layout)}});
                 //this.actions.push({title: 'words.block', on: {click: () => this.gotoCreateType(this.types.block)}});
                 this.actions.push({title: 'words.post', on: {click: () => this.gotoCreateType(this.types.post)}});
-                this.actions.push({title: 'words.category', on: {click: () => this.gotoCreateType(this.types.category)}});
+                this.actions.push({title: 'words.category', on: {click: () => this.gotoCreateType(this.types.category)}});*/
             } else if (this.id) {
                 this.$options.service.get(response => {
                     this.templateValue = response.data.template;
@@ -156,6 +213,7 @@ export default {
         }
     },
     components: {
+        formComponent,
         pageBox,
         list,
         dialogComponent,

@@ -14,7 +14,7 @@ class Feature extends Model
 {
     use BelongsToWebsite, BelongsToUser, HasFactory, WebsiteAddScopeTrait, UserAddScopeTrait;
 
-    protected $fillable = ['user_id', 'website_id', 'name', 'type_id', 'feature_type', 'content', 'params'];
+    protected $fillable = ['user_id', 'website_id', 'theme_id', 'name', 'type_id', 'feature_type', 'content', 'params'];
 
     protected $casts = [
         'content' => 'array',
@@ -44,5 +44,10 @@ class Feature extends Model
     public static function typesList(): array
     {
         return [self::TYPE_LAYOUT];
+    }
+
+    public function theme(): BelongsTo
+    {
+        return $this->belongsTo(Theme::class, 'theme_id', 'id');
     }
 }

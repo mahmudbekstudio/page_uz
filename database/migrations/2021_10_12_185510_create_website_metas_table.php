@@ -15,14 +15,18 @@ return new class extends Migration
     {
         Schema::create('website_metas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('website_id')->index('website_id');
-            $table->unsignedBigInteger('user_id')->default(0)->index('user_id');
-            $table->string('meta_key')->index('meta_key');
+            $table->unsignedBigInteger('website_id');
+            $table->unsignedBigInteger('user_id')->default(0);
+            $table->string('meta_key');
             $table->longText('meta_value');
             $table->string('meta_format', 100)->default(\App\Helpers\DataFormat::getDefault());
-            //$table->string('lang', 2)->default('')->index('lang');
+            //$table->string('lang', 2)->default('');
             $table->timestamps();
 
+            $table->index('website_id');
+            $table->index('user_id');
+            $table->index('meta_key');
+            //$table->index('lang');
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
         });
     }

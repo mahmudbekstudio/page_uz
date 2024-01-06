@@ -15,14 +15,20 @@ return new class extends Migration
     {
         Schema::create('folders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
-            $table->unsignedBigInteger('user_id')->default(0)->index('user_id');
-            $table->unsignedBigInteger('parent_id') ->default(0)->index('parent_id');
-            $table->string('name')->index('name');
-            $table->string('path')->index('path');
-            $table->boolean('is_local')->default(false)->index('is_local');
+            $table->unsignedBigInteger('website_id')->default(0);
+            $table->unsignedBigInteger('user_id')->default(0);
+            $table->unsignedBigInteger('parent_id') ->default(0);
+            $table->string('name');
+            $table->string('path');
+            $table->boolean('is_local')->default(false);
             $table->timestamps();
 
+            $table->index('website_id');
+            $table->index('user_id');
+            $table->index('parent_id');
+            $table->index('name');
+            $table->index('path');
+            $table->index('is_local');
             $table->foreign('website_id')->references('id')->on('websites');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

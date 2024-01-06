@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTable\TemplateCategoryDataTable;
 use App\DataTable\TemplateDataTable;
+use App\DataTable\TemplateLayoutDataTable;
+use App\DataTable\TemplatePostDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Template\CreateTemplateRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Template;
+use App\Models\Theme;
 use App\Models\WebsiteMeta;
-use App\Repositories\TemplateRepository;
 use App\Repositories\WebsiteRepository;
 use App\Services\Admin\TemplateService;
 use Illuminate\Support\Arr;
@@ -25,6 +28,21 @@ class TemplateController extends Controller
     }
 
     public function list(TemplateDataTable $dataTable)
+    {
+        return responseJsonData(true, $dataTable->toArray());
+    }
+
+    public function listLayout(TemplateLayoutDataTable $dataTable)
+    {
+        return responseJsonData(true, $dataTable->toArray());
+    }
+
+    public function listPost(TemplatePostDataTable $dataTable)
+    {
+        return responseJsonData(true, $dataTable->toArray());
+    }
+
+    public function listCategory(TemplateCategoryDataTable $dataTable)
     {
         return responseJsonData(true, $dataTable->toArray());
     }
@@ -108,5 +126,15 @@ class TemplateController extends Controller
     public function blocks()
     {
         return responseJsonData(true, ['templates' => config('templates')]);
+    }
+
+    public function settings()
+    {
+        return responseJsonData(true, ['fields' => [], 'values' => []]);
+    }
+
+    public function themes()
+    {
+        return responseJsonData(true, ['list' => Theme::all(['id', 'name'])]);
     }
 }

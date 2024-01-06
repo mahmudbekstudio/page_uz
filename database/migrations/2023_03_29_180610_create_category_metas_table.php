@@ -15,15 +15,20 @@ return new class extends Migration
     {
         Schema::create('category_metas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->default(0)->index('user_id');
-            $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
-            $table->unsignedBigInteger('category_id')->default(0)->index('category_id');
+            $table->unsignedBigInteger('user_id')->default(0);
+            $table->unsignedBigInteger('website_id')->default(0);
+            $table->unsignedBigInteger('category_id')->default(0);
             $table->string('meta_format', 100)->default(\App\Helpers\DataFormat::getDefault());
-            $table->string('meta_key')->index('meta_key');
+            $table->string('meta_key');
             $table->longText('meta_value');
-            //$table->string('lang', 2)->default('')->index('lang');
+            //$table->string('lang', 2)->default('');
             $table->timestamps();
 
+            $table->index('user_id');
+            $table->index('website_id');
+            $table->index('category_id');
+            $table->index('meta_key');
+            //$table->index('lang');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('website_id')->references('id')->on('websites');
             $table->foreign('user_id')->references('id')->on('users');

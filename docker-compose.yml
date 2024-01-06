@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+    app:
+        build:
+            context: ./docker-infrastructure/php
+            dockerfile: Dockerfile
+            args:
+                - UID=${UID:-1000}
+        image: app
+        container_name: app
+        links:
+            - mariadb
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+                - ./:/var/www/html
+        networks:
+            - app-net
+            - db-net
+    node:
+        image: 'node:20.10-alpine'
+        container_name: node
+        working_dir: /var/www/html
+        volumes:
+            - ./:/var/www/html
+        tty: true
+        expose:
+            - 8080
+        ports:
+            - "8080:8080"
+        links:
+            - app
+        networks:
+            - app-net
+    mariadb:
+        image: 'mariadb:11.2.2'
+        container_name: mariadb
+        restart: always
+        environment:
+            MYSQL_ROOT_HOST: '${DB_HOST}'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME:-root}'
+            MYSQL_PASSWORD: '${DB_PASSWORD:-password}'
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-password}'
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./storage/mysql-data:/var/lib/mysql
+        networks:
+            - db-net
+
+networks:
+    app-net:
+        driver: bridge
+    db-net:
+        driver: bridge

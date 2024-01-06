@@ -15,17 +15,24 @@ return new class extends Migration
     {
         Schema::create('features', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->default(0)->index('user_id');
-            $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
+            $table->unsignedBigInteger('user_id')->default(0);
+            $table->unsignedBigInteger('website_id')->default(0);
+            $table->unsignedBigInteger('theme_id')->default(0);
             $table->string('name');
-            $table->string('feature_type')->index('feature_type');
-            $table->unsignedBigInteger('type_id')->nullable()->default(0)->index('type_id');
+            $table->string('feature_type');
+            $table->unsignedBigInteger('type_id')->nullable()->default(0);
             $table->json('content');
             $table->json('params');
             $table->timestamps();
 
+            $table->index('user_id');
+            $table->index('website_id');
+            $table->index('theme_id');
+            $table->index('feature_type');
+            $table->index('type_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
+            $table->foreign('theme_id')->references('id')->on('themes')->onDelete('cascade');
         });
     }
 

@@ -94,7 +94,11 @@ class SettingController extends Controller
                 $typePostfix =
                     $type['type'] === Type::TYPE_POST ?
                         WebsiteMeta::POST_TEMPLATE_POSTFIX :
-                        WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX;
+                        ($type['type'] === Type::TYPE_CATEGORY ?
+                            WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX :
+                            ($type['type'] === Type::TYPE_SETTING ?
+                                WebsiteMeta::SETTING_TEMPLATE_POSTFIX :
+                                WebsiteMeta::BLOCK_TEMPLATE_POSTFIX));
                 $typeKey = $type['name'] . $typePostfix;
 
                 if (!isset($this->metaList[$typeKey])) {

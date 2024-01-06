@@ -1,12 +1,19 @@
 import route from "../../../plugin/route";
 import http from '../../../service/http';
+import BaseService from "../../../service/BaseService";
 import api from './api';
 import app from "../../../service/app";
 import logger from "../../../service/logger";
 import i18n from "../../../plugin/i18n";
 import typeApi from '../../type/form/api';
 
-export default class Service {
+export default class Service extends BaseService {
+    settings (successCallback, errorCallback) {
+        this.request(api.settings, successCallback, errorCallback);
+    }
+    loadThemes (successCallback, errorCallback) {
+        this.request(api.themes, successCallback, errorCallback);
+    }
     blocks(successCallback, errorCallback) {
         this.loading(true);
         http(api.blocks)

@@ -15,13 +15,16 @@ return new class extends Migration
     {
         Schema::create('type_route_structures', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
-            $table->unsignedBigInteger('type_id')->index('type_id');
-            $table->unsignedBigInteger('parent_id')->index('parent_id');
+            $table->unsignedBigInteger('website_id')->default(0);
+            $table->unsignedBigInteger('type_id');
+            $table->unsignedBigInteger('parent_id');
             $table->json('params');
             $table->json('structure');
             $table->timestamps();
 
+            $table->index('website_id');
+            $table->index('type_id');
+            $table->index('parent_id');
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('types');
         });

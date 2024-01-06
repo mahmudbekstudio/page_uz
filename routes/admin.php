@@ -91,12 +91,17 @@ Route::group(['middleware' => ['auth:api']], function() {
             });
 
             Route::group(['prefix' => 'template', 'as' => 'template.'], function () {
+                Route::get('list-layout', [TemplateController::class, 'listLayout'])->name('listLayout');
+                Route::get('list-post', [TemplateController::class, 'listPost'])->name('listPost');
+                Route::get('list-category', [TemplateController::class, 'listCategory'])->name('listCategory');
                 Route::get('list', [TemplateController::class, 'list'])->name('list');
                 Route::get('get/{template}', [TemplateController::class, 'get'])->name('get');
                 Route::get('get-by-type/{type}', [TemplateController::class, 'getByType'])->name('get-by-type');
                 Route::post('create', [TemplateController::class, 'create'])->name('create');
                 Route::put('edit/{template}', [TemplateController::class, 'edit'])->name('edit');
                 Route::delete('delete/{template}', [TemplateController::class, 'delete'])->name('delete');
+                Route::get('settings', [TemplateController::class, 'settings'])->name('settings');
+                Route::get('themes', [TemplateController::class, 'themes'])->name('themes');
 
                 Route::get('blocks', [TemplateController::class, 'blocks'])->name('blocks');
             });

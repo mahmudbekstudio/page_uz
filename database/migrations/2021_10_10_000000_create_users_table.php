@@ -15,14 +15,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('website_id')->index('website_id');
-            $table->unsignedTinyInteger('status')->default(\App\Models\User::STATUS_NOT_CONFIRMED)->index('status');
-            $table->string('email')->index('email');
+            $table->unsignedBigInteger('website_id');
+            $table->unsignedTinyInteger('status')->default(\App\Models\User::STATUS_NOT_CONFIRMED);
+            $table->string('email');
             $table->string('password');
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
 
+            $table->index('website_id');
+            $table->index('status');
+            $table->index('email');
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
         });
     }

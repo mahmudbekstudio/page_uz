@@ -15,12 +15,16 @@ return new class extends Migration
     {
         Schema::create('routes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('website_id')->default(0)->index('website_id');
-            $table->string('name')->index('name');
-            $table->unsignedBigInteger('parent_id')->default(0)->index('parent_id');
-            $table->unsignedBigInteger('type_id')->default(0)->index('type_id');
+            $table->unsignedBigInteger('website_id')->default(0);
+            $table->string('name');
+            $table->unsignedBigInteger('parent_id')->default(0);
+            $table->unsignedBigInteger('type_id')->default(0);
             $table->timestamps();
 
+            $table->index('website_id');
+            $table->index('name');
+            $table->index('parent_id');
+            $table->index('type_id');
             $table->foreign('website_id')->references('id')->on('websites');
             $table->foreign('type_id')->references('id')->on('types');
         });
