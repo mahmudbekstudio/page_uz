@@ -60,7 +60,10 @@
                     cols="12"
                     sm="9"
                 >
-                    <feature-render :doms-list="domsList" />
+                    <feature-render
+                        :doms-list="domsList"
+                        :theme-config="$options.service.themeConfig"
+                    />
                 </v-col>
             </v-row>
         </v-container>
@@ -150,6 +153,7 @@ export default {
         }
     },
     created() {
+        //this.$options.service.getThemeConfig();
         if (this.id) {
             // TODO: load values
             this.initForm();

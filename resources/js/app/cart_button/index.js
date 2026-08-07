@@ -1,4 +1,4 @@
-(function() {
+$(function() {
     const button = $('.field-cart_button');
 
     button.popover({
@@ -32,4 +32,4 @@
         }
         return false;
     });
-})();
+});

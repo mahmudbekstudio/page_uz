@@ -31,9 +31,8 @@ return new class extends Migration
             $table->index('parent_id');
             $table->index('type_id');
             $table->index('url');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
-            $table->foreign('type_id')->references('id')->on('types');
+            $table->foreign('website_id')->references('id')->on('websites');
+            $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
         });
     }
 

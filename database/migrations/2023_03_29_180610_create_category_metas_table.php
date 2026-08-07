@@ -31,7 +31,6 @@ return new class extends Migration
             //$table->index('lang');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('website_id')->references('id')->on('websites');
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

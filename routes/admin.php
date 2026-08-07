@@ -101,9 +101,10 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::put('edit/{template}', [TemplateController::class, 'edit'])->name('edit');
                 Route::delete('delete/{template}', [TemplateController::class, 'delete'])->name('delete');
                 Route::get('settings', [TemplateController::class, 'settings'])->name('settings');
-                Route::get('themes', [TemplateController::class, 'themes'])->name('themes');
 
                 Route::get('blocks', [TemplateController::class, 'blocks'])->name('blocks');
+
+                Route::get('theme-config', [TemplateController::class, 'themeConfig'])->name('theme-config');
             });
 
             Route::group(['prefix' => 'feature', 'as' => 'feature.'], function () {

@@ -6,34 +6,21 @@ import app from "../../../service/app";
 import logger from "../../../service/logger";
 import i18n from "../../../plugin/i18n";
 import typeApi from '../../type/form/api';
+import store from './store';
 
 export default class Service extends BaseService {
+    //themeConfig = null;
     settings (successCallback, errorCallback) {
-        this.request(api.settings, successCallback, errorCallback);
+        this.callback().request(api.settings, successCallback, errorCallback);
     }
-    loadThemes (successCallback, errorCallback) {
-        this.request(api.themes, successCallback, errorCallback);
-    }
+/*    getThemeConfig(successCallback, errorCallback) {
+        this.callback(this.selectedTheme).request(api.themeConfig, response => {
+            this.themeConfig = response.data.theme_config;
+            return typeof successCallback === 'function' ? successCallback(response) : null;
+        }, errorCallback);
+    }*/
     blocks(successCallback, errorCallback) {
-        this.loading(true);
-        http(api.blocks)
-            .send()
-            .then(response => {
-                if (typeof successCallback === 'function') {
-                    successCallback(response.data);
-                }
-            })
-            .catch(error => {
-                if (typeof errorCallback === 'function') {
-                    errorCallback(error);
-                } else {
-                    logger.error('template blocks', error);
-                    app.errors(error);
-                }
-            })
-            .then(() => {
-                this.loading(false);
-            })
+        this.callback().request(api.blocks, successCallback, errorCallback);
     }
     get(successCallback, errorCallback, id = null) {
         this.loading(true);
@@ -105,26 +92,7 @@ export default class Service extends BaseService {
     }
 
     getAllLayouts(successCallback, errorCallback) {
-        this.loading(true);
-        http(api.getByType)
-            .callback('layout')
-            .send()
-            .then(response => {
-                if (typeof successCallback === 'function') {
-                    successCallback(response.data);
-                }
-            })
-            .catch(error => {
-                if (typeof errorCallback === 'function') {
-                    errorCallback(error);
-                } else {
-                    logger.error('template getAllLayouts', error);
-                    app.errors(error);
-                }
-            })
-            .then(() => {
-                this.loading(false);
-            });
+        this.callback('layout').request(api.getByType, successCallback, errorCallback);
     }
 
     submit(form, successCallback, errorCallback) {

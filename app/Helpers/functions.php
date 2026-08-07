@@ -16,6 +16,8 @@ use App\Repositories\CategoryRepository;
 use App\Helpers\GlobalVariable;
 use App\Models\Template;
 use App\Models\Type;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Http\UploadedFile;
 
 if (! function_exists('route')) {
     /**
@@ -46,25 +48,32 @@ if (! function_exists('update_dotenv')) {
      */
     function update_dotenv(string $filePath, array $values)
     {
+        $values = array_change_key_case($values, CASE_UPPER);
         $updated = [];
         $lines = file($filePath);
         for($i = 0; $i < count($lines); $i++) {
+            $lines[$i] = trim($lines[$i]);
+
             $pos = strpos($lines[$i], '=');
             $varName = substr($lines[$i], 0, $pos);
 
             if (isset($values[$varName])) {
-                $lines[$i] = $varName . '=' . $values[$varName];
+                $lines[$i] = $varName . '=' . '"' . str_replace('"', '\"', $values[$varName]) . '"';
                 $updated[] = $varName;
             }
         }
 
         foreach($values as $key => $val) {
             if(!in_array($key, $updated)) {
-                $lines[] = $key . '=' . $val;
+                if ($key) {
+                    $lines[] = $key . '=' . '"' . str_replace('"', '\"', $val) . '"';
+                }
             }
         }
 
-        file_put_contents($filePath, implode("", $lines));
+        file_put_contents($filePath, implode("\n", array_filter($lines, function ($item) {
+            return !!$item;
+        })));
     }
 }
 
@@ -290,7 +299,7 @@ if (! function_exists('typeNavigation')) {
                     'active' => ['category.edit', 'category.create'],
                 ];
             } elseif ($item->type === Type::TYPE_BLOCK) {
-                $blocks[$item->id] = [
+                $blocks[] = [
                     'text' => $item->title,
                     'icon' => 'mdi-view-quilt',
                     'route' => ['name' => 'block.list', 'params' => ['typeId' => $item->id]],
@@ -501,7 +510,8 @@ if (! function_exists('viewTemplate')) {
         $variables->set('website-metas', $websiteMetas);
         $variables->set('fields', $fields);
         $variables->set('pageTemplatePath', $templatePath);
-
+//dd($layoutTemplatePath);
+        \Debugbar::disable();
         include $layoutTemplatePath;
     }
 }
@@ -708,5 +718,33 @@ if (! function_exists('convertStringToRouteName')) {
         }
 
         return strtolower($result);
+    }
+}
+
+if (! function_exists('getAllTranslation')) {
+    function getAllTranslation(string $key)
+    {
+        $list = [];
+        $localList = config('app.locale_list');
+
+        foreach ($localList as $langCode) {
+            $list[$langCode] = trans($key, [], $langCode);
+        }
+
+        return $list;
+    }
+}
+
+if (! function_exists('pathToUploadedFile')) {
+    function pathToUploadedFile( $path, $test = true ) {
+        $filesystem = new Filesystem;
+
+        $name = $filesystem->name( $path );
+        $extension = $filesystem->extension( $path );
+        $originalName = $name . '.' . $extension;
+        $mimeType = $filesystem->mimeType( $path );
+        $error = null;
+
+        return new UploadedFile( $path, $originalName, $mimeType, $error, $test );
     }
 }

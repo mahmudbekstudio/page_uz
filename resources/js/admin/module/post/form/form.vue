@@ -1,12 +1,15 @@
 <template>
     <page-box
         class="module-post-form"
+        :header-title="headerTitle"
         :actions="actions"
     >
         <form-component
             v-if="formValue"
             :value="formValue"
             @validate="formValidate = $event"
+            @input="formInput($event)"
+            @fieldChange="fieldChanged($event)"
             :disabled="loading"
         ></form-component>
     </page-box>
@@ -35,7 +38,11 @@ export default {
     computed: {
         ...mapGetters({
             loading: 'view/loading',
+            activeNavigation: 'view/activeNavigation',
         }),
+        headerTitle () {
+            return null;
+        },
     },
     watch: {
         '$options.service.typeId'() {
@@ -84,8 +91,10 @@ export default {
         },
         save() {
             if (this.formValidate()) {
+                const values = this.formValue.getFieldValues();
+                this.beforeSave(values);
                 this.$options.service.submit(
-                    this.formValue.getFieldValues(),
+                    values,
                     response => {
                         if (this.$options.service.isEdit) {
                             app.successMessage(this.$t('words.updated'));
@@ -93,12 +102,26 @@ export default {
                             app.successMessage(this.$t('words.created'));
                             this.back(response);
                         }
+
+                        this.afterSave(response);
                     }
                 );
             }
         },
         back(response = {}) {
             this.$router.push({name: 'post.list', params: {typeId: this.$options.service.typeId}});
+        },
+        formInput(event) {
+            //
+        },
+        fieldChanged(event) {
+            //
+        },
+        beforeSave(values) {
+            //
+        },
+        afterSave(response) {
+            //
         }
     },
     components: {

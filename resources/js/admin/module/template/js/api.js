@@ -45,10 +45,10 @@ const api = {
         ...route.admin('template.settings'),
         token: true
     },
-    themes: {
-        ...route.admin('template.themes'),
+    themeConfig: {
+        ...route.admin('template.theme-config'),
         token: true
-    }
+    },
 };
 
 export default api;

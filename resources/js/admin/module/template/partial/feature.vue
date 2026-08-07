@@ -4,9 +4,9 @@
             <template v-slot:filter="props">
                 <v-toolbar
                     flat
-                    class="data-table-header"
+                    class="toolbar-header"
                 >
-                    <v-toolbar-title>Feature</v-toolbar-title>
+                    <v-toolbar-title>{{ $t('words.features') }}</v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
@@ -46,10 +46,12 @@ export default {
     },
     methods: {
         create () {
+
+            //this.$router.push({name: 'template.create', params: {type: 'feature'}});
             this.$router.push({name: 'template.create-feature'});
         },
         gotoList() {
-            this.$router.push({name: 'template.tab', params: {tab: 'feature'}});
+            this.$router.push({name: 'template.tab', params: {tab: 'features'}});
         },
     },
 }

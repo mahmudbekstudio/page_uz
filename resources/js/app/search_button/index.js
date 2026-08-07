@@ -1,5 +1,5 @@
 import searchClass from '../../admin/component/website-render/fields/class/search';
-(function() {
+$(function() {
     const button = $('.field-search_button');
 
     button.popover({
@@ -41,4 +41,4 @@ import searchClass from '../../admin/component/website-render/fields/class/searc
         }
         return false;
     });
-})();
+});

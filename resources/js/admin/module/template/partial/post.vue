@@ -204,6 +204,7 @@ export default {
             this.typeFieldLoaded = true;
             this.typeField.value = this.templateValue.type_id;
         });
+        //this.$options.service.getThemeConfig();
     },
     computed: {
         ...mapGetters({
@@ -233,11 +234,13 @@ export default {
             this.formValidate = e;
         },
         renderWebsite () {
+            this.websiteHtmlObject.setThemeConfig(this.$options.service.themeConfig);
             this.websiteHtmlDocument = this.websiteHtmlObject.htmlDocument(false, this.website.metas.languages_list[this.langToggle], ['content']);
         },
         emit () {
             const values = this.templateForm.getFieldValues();
-            const websiteHtmlObj = new WebsiteHtml(this.websiteHtmlObject?.blocks)
+            const websiteHtmlObj = new WebsiteHtml(this.websiteHtmlObject?.blocks);
+            websiteHtmlObj.setThemeConfig(this.$options.service.themeConfig);
             websiteHtmlObj.htmlDocument();
             const contentHtml = websiteHtmlObj.getContentBlockStructureHtml();
             const styles = websiteHtmlObj.contentStructureStyles;

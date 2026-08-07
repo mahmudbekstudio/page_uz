@@ -22,7 +22,6 @@
     import app from "../../../service/app";
     import * as constants from '../../../constants';
     import {Form as FormClass} from "../../../component/form/classes/form";
-    import timezones from 'Foundation/static/tomezones.js';
 
     export default {
         service: new Service(),
@@ -85,6 +84,7 @@
 
                     this.$store.dispatch('view/changeWebsite', settings.website);
                     this.$store.dispatch('view/changeWebsiteTitle', settings.website.metas.name);
+                    app.openMessage(this.$t('words.saved'), constants.SNACKBAR_COLORS.success);
                 }, () => {
                     app.openMessage(this.$t('words.error'), constants.SNACKBAR_COLORS.error);
                 });

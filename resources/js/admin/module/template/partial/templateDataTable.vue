@@ -10,7 +10,7 @@
         <template v-slot:filter="props">
             <v-toolbar
                 flat
-                class="data-table-header"
+                class="toolbar-header"
             >
                 <v-toolbar-title>{{ title }}</v-toolbar-title>
                 <v-divider

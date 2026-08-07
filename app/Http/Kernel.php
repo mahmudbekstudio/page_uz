@@ -29,7 +29,7 @@ class Kernel extends HttpKernel
                 $domainId = $result['domain_id'] ?: $result['id'];
 
                 if ($result['type'] == Website::TYPE_MAIN) {
-                    $_ENV['current-website'] = $result;
+                    $_ENV['current-website'] = json_encode($result);
                     $this->initDotEnv($app, $domainId);
                 } elseif(in_array($result['type'], [Website::TYPE_REDIRECT, Website::TYPE_ALIAS])) {
                     $websiteResult = $connection
@@ -44,7 +44,7 @@ class Kernel extends HttpKernel
                         }
 
                         $result['domain'] = $websiteResult[0]['domain'];
-                        $_ENV['current-website'] = $result;
+                        $_ENV['current-website'] = json_encode($result);
                         $this->initDotEnv($app, $domainId);
                     } else {
                         errorPageNotFound();

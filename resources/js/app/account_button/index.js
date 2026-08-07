@@ -1,4 +1,4 @@
-(function() {
+$(function() {
     const button = $('.field-account_button');
 
     function loginForm() {
@@ -71,4 +71,4 @@
         }
         return false;
     });
-})();
+});

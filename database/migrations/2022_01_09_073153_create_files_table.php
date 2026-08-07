@@ -31,8 +31,7 @@ return new class extends Migration
             $table->index('extension');
             $table->index('size');
             $table->index('is_local');
-            $table->foreign('website_id')->references('id')->on('websites');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
         });
     }
 

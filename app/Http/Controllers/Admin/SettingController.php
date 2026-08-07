@@ -31,19 +31,19 @@ class SettingController extends Controller
         'favicon' => DataFormat::FORMAT_ARRAY,
         //'copyright' => DataFormat::FORMAT_STRING,
 
-        'timezone' => DataFormat::FORMAT_STRING,
+        /*'timezone' => DataFormat::FORMAT_STRING,
         'date_format' => DataFormat::FORMAT_STRING,
         'time_format' => DataFormat::FORMAT_STRING,
-        'items_per_page' => DataFormat::FORMAT_INT,
+        'items_per_page' => DataFormat::FORMAT_INT,*/
 
         'seoDescription' => DataFormat::FORMAT_STRING,
         'indexing' => DataFormat::FORMAT_BOOL,
         'seoKeyword' => DataFormat::FORMAT_STRING,
-        'meta_tags' => DataFormat::FORMAT_STRING,
+        //'meta_tags' => DataFormat::FORMAT_STRING,
 
-        'image_sizes' => DataFormat::FORMAT_ARRAY,
+        /*'image_sizes' => DataFormat::FORMAT_ARRAY,
 
-        'social_networks' => DataFormat::FORMAT_ARRAY,
+        'social_networks' => DataFormat::FORMAT_ARRAY,*/
     ];
 
     public function get()
@@ -56,6 +56,7 @@ class SettingController extends Controller
         $metas = Arr::only(WebsiteRepository::getInstance()->getMetas(), array_keys($this->list));
         $data = $this->getSettings(
             $this->getMainFields($metas),
+            $this->getThemeFields($metas),
             $this->getSeoFields($metas),
             $this->getAdditionalFields($metas),
             $this->getImageFields($metas),
@@ -132,7 +133,7 @@ class SettingController extends Controller
         return responseJsonData(true, $this->getData(), ['website' => websiteData()]);
     }
 
-    private function getSettings($main, $seo, $additional, $image, $social): array
+    private function getSettings($main, $theme, $seo, $additional, $image, $social): array
     {
         return [
             [
@@ -140,13 +141,17 @@ class SettingController extends Controller
                 'children' => $main,
             ],
             [
+                'title' => 'words.theme',
+                'children' => $theme,
+            ],
+            [
                 'title' => 'words.seo',
                 'children' => $seo,
             ],
-            [
+            /*[
                 'title' => 'words.additional',
                 'children' => $additional,
-            ],
+            ],*/
             /*[
                 'title' => 'words.image',
                 'children' => $image,
@@ -158,6 +163,115 @@ class SettingController extends Controller
         ];
     }
 
+    private function getThemeFields($metas)
+    {
+        $bootstrap = config('app.theme.components.bootstrap');
+        $bootstrapVersions = [];
+        foreach ($bootstrap as $key => $value) {
+            $bootstrapVersions[$key] = $key . '.' . $value;
+        }
+
+        $swiperJs = config('app.theme.components.swiper_js');
+        $swiperJsVersions = [];
+        foreach ($swiperJs as $key => $value) {
+            $swiperJsVersions[$key] = $key . '.' . $value;
+        }
+
+        $result = [
+            [
+                "type" => "select",
+                "name" => "theme_component_bootstrap",
+                "value" => Arr::get($metas, 'theme_component_bootstrap', array_keys($bootstrap)[0]),
+                "params" => [
+                    "options" => $bootstrapVersions,
+                    "valueType" => DataFormat::FORMAT_STRING,
+                    "label" => "words.bootstrap"
+                ],
+            ],
+            [
+                "type" => "select",
+                "name" => "theme_component_swiper_js",
+                "value" => Arr::get($metas, 'theme_component_swiper_js', array_keys($swiperJs)[0]),
+                "params" => [
+                    "options" => $swiperJsVersions,
+                    "valueType" => DataFormat::FORMAT_STRING,
+                    "label" => "words.swiper_js"
+                ],
+            ],
+        ];
+
+        /**
+         * @var TemplateService
+         */
+        $templateService = app(TemplateService::class);
+        //'post_template',
+        //'category_template',
+        $postTemplates = [];
+        $categoryTemplates = [];
+
+        foreach ($templateService->getByType(Template::TYPE_POST) as $item) {
+            $postTemplates[$item->id] = $item->name;
+        }
+
+        foreach ($templateService->getByType(Template::TYPE_CATEGORY) as $item) {
+            $categoryTemplates[$item->id] = $item->name;
+        }
+
+        foreach ($this->list as $key => $item) {
+            if (str_ends_with($key, WebsiteMeta::POST_TEMPLATE_POSTFIX)) {
+                $name = substr($key, 0, strlen($key) - strlen(WebsiteMeta::POST_TEMPLATE_POSTFIX));
+                $activeType = $this->getActiveType($name);
+
+                if (gettype($activeType['title']) === 'string') {
+                    $activeType['title'] .= ' ' . trans('words.template');
+                } else {
+                    foreach ($activeType['title'] as $lang => $value) {
+                        $activeType['title'][$lang] = $value . ' ' . trans('words.template', [], $lang);
+                    }
+                }
+
+                $result[] = [
+                    "type" => "select",
+                    "name" => $key,
+                    "value" => Arr::get($metas, $key, 0),
+                    "params" => [
+                        "options" => $postTemplates,
+                        "multiple" => false,
+                        "valueType" => DataFormat::FORMAT_ARRAY,
+                        "label" => $activeType['title']
+                    ],
+                ];
+            }
+
+            if (str_ends_with($key, WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX)) {
+                $name = substr($key, 0, strlen($key) - strlen(WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX));
+                $activeType = $this->getActiveType($name);
+
+                if (gettype($activeType['title']) === 'string') {
+                    $activeType['title'] .= ' ' . trans('words.template');
+                } else {
+                    foreach ($activeType['title'] as $lang => $value) {
+                        $activeType['title'][$lang] = $value . ' ' . trans('words.template', [], $lang);
+                    }
+                }
+
+                $result[] = [
+                    "type" => "select",
+                    "name" => $key,
+                    "value" => Arr::get($metas, $key, 0),
+                    "params" => [
+                        "options" => $categoryTemplates,
+                        "multiple" => false,
+                        "valueType" => DataFormat::FORMAT_ARRAY,
+                        "label" => $activeType['title']
+                    ],
+                ];
+            }
+        }
+
+        return $result;
+    }
+
     private function getMainFields($metas)
     {
         $languages = [];
@@ -166,7 +280,7 @@ class SettingController extends Controller
             $languages[$val] = 'words.languages_list.' . $val;
         }
 
-        $pageType = app(TypeRepository::class)->getByName(config('app.main_page.name'));
+        $pageType = app(TypeRepository::class)->getByName(config('app.main_page_type'));
         $pages = [];
         app(PostRepository::class)->getActiveList($pageType->id)->each(function ($item) use (&$pages) {
             $pages[$item['id']] = $item['name'];
@@ -291,78 +405,7 @@ class SettingController extends Controller
 
     private function getAdditionalFields($metas): array
     {
-        /**
-         * @var TemplateService
-         */
-        $templateService = app(TemplateService::class);
-        //'post_template',
-        //'category_template',
-        $postTemplates = [];
-        $categoryTemplates = [];
-
-        foreach ($templateService->getByType(Template::TYPE_POST) as $item) {
-            $postTemplates[$item->id] = $item->name;
-        }
-
-        foreach ($templateService->getByType(Template::TYPE_CATEGORY) as $item) {
-            $categoryTemplates[$item->id] = $item->name;
-        }
-
-        $result = [];
-
-        foreach ($this->list as $key => $item) {
-            if (str_ends_with($key, WebsiteMeta::POST_TEMPLATE_POSTFIX)) {
-                $name = substr($key, 0, strlen($key) - strlen(WebsiteMeta::POST_TEMPLATE_POSTFIX));
-                $activeType = $this->getActiveType($name);
-
-                if (gettype($activeType['title']) === 'string') {
-                    $activeType['title'] .= ' ' . trans('words.template');
-                } else {
-                    foreach ($activeType['title'] as $lang => $value) {
-                        $activeType['title'][$lang] = $value . ' ' . trans('words.template', [], $lang);
-                    }
-                }
-
-                $result[] = [
-                    "type" => "select",
-                    "name" => $key,
-                    "value" => Arr::get($metas, $key, 0),
-                    "params" => [
-                        "options" => $postTemplates,
-                        "multiple" => false,
-                        "valueType" => DataFormat::FORMAT_ARRAY,
-                        "label" => $activeType['title']
-                    ],
-                ];
-            }
-
-            if (str_ends_with($key, WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX)) {
-                $name = substr($key, 0, strlen($key) - strlen(WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX));
-                $activeType = $this->getActiveType($name);
-
-                if (gettype($activeType['title']) === 'string') {
-                    $activeType['title'] .= ' ' . trans('words.template');
-                } else {
-                    foreach ($activeType['title'] as $lang => $value) {
-                        $activeType['title'][$lang] = $value . ' ' . trans('words.template', [], $lang);
-                    }
-                }
-
-                $result[] = [
-                    "type" => "select",
-                    "name" => $key,
-                    "value" => Arr::get($metas, $key, 0),
-                    "params" => [
-                        "options" => $categoryTemplates,
-                        "multiple" => false,
-                        "valueType" => DataFormat::FORMAT_ARRAY,
-                        "label" => $activeType['title']
-                    ],
-                ];
-            }
-        }
-
-        return $result;
+        return [];
     }
 
     private function getSeoFields($metas): array

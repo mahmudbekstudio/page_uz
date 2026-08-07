@@ -68,8 +68,13 @@ class WebsiteRepository extends BaseRepository {
      */
     public function getByDomain(string $domain) {
         if(isset($_ENV['current-website'])) {
-            $website = new Website($_ENV['current-website']);
-            $this->setVar($website->id, $website);
+            $currentWebsite = json_decode($_ENV['current-website'], true);
+            $website = $this->getVar(Arr::get($currentWebsite, 'id', 0));
+
+            if (!$website || $website->domain !== Arr::get($currentWebsite, 'domain', '')) {
+                $website = new Website($currentWebsite);
+                $this->setVar($website->id, $website);
+            }
         }
 
         $website = $this->getVarByField('domain', $domain);

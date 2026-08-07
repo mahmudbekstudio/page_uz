@@ -98,7 +98,7 @@ export class Form {
         for (const tab of this.children) {
             const result = tab.getFieldByName(name);
             if (result) {
-                return true;
+                return result;
             }
         }
 
@@ -223,7 +223,7 @@ export class Tab {
         for (const row of this.children) {
             const result = row.getFieldByName(name);
             if (result) {
-                return true;
+                return result;
             }
         }
 
@@ -311,7 +311,7 @@ export class Row {
         for (const col of this.children) {
             const result = col.getFieldByName(name);
             if (result) {
-                return true;
+                return result;
             }
         }
 

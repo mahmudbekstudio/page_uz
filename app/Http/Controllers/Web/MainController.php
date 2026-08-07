@@ -9,7 +9,6 @@ use App\Repositories\PostRepository;
 use App\Repositories\RouteRepository;
 use App\Repositories\TypeRepository;
 use App\Repositories\WebsiteRepository;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
@@ -73,13 +72,9 @@ class MainController extends Controller
             return goHome($lang);
         }
 
-        if (!in_array($typeName, Type::pageTypes())) {
-            return go404($lang);
-        }
-
         $typeItem = $this->typeRepository->getByName($typeName);
 
-        if (!$typeItem) {
+        if (!$typeItem || !$typeItem->status) {
             return go404($lang);
         }
 

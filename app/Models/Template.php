@@ -14,9 +14,10 @@ class Template extends Model
 {
     use BelongsToWebsite, BelongsToUser, HasFactory, WebsiteAddScopeTrait, UserAddScopeTrait;
 
-    protected $fillable = ['user_id', 'website_id', 'theme_id', 'name', 'type', 'type_id', 'layout_id', 'content', 'params'];
+    protected $fillable = ['user_id', 'website_id', 'name', 'type', 'type_id', 'layout_id', 'content', 'params'];
 
     protected $casts = [
+        'name' => 'array',
         'content' => 'array',
         'params' => 'array',
     ];
@@ -57,10 +58,5 @@ class Template extends Model
     public function typeInstance(): BelongsTo
     {
         return $this->belongsTo(Type::class, 'type_id', 'id');
-    }
-
-    public function theme(): BelongsTo
-    {
-        return $this->belongsTo(Theme::class, 'theme_id', 'id');
     }
 }

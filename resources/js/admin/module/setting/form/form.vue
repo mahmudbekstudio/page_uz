@@ -2,16 +2,22 @@
 import PostForm from '../../post/form/form.vue';
 import route from "../../../plugin/route";
 import {getPageBoxAction} from "../../../helper";
+import {mapGetters} from "vuex";
 
 export default {
     extends: PostForm,
+    computed: {
+        ...mapGetters({
+            viewTitle: "view/title",
+        }),
+        headerTitle () {
+            return this.$t(this.viewTitle) + ': ' + this.$t(this.activeNavigation.text);
+        },
+    },
     methods: {
         init() {
             this.formValue = null;
             this.actions = [];
-            this.actions.push(getPageBoxAction('words.back', '', {color: 'default', disabled: false}, {
-                click: this.back
-            }));
             this.actions.push(getPageBoxAction('words.update', '', {color: 'primary', disabled: false}, {
                 click: this.save
             }));

@@ -2,10 +2,20 @@ import app from "../../../service/app";
 import route from "../../../plugin/route";
 import http from "../../../service/http";
 import api from "./api";
+import templateApi from '../../template/js/api';
 import i18n from "../../../plugin/i18n";
 import logger from "../../../service/logger";
+import store from "../../template/js/store";
+import BaseService from "../../../service/BaseService";
 
-export default class Service {
+export default class Service extends BaseService {
+    //themeConfig = null;
+    /*getThemeConfig(successCallback, errorCallback) {
+        this.callback(this.selectedTheme).request(templateApi.themeConfig, response => {
+            this.themeConfig = response.data.theme_config;
+            return typeof successCallback === 'function' ? successCallback(response) : null;
+        }, errorCallback);
+    }*/
     delete(id, successCallback, errorCallback) {
         this.loading(true);
         http(api.delete)

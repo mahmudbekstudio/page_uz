@@ -3,11 +3,20 @@ import http from "./http";
 import logger from "./logger";
 
 export default class BaseService {
+    callbackObj = [];
+    callback(...args) {
+        this.callbackObj = args;
+        return this;
+    }
     request(api, successCallback, errorCallback, callbackObj = []) {
         this.loading(true);
         let request = http(api);
+        callbackObj = [
+            ...this.callbackObj,
+            ...callbackObj,
+        ];
 
-        if (Array.isArray(callbackObj)) {
+        if (Array.isArray(callbackObj) && callbackObj.length) {
             request = request.callback(...callbackObj);
         }
 

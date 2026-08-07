@@ -688,6 +688,7 @@
             width: 100%;
             .content-type-list {
                 max-height: 385px;
+                min-height: 192px;
                 overflow: auto;
             }
         }

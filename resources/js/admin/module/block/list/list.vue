@@ -2,6 +2,7 @@
 import PostList from '../../post/list/list.vue';
 import app from "../../../service/app";
 import {getPageBoxAction} from "../../../helper";
+import {mapGetters} from "vuex";
 
 export default {
     extends: PostList,
@@ -9,6 +10,14 @@ export default {
         return {
             //
         };
+    },
+    computed: {
+        ...mapGetters({
+            viewTitle: "view/title",
+        }),
+        headerTitle () {
+            return this.$t(this.viewTitle) + ': ' + this.$t(this.activeNavigation.text);
+        },
     },
     methods: {
         init() {

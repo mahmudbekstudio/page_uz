@@ -6,23 +6,21 @@
         </v-tabs>
         <v-tabs-items v-model="tab">
             <v-tab-item>
-                <template-data-table type="layout" title="Layout" route="admin.template.listLayout"/>
+                <template-data-table type="layout" :title="$t('words.layout')" route="admin.template.listLayout"/>
             </v-tab-item>
             <v-tab-item>
-                <template-data-table type="post" title="Post" route="admin.template.listPost"/>
+                <template-data-table type="post" :title="$t('words.post')" route="admin.template.listPost"/>
             </v-tab-item>
             <v-tab-item>
-                <template-data-table type="category" title="Category" route="admin.template.listCategory"/>
+                <template-data-table type="category" :title="$t('words.category')" route="admin.template.listCategory"/>
             </v-tab-item>
             <v-tab-item><feature /></v-tab-item>
-            <v-tab-item eager><setting /></v-tab-item>
         </v-tabs-items>
     </div>
 </template>
 <script>
 import templateDataTable from "./templateDataTable.vue";
 import feature from "./feature.vue";
-import setting from "./setting.vue";
 
 export default {
     data () {
@@ -32,8 +30,7 @@ export default {
                 'layout',
                 'post',
                 'category',
-                'feature',
-                'setting'
+                'features',
             ]
         }
     },
@@ -51,10 +48,12 @@ export default {
 
             if (this.$route.name === 'template.tab') {
                 this.tab = this.tabs.indexOf(tab);
+            } else if (this.$route.name.indexOf('feature') > -1) {
+                this.tab = this.tabs.indexOf('features');
+            }
 
-                if (this.tab === -1) {
-                    this.tab = 0;
-                }
+            if (this.tab === -1) {
+                this.tab = 0;
             }
         }
     },
@@ -63,14 +62,12 @@ export default {
             this.initTab(value);
         },
         '$route.fullPath' (value) {
-            console.log(value, this.tab);
             this.initTab(this.$route.params.tab);
         },
     },
     components: {
         templateDataTable,
         feature,
-        setting,
     }
 }
 </script>

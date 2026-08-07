@@ -7,6 +7,7 @@ const defaultStates = {
     website: null,
     language: null,
     typeNavigation: [],
+    activeNavigation: null,
     drawer: true,
     title: '',
     websiteTitle: '',
@@ -51,6 +52,9 @@ export default {
         },
         changeTypeNavigation(state, val) {
             state.typeNavigation = val;
+        },
+        changeActiveNavigation(state, val) {
+            state.activeNavigation = val;
         },
         changeLayout(state, val) {
             state.layout = (viewSettings.layoutsList.indexOf(val) > -1 ? val : viewSettings.defaultLayout) + 'Layout';
@@ -121,6 +125,9 @@ export default {
         },
         changeTypeNavigation({commit}, val) {
             commit('changeTypeNavigation', val);
+        },
+        changeActiveNavigation({commit}, val) {
+            commit('changeActiveNavigation', val);
         },
         changeLayout({commit}, val) {
             commit('changeLayout', val);
@@ -224,6 +231,9 @@ export default {
         },
         confirm(state) {
             return state.confirm;
+        },
+        activeNavigation(state) {
+            return state.activeNavigation;
         }
     }
 }

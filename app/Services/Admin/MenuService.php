@@ -119,7 +119,6 @@ class MenuService extends BaseService
             }
 
             $categoryItem = $category->only(['id', 'type_id', 'url']);
-            $categoryItem['link'] = '';
             foreach ($category->metas as $meta) {
                 if($meta->meta_key === 'title') {
                     $categoryItem['title'] = $meta->meta_value;

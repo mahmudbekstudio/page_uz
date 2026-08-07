@@ -1,6 +1,7 @@
 <template>
     <page-box
         class="module-post-list"
+        :header-title="headerTitle"
         :actions="actions"
     >
         <data-table
@@ -73,7 +74,11 @@ export default {
         ...mapGetters({
             typeNavigation: "view/typeNavigation",
             website: 'view/website',
+            activeNavigation: 'view/activeNavigation',
         }),
+        headerTitle () {
+            return null;
+        },
         typeId() {
             return parseInt(this.$route.params.typeId);
         },

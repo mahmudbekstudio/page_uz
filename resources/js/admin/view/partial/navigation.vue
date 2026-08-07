@@ -7,10 +7,7 @@
             class="navigation"
     >
         <v-list dense class="primary--text">
-            <v-menu
-                    transition="slide-y-transition"
-                    bottom
-            >
+            <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
                     <v-list-item
                             link
@@ -59,8 +56,8 @@
                     <v-list-item
                             v-for="child in item.children"
                             :key="getKeyByRoute(child.route)"
-                            @click="listItemClick(child.route)"
-                            :class="{'v-list-item--active': (checkForActive(child.route) || isActive(child))}"
+                            @click="listItemClick(child)"
+                            :class="{'v-list-item--active': (checkForActive(child) || isActive(child))}"
                             link
                     >
                         <v-list-item-action v-if="child.icon">
@@ -74,8 +71,8 @@
                 <v-list-item
                         v-else
                         :key="getKeyByRoute(item.route)"
-                        @click="listItemClick(item.route)"
-                        :class="{'v-list-item--active': (checkForActive(item.route) || isActive(item))}"
+                        @click="listItemClick(item)"
+                        :class="{'v-list-item--active': (checkForActive(item) || isActive(item))}"
                         link
                 >
                     <v-list-item-action v-if="item.icon">
@@ -149,7 +146,8 @@
         },
         methods: {
             ...mapActions({
-                updateDrawer: 'view/updateDrawer'
+                updateDrawer: 'view/updateDrawer',
+                changeActiveNavigation: 'view/changeActiveNavigation',
             }),
             childrenExist(list, item) {
                 for (const listElement of list) {
@@ -171,11 +169,17 @@
             },
             isActive(item) {
                 const isActive = item.active && item.active.indexOf(this.$route.name) > -1;
-
-                return (this.$route.name === item.route.name || isActive) &&
+                const result = (this.$route.name === item.route.name || isActive) &&
                     this.isExistEqual(item.route.params, this.$route.params);
+
+                if (result) {
+                    this.changeActiveNavigation(item);
+                }
+
+                return result;
             },
-            listItemClick(route) {
+            listItemClick(item) {
+                const route = item.route;
                 if(this.$route.name !== route.name || !this.isEqual(this.$route.params || {}, route.params || {})) {
                     this.$router.push(route);
                 }
@@ -191,8 +195,15 @@
 
                 return key;
             },
-            checkForActive(route) {
-                return this.$route.name === route.name && this.isEqual(this.$route.params, route.params)
+            checkForActive(item) {
+                const route = item.route;
+                const result = this.$route.name === route.name && this.isEqual(this.$route.params, route.params);
+
+                if (result) {
+                    this.changeActiveNavigation(item);
+                }
+
+                return result;
             },
 
             isEqual(obj1, obj2) {

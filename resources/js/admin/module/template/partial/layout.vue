@@ -208,32 +208,25 @@ export default {
         },
     },
     created() {
-        this.setValue();
+        if (!this.websiteHtmlObject) {
+            this.websiteHtmlObject = new WebsiteHtml();
+        }
         window.iframeClick = e => {
             const id = e.currentTarget.getAttribute('id');
             this.toggleActiveBlock(id);
         };
-        if (this.websiteHtmlObject) {
-            this.$nextTick(() => this.renderWebsite());
-        } else {
-            this.websiteHtmlObject = new WebsiteHtml();
-        }
-
         this.$options.service.blocks(response => {
-            this.websiteRender = new WebsiteRenderClass(response.data.templates);
+            this.websiteRender = new WebsiteRenderClass(response.data.blocks, response.data.theme_config);
 
             if (!(Object.keys(this.value).length && this.value?.content?.length)) {
                 const contentBlock = this.websiteRender.getBlock('content');
                 this.websiteHtmlObject.addBlock(this.websiteRender.getTemplate(contentBlock, contentBlock.samples[0]));
+                //this.websiteHtmlObject.addBlock(contentBlock.samples[0]);
             }
-        });
 
-        this.templateForm = new FormClass();
-        const nameField = this.templateForm.addField({type: 'text'});
-        nameField.setParams('label', 'words.name');
-        nameField.setParams('rules', [validation.required('words.name')]);
-        nameField.name = 'name';
-        nameField.value = this.templateValue.name;
+            this.renderWebsite();
+            this.setValue();
+        });
     },
     methods: {
         openStyleEditForm () {
@@ -243,6 +236,13 @@ export default {
             this.templateValue = value || this.value;
             this.websiteHtmlObject = new WebsiteHtml(this.templateValue.content);
             this.renderWebsite();
+
+            this.templateForm = new FormClass();
+            const nameField = this.templateForm.addField({type: 'text'});
+            nameField.setParams('label', 'words.name');
+            nameField.setParams('rules', [validation.required('words.name')]);
+            nameField.name = 'name';
+            nameField.value = this.templateValue.name;
         },
         toggleActiveBlock(id) {
             const block = this.websiteHtmlObject.getBlockById(id);
@@ -279,6 +279,9 @@ export default {
             this.renderWebsite();
         },
         renderWebsite () {
+            if (!this.websiteHtmlObject.blocks.length) return;
+
+            this.websiteHtmlObject.setThemeConfig(this.websiteRender.themeConfig);
             this.websiteHtmlDocument = this.websiteHtmlObject.htmlDocument(true, this.website.metas.languages_list[this.langToggle]);
             this.templateValue.content = this.websiteHtmlObject.blocks;
             this.templateChanged();
@@ -304,7 +307,7 @@ export default {
         },
         formChanged (e) {
             const values = e.getFieldValues();
-            this.templateValue.name = values.name;
+            this.templateValue.name = typeof values.name !== 'undefined' ? values.name : this.value.name;
         },
         formValidateFunc (e) {
             this.formValidate = e;
@@ -315,7 +318,7 @@ export default {
             for (const block of blocks) {
                 block.isActive = false;
             }
-            const websiteHtmlObj = new WebsiteHtml(blocks);
+            const websiteHtmlObj = new WebsiteHtml(blocks, this.websiteRender.themeConfig);
             websiteHtmlObj.htmlDocument(false, null, null, true);
             const contentHtml = websiteHtmlObj.contentHtml;
             const styles = websiteHtmlObj.structureStyles;
@@ -327,12 +330,14 @@ export default {
         }
     },
     watch: {
-        value (newValue) {
+        value(newValue) {
             this.setValue(newValue);
         },
         'websiteHtmlObject.blocks': {
-            handler() {
-                this.renderWebsite();
+            handler (value) {
+                if (Array.isArray(value) && value.length) {
+                    this.renderWebsite();
+                }
             },
             deep: true
         },

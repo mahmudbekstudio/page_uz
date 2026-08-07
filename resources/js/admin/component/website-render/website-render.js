@@ -4,8 +4,10 @@ import mainConfig from '../../config/main';
 
 export class WebsiteRender {
     templateConfig = null;
-    constructor(templateConfig) {
+    themeConfig = null;
+    constructor(templateConfig, themeConfig = null) {
         this.templateConfig = templateConfig;
+        this.themeConfig = themeConfig;
     }
 
     get styleFiles() {
@@ -105,32 +107,17 @@ export class WebsiteHtml {
     idIncrement = 0;
     isSample = false;
     contentHtml = '';
+    themeConfig = null;
 
-    constructor(blocks = null) {
-        if (!blocks) {
-            return false;
+    constructor(blocks = null, themeConfig = null) {
+        this.setThemeConfig(themeConfig);
+
+        if (Array.isArray(blocks)) {
+            this.blocks = blocks.map(block => this.initBlock(block));
         }
-
-        for (const blocksKey in blocks) {
-            this.idIncrement++;
-            blocks[blocksKey].id = blocks[blocksKey].type + '-' + this.idIncrement;
-            blocks[blocksKey].structure.attributes.id = blocks[blocksKey].id;
-
-            if(!blocks[blocksKey].title) {
-                blocks[blocksKey].title = blocks[blocksKey].type;
-            }
-
-            blocks[blocksKey].customStyles = blocks[blocksKey].customStyles || {'': []};
-        }
-
-        this.blocks = blocks;
     }
 
-    setSample(isSample) {
-        this.isSample = isSample;
-    }
-
-    addBlock(block, innerList = null) {
+    initBlock(block) {
         this.idIncrement++;
         block.id = block.type + '-' + this.idIncrement;
         block.structure.attributes.id = block.id;
@@ -139,13 +126,18 @@ export class WebsiteHtml {
             block.title = block.type;
         }
 
-        let list = this.blocks;
+        block.customStyles = block.customStyles || {'': []};
 
-        if (innerList/* && list !== innerList*/) {
-            list = innerList;
-        }/* else {
-            this.blocks.push(block);
-        }*/
+        return block;
+    }
+
+    setSample(isSample) {
+        this.isSample = isSample;
+    }
+
+    addBlock(block, innerList = null) {
+        block = this.initBlock(block);
+        const list = innerList ? innerList : this.blocks;
 
         list.push(block);
     }
@@ -209,7 +201,7 @@ export class WebsiteHtml {
                     }
 
                     if (selectorStyle.endsWith(';')) {
-                        selectorStyle = selectorStyle.substring(0, selectorStyle.length - 2);
+                        selectorStyle = selectorStyle.substring(0, selectorStyle.length - 1);
                     }
 
                     styleItem += selectorStyle + ' !important;';
@@ -275,10 +267,10 @@ export class WebsiteHtml {
                 for (const blockChild of block.children) {
                     if (blockChild?.children) {
                         for (const blockChild2 of blockChild.children) {
-                            if (blockChild2.styleFiles) {
-                                for (const styleFile of blockChild2.styleFiles) {
-                                    if (files.indexOf(styleFile) === -1) {
-                                        files.push(styleFile);
+                            if (blockChild2.scriptFiles) {
+                                for (const scriptFile of blockChild2.scriptFiles) {
+                                    if (files.indexOf(scriptFile) === -1) {
+                                        files.push(scriptFile);
                                     }
                                 }
                             }
@@ -421,7 +413,16 @@ export class WebsiteHtml {
         return null;
     }
 
-    htmlDocument(withBorder = false, lang = null, greyTypeExcept = null, withAllTranslations = false) {
+    setThemeConfig(config) {
+        this.themeConfig = config;
+    }
+
+    htmlDocument(
+        withBorder = false,
+        lang = null,
+        greyTypeExcept = null,
+        withAllTranslations = false
+    ) {
         this.fieldsStyles = {};
         this.contentHtml = '';
 
@@ -444,23 +445,13 @@ export class WebsiteHtml {
         html.push('<head>');
         html.push('<meta charset="utf-8">');
         html.push('<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">');
-        for (const css of mainConfig.app.website.css) {
-            let cssTag = '<link rel="stylesheet" href="' + css.href + '"';
 
-            if (css.integrity) {
-                cssTag += ' integrity="' + css.integrity + '"';
+        if (this.themeConfig && this.themeConfig.css) {
+            for (const css of this.themeConfig.css) {
+                html.push('<link rel="stylesheet" href="' + css + '">');
             }
-
-            if (css.crossorigin) {
-                cssTag += ' crossorigin="' + css.crossorigin + '"';
-            }
-
-            cssTag += '>';
-
-            html.push(cssTag);
         }
-        //html.push('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">');
-        //html.push('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">');
+
         for (const styleFile of this.styleFiles) {
             html.push('<link rel="stylesheet" href="' + styleFile + this.getTimerParam() + '">');
         }
@@ -469,23 +460,12 @@ export class WebsiteHtml {
         html.push('</head>');
         html.push('<body>');
         html.push(this.contentHtml);
-        for (const js of mainConfig.app.website.js) {
-            let jsTag = '<script src="' + js.src + '"';
 
-            if (js.integrity) {
-                jsTag += ' integrity="' + js.integrity + '"';
+        if (this.themeConfig && this.themeConfig.js) {
+            for (const js of this.themeConfig.js) {
+                html.push('<script src="' + js + '"><\/script>');
             }
-
-            if (js.crossorigin) {
-                jsTag += ' crossorigin="' + js.crossorigin + '"';
-            }
-
-            jsTag += '><\/script>';
-
-            html.push(jsTag);
         }
-        //html.push('<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"><\/script>');
-        //html.push('<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"><\/script>');
 
         for (const scriptFile of this.scriptFiles) {
             html.push('<script src="' + scriptFile + this.getTimerParam() + '"><\/script>');

@@ -1,6 +1,9 @@
 <?php
+
+use App\Repositories\WebsiteRepository;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use App\Services\Admin\TemplateService;
 
 if (! function_exists('getFileContentFromTemplateLayout')) {
     function getFileContentFromTemplateLayout(\App\Models\Template $template)
@@ -18,21 +21,10 @@ if (! function_exists('getFileContentFromTemplateLayout')) {
         $html .= '<meta name="keywords" content="<?php echo $variables->get("fields.seoKeyword", translateText($variables->get("website-metas.seoKeyword", ""))); ?>">';
         $html .= '<link rel="icon" type="image/x-icon" href="<?php echo \Illuminate\Support\Arr::get(getFilesList($variables->get("website-metas.favicon")), "0.url", "") ?>">';
 
-        foreach (config('app.website.css') as $css) {
-            $cssTag = '<link rel="stylesheet" href="' . $css['href'] . '"';
-
-            if (isset($css['integrity'])) {
-                $cssTag .= ' integrity="' . $css['integrity'] . '"';
-            }
-
-            if (isset($css['crossorigin'])) {
-                $cssTag .= ' crossorigin="' . $css['crossorigin'] . '"';
-            }
-
-            $cssTag .= ">\n";
-
-            $html .= $cssTag;
-        }
+        $themeConfig = app(TemplateService::class)->getThemeConfig();
+        $html .= implode("\n", array_map(function (string $css) {
+            return '<link rel="stylesheet" href="' . $css . '">';
+        }, $themeConfig['css']));
 
         $addedStyleFiles = [];
         $addedScriptFiles = [];
@@ -92,55 +84,42 @@ if (! function_exists('getFileContentFromTemplateLayout')) {
             $replaceTranslationsKey++;
         }
 
-        $dom = new DOMDocument();
-        $dom->encoding = 'utf-8';
-        $dom->loadHTML(utf8_decode($contentHtml), LIBXML_NOERROR|LIBXML_HTML_NODEFDTD|LIBXML_HTML_NOIMPLIED);
+        if ($contentHtml) {
+            $dom = new DOMDocument();
+            $dom->encoding = 'utf-8';
+            $dom->loadHTML(utf8_decode($contentHtml), LIBXML_NOERROR | LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
 
-        $tags_to_remove = ['script', 'style', 'iframe', 'link', 'html', 'head', 'body'];
+            $tags_to_remove = ['script', 'style', 'iframe', 'link', 'html', 'head', 'body'];
 
-        foreach($tags_to_remove as $tag){
-            $element = $dom->getElementsByTagName($tag);
-            foreach($element  as $item){
-                $item->parentNode->removeChild($item);
-            }
-        }
-
-        foreach ($dom->getElementsByTagname('*') as $element)
-        {
-            foreach (iterator_to_array($element->attributes) as $name => $attribute)
-            {
-                if (substr_compare($name, 'on', 0, 2, TRUE) === 0)
-                {
-                    $element->removeAttribute($name);
+            foreach ($tags_to_remove as $tag) {
+                $element = $dom->getElementsByTagName($tag);
+                foreach ($element as $item) {
+                    $item->parentNode->removeChild($item);
                 }
             }
-        }
 
-        $replaceFrom = '{ $content }';
-        $replaceTo = '<?php include($variables->get("pageTemplatePath")); ?>';
-        $contentHtml = str_replace($replaceFrom, $replaceTo, $dom->saveHTML());
-
-        foreach ($replaceTranslations as $key => $value) {
-            $contentHtml = str_replace('---echoTranslationText_' . $key . '---', $value, $contentHtml);
-        }
-
-        $html .= $contentHtml;
-
-        foreach (config('app.website.js') as $js) {
-            $jsTag = '<script src="' . $js['src'] . '"';
-
-            if (isset($js['integrity'])) {
-                $jsTag .= ' integrity="' . $js['integrity'] . '"';
+            foreach ($dom->getElementsByTagname('*') as $element) {
+                foreach (iterator_to_array($element->attributes) as $name => $attribute) {
+                    if (substr_compare($name, 'on', 0, 2, TRUE) === 0) {
+                        $element->removeAttribute($name);
+                    }
+                }
             }
 
-            if (isset($js['crossorigin'])) {
-                $jsTag .= ' crossorigin="' . $js['crossorigin'] . '"';
+            $replaceFrom = '{ $content }';
+            $replaceTo = '<?php include($variables->get("pageTemplatePath")); ?>';
+            $contentHtml = str_replace($replaceFrom, $replaceTo, $dom->saveHTML());
+
+            foreach ($replaceTranslations as $key => $value) {
+                $contentHtml = str_replace('---echoTranslationText_' . $key . '---', $value, $contentHtml);
             }
 
-            $jsTag .= "></script>\n";
-
-            $html .= $jsTag;
+            $html .= $contentHtml;
         }
+
+        $html .= implode("\n", array_map(function (string $js) {
+            return '<script src="' . $js . '"></script>';
+        }, $themeConfig['js']));
 
         foreach ($addedScriptFiles as $scriptFile) {
             $html .= "<script src=\"" . $scriptFile . "\"></script>\n";
@@ -187,7 +166,11 @@ if (! function_exists('getFileContentFromTemplatePage')) {
         $customStyles = strip_tags(Arr::get($template->params, 'customStyles', ''));
         $html .= "<style>" . str_replace("\n", "", $customStyles) . "</style>\n";
 
-        $contentHtml = str_replace('<?', '', Arr::get($template->params, 'contentHtml'));
+        $contentHtml = str_replace('<?', '', Arr::get($template->params, 'contentHtml', ''));
+
+        if (!$contentHtml) {
+            return $html;
+        }
 
         preg_match_all('/<!--translateStart-->(.*)<!--translateEnd-->/U', $contentHtml, $matches);
         $replaceTranslations = [];
@@ -484,5 +467,56 @@ if (! function_exists('getFilesList')) {
         }
 
         return $files;
+    }
+}
+
+if (! function_exists('structureToHtml')) {
+    function structureToHtml(array $structure, array $fields): string
+    {
+        $result = '<' . $structure['tag'];
+
+        $children = Arr::get($structure, 'children', []);
+        $attribtues = Arr::get($structure, 'attributes', []);
+
+        foreach ($attribtues as $attribtueName => $attribtueValue) {
+            $result .= ' ' . $attribtueName . '="' . $attribtueValue . '"';
+        }
+
+        if (!empty($children)) {
+            $result .= '>';
+
+            foreach ($children as $itemKey => $item) {
+                if ($itemKey === 'field') {
+                    $result .= '{ $content }';
+                } else {
+                    $result .= structureToHtml($item, $fields);
+                }
+            }
+
+            $result .= '</' . $structure['tag'] . '>';
+        } else {
+            $result .= '/>';
+        }
+
+        return $result;
+    }
+}
+
+if (! function_exists('getStructureFields')) {
+    function getStructureFields(array $structure): array
+    {
+        $result = [];
+
+        foreach ($structure as $tab) {
+            foreach (Arr::get($tab, 'children', []) as $row) {
+                foreach (Arr::get($row, 'children', []) as $col) {
+                    foreach (Arr::get($col, 'children', []) as $field) {
+                        $result[] = $field;
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 }

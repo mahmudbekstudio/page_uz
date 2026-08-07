@@ -2,17 +2,26 @@
 
 namespace Database\Seeders;
 
+use App\Dto\Admin\User\CreateData;
 use App\Helpers\DataFormat;
-use App\Models\Post;
-use App\Models\PostMeta;
-use App\Models\Route;
-use App\Models\Type;
-use App\Models\TypeRouteStructure;
+use App\Repositories\FileRepository;
+use App\Repositories\FolderRepository;
+use App\Repositories\WebsiteRepository;
+use App\Services\Admin\CategoryService;
+use App\Services\Admin\FolderFileService;
+use App\Services\Admin\MenuService;
+use App\Services\Admin\PostService;
+use App\Services\Admin\TemplateService;
+use App\Services\Admin\TypeService;
+use App\Services\Admin\UserService;
+use App\Services\Admin\WebsiteService;
 use Illuminate\Database\Seeder;
 use App\Models\Website;
-use App\Models\WebsiteMeta;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use App\Services\AuthService;
+use App\Models\User;
 
 class WebsitesTableSeeder extends Seeder
 {
@@ -23,8 +32,163 @@ class WebsitesTableSeeder extends Seeder
      */
     public function run()
     {
-        $mainWebsite = config('app.main_website');
-        $mainWebsiteData = [ // database\seeders\WebsitesTableSeeder.php:28
+        $websites = config('website');
+        $websiteService = app(WebsiteService::class);
+        $userService = app(UserService::class);
+        $typeService = app(TypeService::class);
+        $templateService = app(TemplateService::class);
+        $postService = app(PostService::class);
+        $categoryService = app(CategoryService::class);
+        $currentUser = null;
+
+        foreach ($websites as $websiteKey => $website) {
+            $websiteInstance = $websiteService->create($website['website']['data'], Arr::get($website['website'], 'metas', []));
+            WebsiteRepository::getInstance()->setCurrent($websiteInstance->id);
+            $itemsById = [];
+
+            // create users
+            UserService::createDefaultRoles();
+            $users = Arr::get($website, 'users', []);
+            foreach ($users as $user) {
+                $metas = [];
+
+                foreach ($user['metas'] as $meta) {
+                    $metas[$meta['meta_key']] = $meta;
+                }
+
+                $userInstance = $userService->create(new CreateData([
+                    'email' => $user['data']['email'],
+                    'first_name' => Arr::get($metas, 'first_name.meta_value', ''),
+                    'last_name' => Arr::get($metas, 'last_name.meta_value', ''),
+                    'password' => $user['data']['password'],
+                    'role' => $user['role'],
+                    'status' => $user['data']['status'],
+                ]));
+
+                if (isset($user['id'])) {
+                    $itemsById['user#' . $user['id']] = $userInstance->toArray();
+                }
+
+                if (is_null($currentUser) && $user['role'] === User::ROLE_SUPER_ADMIN) {
+                    app(AuthService::class)->loginById($userInstance->id);
+                }
+            }
+
+            // create types
+            $types = Arr::get($website, 'types', []);
+            foreach ($types as $type) {
+                $data = [
+                    'title' => $type['title'],
+                    'name' => $type['name'],
+                    'status' => $type['status'],
+                    'type' => $type['type'],
+                    'has_parent' => $type['has_parent'],
+                    'structure'=> $type['structure'],
+                    'fields' => getStructureFields($type['structure']),
+                ];
+
+                if (isset($type['child_of']) && isset($itemsById['type#' . $type['child_of']])) {
+                    $data['child_of'] = $itemsById['type#' . $type['child_of']]->id;
+                }
+
+                $typeInstance = $typeService->create($data);
+
+                if (isset($type['id'])) {
+                    $itemsById['type#' . $type['id']] = $typeInstance->toArray();
+                }
+            }
+
+            // create templates
+            $templates = Arr::get($website, 'templates', []);
+            foreach ($templates as $template) {
+                $data = [
+                    'name' => $template['name'],
+                    'type' => $template['type'],
+                    'content' => $template['content'],
+                    'params' => $template['params'],
+                ];
+
+                if (isset($template['layout_id']) && Arr::has($itemsById, 'template#' . $template['layout_id'])) {
+                    $data['layout_id'] = Arr::get($itemsById, 'template#' . $template['layout_id']);
+                }
+
+                $templateInstance = $templateService->create($data);
+
+                if (isset($template['id'])) {
+                    $itemsById['template#' . $template['id']] = $templateInstance;
+                }
+            }
+
+            // create pages
+            $pages = Arr::get($website, 'pages', []);
+            foreach ($pages as $page) {
+                //$typeId = explode('.', $page['type_id'])[0];
+                //$type = $itemsById['type#' . $typeId];
+                $data = [
+                    'status' => $page['status'],
+                    'routeName' => $page['routeName'],
+                ];
+
+                $isPost = $page['type'] === 'post';
+                $itemKey = $isPost ? 'post#' : 'category#';
+
+                if (isset($page['childOf']) && Arr::has($itemsById, 'type#' . $page['childOf'])) {
+                    $data['childOf'] = Arr::get($itemsById, 'type#' . $page['childOf']);
+                }
+
+                if (isset($page['template']) && Arr::has($itemsById, 'template#' . $page['template'])) {
+                    $data['template'] = Arr::get($itemsById, 'template#' . $page['template']);
+                }
+
+                if (isset($page['parent']) && Arr::has($itemsById, $itemKey . $page['parent'])) {
+                    $data['parent'] = Arr::get($itemsById, $itemKey . $page['parent']);
+                }
+
+                $service = $isPost ? $postService : $categoryService;
+                $pageInstance = $service->create(Arr::get($itemsById, 'type#' . $page['type_id']), $data);
+
+                if (isset($page['metas']) && !empty($page['metas'])) {
+                    foreach ($page['metas'] as $meta) {
+                        $metaInstance = $pageInstance->metas()->create(
+                            [
+                                'meta_key' => $meta['meta_key'],
+                                'meta_format' => $meta['meta_format'],
+                                'meta_value' => $meta['meta_value'],
+                            ]
+                        );
+                        $itemsById[$itemKey . '_meta_' . $page['id'] . '_' . $meta['meta_key']] = $metaInstance->toArray();
+                    }
+                }
+
+                if (isset($page['id'])) {
+                    $itemsById[$itemKey . $page['id']] = $pageInstance->toArray();
+                }
+
+                if (isset($page['website_metas']) && !empty($page['website_metas'])) {
+                    $websiteMetas = [];
+                    foreach ($page['website_metas'] as $websiteMeta) {
+                        $value = Arr::get($itemsById, $itemKey . $websiteMeta['meta_value'], $websiteMeta['meta_value']);
+                        $websiteMetas[] = [...$websiteMeta, 'meta_value' => DataFormat::toString($value, $websiteMeta['meta_format'])];
+                    }
+                    $websiteService->createMetas($websiteInstance->id, $websiteMetas);
+                }
+            }
+
+            // folder and files
+            $this->createFolderFiles(
+                $websiteKey,
+                //Arr::get($website, 'folders', []),
+                $itemsById,
+                app(FolderFileService::class)
+            );
+
+            $this->createMenu(Arr::get($website, 'menus', []), $itemsById);
+
+            $currentUser = null;
+        }
+        /*$mainWebsite = config('app.main_website');
+        $websiteService = app(WebsiteService::class);
+        $mainWebsiteData = [
             "data" => [
                 "id" => 1,
                 "status" => Website::STATUS_ACTIVE,
@@ -41,159 +205,108 @@ class WebsitesTableSeeder extends Seeder
                 ]
             ]
         ];
-        $this->createWebsite($mainWebsiteData);
+        $websiteService->create($mainWebsiteData['data'], $mainWebsiteData['metas']);
 
         $list = isProd() ? [] : $this->getDevList();
 
         foreach ($list as $item) {
-            $this->createWebsite($item);
-        }
+            $websiteService->create($item['data'], Arr::get($item, 'metas', []));
+        }*/
     }
 
-    private function createWebsite($item) {
-        $website = Website::firstOrCreate($item['data']);
-        if($item['data']['type'] == Website::TYPE_MAIN) {
-            Artisan::call('domain:add ' . $website->id);
-            update_dotenv(storage_path('domains/env/.env.' . $website->id), [
-                'APP_KEY' => generateRandomKey(),
-                'JWT_SECRET' => randomString64()
-            ]);
+    private function createFolderFiles(
+        $websiteKey,
+        //$folders,
+        &$itemsById,
+        FolderFileService $folderFileService,
+    ) {
+        $rootPath = 'files/' . $websiteKey;
+        $list = Storage::disk('resources')->allDirectories($rootPath);
+        $folderFileService = app(FolderFileService::class);
+        $folderRepository = app(FolderRepository::class);
+        $fileRepository = app(FileRepository::class);
 
-            createStorageTemplateDir('', $website->id);
-            //createStorageTemplateDir('layout', $website->id);
-            createStorageTemplateDir('post', $website->id);
-            createStorageTemplateDir('category', $website->id);
-            createStorageTemplateFile('post', '0', $website->id);
-            createStorageTemplateFile('category', '0', $website->id);
-        }
 
-        if(isset($item['metas'])) {
-            foreach($item['metas'] as $meta) {
-                $meta['website_id'] = $website->id;
-                WebsiteMeta::firstOrCreate($meta);
+        $addedFolders = [];
+        foreach ($list as $folder) {
+            $folderPath = str_replace($rootPath . '/', '', $folder);
+            $folderPathList = explode('/', $folderPath);
+            $folderName = array_pop($folderPathList);
+            $parentPath = implode('/', $folderPathList);
+            $parentId = 0;
+
+            if (!empty($parentPath)) {
+                $parentId = $addedFolders[$parentPath]['id'];
             }
-        }
-        $lang = [
-            [
-                'meta_key' => 'languages_list',
-                'meta_value' => DataFormat::toString(config('app.locale_list'), DataFormat::FORMAT_ARRAY),
-                'meta_format' => DataFormat::FORMAT_ARRAY,
-                'user_id' => 0
-            ],
-            [
-                'meta_key' => 'language',
-                'meta_value' => config('app.default_locale'),
-                'user_id' => 0
-            ],
-        ];
 
-        foreach($lang as $meta) {
-            $meta['website_id'] = $website->id;
-            WebsiteMeta::firstOrCreate($meta);
+            $addedFolders[$folderPath] = $folderFileService->createFolder($parentId, $folderName);
+
+            if ($addedFolders[$folderPath] === false) {
+                $addedFolders[$folderPath] = $folderRepository
+                    ->findWhere(['parent_id' => $parentId, 'name' => $folderName, 'is_local' => false])
+                    ->first()
+                    ->toArray();
+            }
+
+            $itemsById['folder#' . $addedFolders[$folderPath]['id']] = $addedFolders[$folderPath];
         }
 
-        WebsiteMeta::firstOrCreate([
-            'meta_key' => 'root-folder-path',
-            'meta_value' => generateRootFolderName($website->id),
-            'user_id' => 0,
-            'website_id' => $website->id,
-        ]);
+        $list = Storage::disk('resources')->allFiles($rootPath);
+        foreach ($list as $file) {
+            $filePath = str_replace($rootPath . '/', '', $file);
+            $fileFolderPathList = explode('/', $filePath);
+            array_pop($fileFolderPathList);
+            $fileFolderPath = implode('/', $fileFolderPathList);
+            $uploadedFile = pathToUploadedFile(resource_path($file));
+            $fileInstance = $folderFileService->uploadFile($addedFolders[$fileFolderPath]['id'], $uploadedFile);
+            $itemsById['file#' . $fileInstance['id']] = $fileInstance->toArray();
+        }
 
-        $type = Type::firstOrCreate([
-            'user_id' => 0,
-            'website_id' => $website->id,
-            'status' => 1,
-            'type' => Type::TYPE_POST,
-            'has_parent' => 1,
-            'child_of' => 0,
-        ], [
-            'title' => ['en' => 'Page', 'ru' =>  'Страница', 'uz' => 'Sahifa'],
-            'name' => config('app.main_page.name'),
-            'structure' => json_decode(config('app.main_page.structure'), true),
-            'fields' => json_decode(config('app.main_page.fields'), true),
-        ]);
-        $pageHome = Post::firstOrCreate([
-            'user_id' => 0,
-            'website_id' => $website->id,
-            'category_id' => 0,
-            'template_id' => 0,
-            'status' => 1,
-            'parent_id' => 0,
-            'type_id' => $type->id,
-            'url' => 'page/home',
-        ]);
-        Route::firstOrCreate([
-            'website_id' => $website->id,
-            'name' => 'home',
-            'parent_id' => $pageHome->id,
-            'type_id' => $type->id,
-        ]);
-        TypeRouteStructure::firstOrCreate([
-            'website_id' => $website->id,
-            'type_id' => $type->id,
-            'parent_id' => $pageHome->id,
-        ], [
-            'params' => [],
-            'structure' => []
-        ]);
-        PostMeta::firstOrCreate([
-            'user_id' => 0,
-            'website_id' => $website->id,
-            'post_id' => $pageHome->id,
-            'meta_format' => DataFormat::FORMAT_STRING,
-            'meta_key' => 'title',
-        ], [
-            'meta_value' => json_encode(['en' => 'Home', 'ru' => 'Главная', 'uz' => 'Bosh sahifa']),
-        ]);
-        WebsiteMeta::firstOrCreate([
-            'meta_key' => 'pageHome',
-            'meta_value' => $pageHome->id,
-            'meta_format' => DataFormat::FORMAT_INT,
-            'user_id' => 0,
-            'website_id' => $website->id,
-        ]);
-        $page404 = Post::firstOrCreate([
-            'user_id' => 0,
-            'website_id' => $website->id,
-            'category_id' => 0,
-            'template_id' => 0,
-            'status' => 1,
-            'parent_id' => 0,
-            'type_id' => $type->id,
-            'url' => 'page/404',
-        ]);
-        Route::firstOrCreate([
-            'website_id' => $website->id,
-            'name' => '404',
-            'parent_id' => $page404->id,
-            'type_id' => $type->id,
-        ]);
-        TypeRouteStructure::firstOrCreate([
-            'website_id' => $website->id,
-            'type_id' => $type->id,
-            'parent_id' => $page404->id,
-        ], [
-            'params' => [],
-            'structure' => []
-        ]);
-        PostMeta::firstOrCreate([
-            'user_id' => 0,
-            'website_id' => $website->id,
-            'post_id' => $page404->id,
-            'meta_format' => DataFormat::FORMAT_STRING,
-            'meta_key' => 'title',
-            'meta_value' => '404'
-        ]);
-        WebsiteMeta::firstOrCreate([
-            'meta_key' => 'page404',
-            'meta_value' => $page404->id,
-            'meta_format' => DataFormat::FORMAT_INT,
-            'user_id' => 0,
-            'website_id' => $website->id,
-        ]);
+        $folderFileService->resetRootPath();
     }
 
-    private function getDevList() {
+    private function createMenu(array $menus, $itemsById)
+    {
+        foreach ($menus as $menu) {
+            app(MenuService::class)->create([
+                'name' => $menu['name'],
+                'items' => $this->getMenuItems($menu['items'], $itemsById)
+            ]);
+        }
+    }
+
+    private function getMenuItems(array $items, $itemsById)
+    {
+        $list = [];
+        foreach ($items as $item) {
+            $children = isset($item['children']) && !empty($item['children']) ? $this->getMenuItems($item['children'], $itemsById) : [];
+            if ($item['type'] === 'custom') {
+                $menuItem = [
+                    'id' => 'custom',
+                    'title' => $item['title'],
+                    'url' => $item['url'],
+                    'type_id' => 0,
+                    'canHasChild' => true,
+                    'children' => $children,
+                ];
+            } else {
+                $menuItem = [
+                    'id' => $itemsById[$item['type'] . '#' . $item['key']]['id'],
+                    'title' => json_decode($itemsById[$item['type'] . '#_meta_' . $item['key'] . '_title']['meta_value']),
+                    'url' => $itemsById[$item['type'] . '#' . $item['key']]['url'],
+                    'type_id' => $itemsById[$item['type'] . '#' . $item['key']]['type_id'],
+                    'canHasChild' => true,
+                    'children' => $children,
+                ];
+            }
+
+            $list[] = $menuItem;
+        }
+
+        return $list;
+    }
+
+    /*private function getDevList() {
         $domainPostfix = config('app.main_website');
         $ids = [
             Website::STATUS_NOT_CONFIRMED => 2,
@@ -459,5 +572,5 @@ class WebsitesTableSeeder extends Seeder
         ];
 
         return $list;
-    }
+    }*/
 }

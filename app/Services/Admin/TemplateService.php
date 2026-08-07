@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\Template;
 use App\Repositories\TemplateRepository;
+use App\Repositories\WebsiteRepository;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
 
@@ -23,12 +24,6 @@ class TemplateService extends BaseService
 
     public function create(array $fields)
     {
-        $name = Arr::get($fields, 'name');
-
-        if (is_array($name)) {
-            Arr::set($fields, 'name', json_encode($name));
-        }
-
         Arr::set($fields, 'params', Arr::get($fields, 'params', []));
 
         return $this->templateRepository->create($fields)->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id']);
@@ -55,5 +50,33 @@ class TemplateService extends BaseService
         $template->delete();
 
         return true;
+    }
+
+    public function getThemeConfig()
+    {
+        $result = ['js' => [], 'css' => []];
+        $themeConfig = config('app.theme');
+
+        foreach ($themeConfig['default']['js'] as $js) {
+            $result['js'][] = $js;
+        }
+
+        foreach ($themeConfig['default']['css'] as $css) {
+            $result['css'][] = $css;
+        }
+
+        $websiteMetas = WebsiteRepository::getInstance()->getMetas();
+
+        foreach ($themeConfig['cdn'] as $component => $list) {
+            $websiteMetas['theme_component_' . $component] = Arr::get(
+                $websiteMetas, 'theme_component_' . $component,
+                array_keys($themeConfig['components'][$component])[0]
+            );
+            foreach ($list as $type => $file) {
+                $result[$type][] = str_replace('{VERSION}', $websiteMetas['theme_component_' . $component], $file);
+            }
+        }
+
+        return $result;
     }
 }

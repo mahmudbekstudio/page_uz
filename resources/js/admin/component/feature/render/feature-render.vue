@@ -23,6 +23,12 @@ export default {
             default () {
                 return [];
             }
+        },
+        themeConfig: {
+            type: Object,
+            default () {
+                return {css: [], js: []}
+            }
         }
     },
     methods: {
@@ -43,42 +49,10 @@ export default {
             return html;
         },
         getCssTags () {
-            let html = '';
-
-            for (const cssItem of mainConfig.app.website.css) {
-                html += '<link rel="stylesheet" href="' + cssItem['href'] + '"';
-
-                if (cssItem['integrity']) {
-                    html += ' integrity="' + cssItem['integrity'] + '"';
-                }
-
-                if (cssItem['crossorigin']) {
-                    html += ' crossorigin="' + cssItem['crossorigin'] + '"';
-                }
-
-                html += ">\n";
-            }
-
-            return html;
+            return this.themeConfig.css.map(css => '<link rel="stylesheet" href="' + css + '">').join("\n");
         },
         getJsTags () {
-            let html = '';
-
-            for (const jsItem of mainConfig.app.website.js) {
-                html += '<script src="' + jsItem['src'] + '"';
-
-                if (jsItem['integrity']) {
-                    html += ' integrity="' + jsItem['integrity'] + '"';
-                }
-
-                if (jsItem['crossorigin']) {
-                    html += ' crossorigin="' + jsItem['crossorigin'] + '"';
-                }
-
-                html += "></" + "script>\n";
-            }
-
-            return html;
+            return this.themeConfig.js.map(js => '<script src="' + js + '"></' + 'script>').join("\n");
         },
         getBodyTags (list) {
             let html = '';

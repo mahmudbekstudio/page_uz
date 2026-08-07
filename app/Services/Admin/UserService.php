@@ -8,7 +8,9 @@ use App\Helpers\DataFormat;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\BaseService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserService extends BaseService
 {
@@ -54,7 +56,7 @@ class UserService extends BaseService
     public function create(CreateData $data): User
     {
         /** @var User $user */
-        $user = $this->userRepository->create($data->toArray());
+        $user = $this->userRepository->create(Arr::only($data->toArray(), ['email', 'password', 'status']));
         $user->assignRole($data->role);
         $user->metas()->create([
             'meta_key' => 'first_name',
@@ -67,6 +69,13 @@ class UserService extends BaseService
             'meta_format' => DataFormat::FORMAT_STRING,
         ]);
         return $user;
+    }
+
+    public static function createDefaultRoles()
+    {
+        foreach(User::getRoles() as $role) {
+            Role::findOrCreate($role, User::GUARD_NAME);
+        }
     }
 
     public function delete(User $user): bool

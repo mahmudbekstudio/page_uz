@@ -29,7 +29,7 @@
                         <div
                             v-for="(sample, index) in block.samples"
                             class="template-item"
-                            @click="clickTemplateItem(block, sample)"
+                            @click="clickTemplateItem(block, sample, index)"
                         >
                             <website-block-render
                                 :type="block.type"
@@ -63,7 +63,7 @@ export default {
         isSample: false,
     },
     methods: {
-        clickTemplateItem(block, sample) {
+        clickTemplateItem(block, sample, index) {
             /*const template = {
                 type: block.type,
                 canHasChild: block.canHasChild,
@@ -79,6 +79,7 @@ export default {
             template.structure = item.structure;
             template.children = item.children;*/
             this.$emit('select', this.websiteRender.getTemplate(block, sample));
+            //this.$emit('select', block.samples[index]);
         }
     },
     components: {websiteBlockRender}

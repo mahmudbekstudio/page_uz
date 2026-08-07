@@ -11,11 +11,9 @@ use App\Http\Requests\Admin\Template\CreateTemplateRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Template;
-use App\Models\Theme;
 use App\Models\WebsiteMeta;
 use App\Repositories\WebsiteRepository;
 use App\Services\Admin\TemplateService;
-use Illuminate\Support\Arr;
 
 class TemplateController extends Controller
 {
@@ -49,23 +47,28 @@ class TemplateController extends Controller
 
     public function create(CreateTemplateRequest $request)
     {
-        $template = $this->templateService->create($request->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id']));
-        return responseJsonData(true, ['template' => $template]);
+        $data = $request->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id']);
+
+        return responseJsonData(true, ['template' => $this->templateService->create($data)]);
     }
 
     public function edit(int $template, CreateTemplateRequest $request)
     {
-        return responseJsonData(true, ['template' => $this->templateService->update($template, $request->only('name', 'type', 'content', 'params'))]);
+        $data = $request->only('name', 'type', 'content', 'params');
+
+        return responseJsonData(true, [
+            'template' => $this->templateService->update($template, $data)
+        ]);
     }
 
     public function get(Template $template)
     {
         $template = $template->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id']);
-        $name = Arr::get($template, 'name', '');
+        /*$name = Arr::get($template, 'name', '');
 
         if (str_starts_with($name, '{') && str_ends_with($name, '}')) {
             Arr::set($template, 'name', json_decode($name, true));
-        }
+        }*/
 
         return responseJsonData(true, ['template' => $template]);
     }
@@ -94,9 +97,9 @@ class TemplateController extends Controller
         }
 
         $metasIds = WebsiteRepository::getInstance()->getCurrent()->metas->filter(function ($meta) {
-            $postPostfix = WebsiteMeta::POST_TEMPLATE_POSTFIX;
-            $categoryPostfix = WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX;
-            return str_ends_with($meta->meta_key, $postPostfix) || str_ends_with($meta->meta_key, $categoryPostfix);
+            return
+                str_ends_with($meta->meta_key, WebsiteMeta::POST_TEMPLATE_POSTFIX) ||
+                str_ends_with($meta->meta_key, WebsiteMeta::CATEGORY_TEMPLATE_POSTFIX);
         })->pluck('meta_value')->map(function ($id) {
             return (int)$id;
         })->toArray();
@@ -125,16 +128,27 @@ class TemplateController extends Controller
 
     public function blocks()
     {
-        return responseJsonData(true, ['templates' => config('templates')]);
+        return responseJsonData(true, [
+            'blocks'       => config('templates'),
+            'theme_config' => $this->templateService->getThemeConfig(),
+        ]);
     }
 
     public function settings()
     {
-        return responseJsonData(true, ['fields' => [], 'values' => []]);
+        return responseJsonData(true, [
+            'templates'    => [
+                'category' => $this->templateService->getByType(Template::TYPE_CATEGORY),
+                'post'     => $this->templateService->getByType(Template::TYPE_POST),
+            ],
+            //'theme_config' => $this->templateService->getThemeConfig($theme),
+        ]);
     }
 
-    public function themes()
+    public function themeConfig()
     {
-        return responseJsonData(true, ['list' => Theme::all(['id', 'name'])]);
+        return responseJsonData(true, [
+            //'theme_config' => $this->templateService->getThemeConfig($theme),
+        ]);
     }
 }

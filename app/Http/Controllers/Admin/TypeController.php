@@ -23,9 +23,9 @@ class TypeController extends Controller
         return responseJsonData(true, $dataTable->toArray());
     }
 
-    public function create(CreateTypeRequest $request, TypeRepository $repository)
+    public function create(CreateTypeRequest $request)
     {
-        return responseJsonData(true, ['type' => $repository->create($request->all())], ['typeNavigation' => typeNavigation()]);
+        return responseJsonData(true, ['type' => $this->typeService->create($request->all())], ['typeNavigation' => typeNavigation()]);
     }
 
     public function edit(int $id, CreateTypeRequest $request, TypeRepository $repository)

@@ -23,7 +23,6 @@ return new class extends Migration
 
             $table->index('user_id');
             $table->index('website_id');
-            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('website_id')->references('id')->on('websites')->onDelete('cascade');
         });
     }

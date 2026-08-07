@@ -27,7 +27,7 @@ ssh-su:
 	@$(APP_SU) bash
 
 ssh-node:
-	$(DC) node bash
+	$(DC) node sh
 
 keygen:
 	@$(ARTISAN) key:generate

@@ -1,6 +1,6 @@
 <template>
     <div class="page-box-wrapper">
-        <page-header :actions="actions">
+        <page-header :title="headerTitle" :actions="actions">
             <template #actions><slot name="actions"></slot></template>
         </page-header>
         <div class="page-box">
@@ -15,6 +15,10 @@
 
     export default {
         props: {
+            headerTitle: {
+                type: String,
+                default: () => null
+            },
             actions: {
                 type: Array,
                 default: () => []

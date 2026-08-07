@@ -12,4 +12,9 @@ class TypeService extends BaseService
     {
         $this->typeRepository = $typeRepository;
     }
+
+    public function create(array $data)
+    {
+        return $this->typeRepository->create($data);
+    }
 }

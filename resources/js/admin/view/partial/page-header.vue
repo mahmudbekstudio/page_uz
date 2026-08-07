@@ -1,12 +1,11 @@
 <template>
-    <div class="page-header" v-if="title || actions.length">
+    <div class="page-header" v-if="showHeader">
         <v-app-bar>
-
-            <v-toolbar-title>{{ $t(title) }}</v-toolbar-title>
-
+            <v-toolbar-title>{{ $t(pageTitle) }}</v-toolbar-title>
             <div class="flex-grow-1"></div>
 
             <slot name="actions"></slot>
+
             <v-btn v-for="(btn, i) in actions" class="hidden-sm-and-down" :key="i" v-on="btn.on" v-bind="btn.bind">
                 <v-icon v-if="btn.icon">{{btn.icon}}</v-icon>
                 {{$t(btn.title)}}
@@ -47,13 +46,29 @@
         props: {
             actions: {
                 type: Array,
-                default: []
+                default: () => []
+            },
+            title: {
+                type: String,
+                default: () => null
+            },
+            forceShow: {
+                type: Boolean,
+                default () {
+                    return false;
+                }
             }
         },
         computed: {
             ...mapGetters({
-                title: 'view/title'
-            })
+                viewTitle: 'view/title'
+            }),
+            showHeader() {
+                return this.pageTitle || this.actions.length || typeof this.$slots.actions !== 'undefined' || this.forceShow;
+            },
+            pageTitle () {
+                return typeof this.title === 'string' ? this.title : this.viewTitle;
+            },
         }
     }
 </script>

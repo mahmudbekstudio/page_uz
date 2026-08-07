@@ -85,7 +85,7 @@ export default {
         },
         options: {
             handler (val) {
-                this.params.options = val;
+                this.params.options = {...this.params.options, ...val};
             },
             deep: true,
         },

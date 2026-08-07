@@ -22,6 +22,7 @@ class Type extends Model
         'title' => 'array',
         'structure' => 'array',
         'fields' => 'array',
+        'status' => 'boolean',
     ];
 
     protected $hidden = ['website_id', 'user_id'];
