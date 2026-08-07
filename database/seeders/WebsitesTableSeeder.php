@@ -32,6 +32,13 @@ class WebsitesTableSeeder extends Seeder
      */
     public function run()
     {
+        $domainPath = config_path() . '/domain.php';
+        if (!file_exists($domainPath)) {
+            $file = fopen($domainPath, 'w+');
+            fwrite($file, "<?php\nreturn [];");
+            fclose($file);
+        }
+
         $websites = config('website');
         $websiteService = app(WebsiteService::class);
         $userService = app(UserService::class);
