@@ -68,7 +68,11 @@ class WebsiteService extends BaseService
         ];
         update_dotenv(storage_path('domains/env/.env.' . $websiteId), $env);
 
-        $websiteFolders = ['framework/views', 'framework/cache/data', 'framework/sessions'];
+        $websiteFolders = [
+            'domains/' . $websiteId . '/framework/views',
+            'domains/' . $websiteId . '/framework/cache/data',
+            'domains/' . $websiteId . '/framework/sessions'
+        ];
         foreach ($websiteFolders as $folder) {
             $path = storage_path($folder);
             if (!is_dir($path)) {
