@@ -71,7 +71,8 @@ class WebsiteService extends BaseService
         $websiteFolders = [
             'domains/' . $websiteId . '/framework/views',
             'domains/' . $websiteId . '/framework/cache/data',
-            'domains/' . $websiteId . '/framework/sessions'
+            'domains/' . $websiteId . '/framework/sessions',
+            'domains/' . $websiteId . '/app/template',
         ];
         foreach ($websiteFolders as $folder) {
             $path = storage_path($folder);
