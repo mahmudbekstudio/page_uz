@@ -530,7 +530,12 @@ if (! function_exists('createStorageTemplateDir')) {
 if (! function_exists('createStorageTemplateFile')) {
     function createStorageTemplateFile($path, $fileName, $domainId = null, $content = '')
     {
-        $filePath = getStorageTemplatePath($path, $domainId) . '/' . $fileName . '.php';
+        $folder = getStorageTemplatePath($path, $domainId);
+        $filePath = $folder . '/' . $fileName . '.php';
+
+        if (!is_dir($folder)) {
+            mkdir($folder, 0755, true);
+        }
 
         if (!file_exists($filePath)) {
             $mode = 'w+';

@@ -68,6 +68,14 @@ class WebsiteService extends BaseService
         ];
         update_dotenv(storage_path('domains/env/.env.' . $websiteId), $env);
 
+        $websiteFolders = ['framework/views', 'framework/cache/data', 'framework/sessions'];
+        foreach ($websiteFolders as $folder) {
+            $path = storage_path($folder);
+            if (!is_dir($path)) {
+                mkdir($path, 0755, true);
+            }
+        }
+
         $templates = [
             ['path' => ''],
             ['path' => 'layout', 'file_name' => '0'],
