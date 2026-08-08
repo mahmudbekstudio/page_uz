@@ -2,7 +2,6 @@
     <page-box
             class="module-type-form"
             :actions="actions"
-            :footer-actions="actions"
     >
         <formComponent
             :value="typeForm"

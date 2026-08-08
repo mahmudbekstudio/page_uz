@@ -1,5 +1,5 @@
 <template>
-    <div class="page-footer" v-if="actions.length">
+    <div class="page-footer">
     	<slot></slot>
     	<div class="flex-grow-1"></div>
     	<v-btn v-for="(btn, i) in actions" class="hidden-sm-and-down" :key="i" v-on="btn.on" v-bind="btn.bind">

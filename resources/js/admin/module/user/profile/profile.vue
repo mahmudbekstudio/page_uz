@@ -1,7 +1,6 @@
 <template>
     <page-box
         :actions="actionsList"
-        :footerActions="footerActionsList"
     >
         <formComponent
             :value="profileForm"
@@ -29,7 +28,6 @@
             formValidate: null,
             profileForm: null,
             actionsList: [],
-            footerActionsList: [],
         }),
         computed: {
             ...mapGetters({
@@ -56,11 +54,6 @@
         },
         created() {
             this.actionsList.push(getPageBoxAction('words.save', '', {color: 'primary', disabled: false}, {
-                click: () => {
-                    this.submit();
-                }
-            }));
-            this.footerActionsList.push(getPageBoxAction('words.save', '', {color: 'primary'}, {
                 click: () => {
                     this.submit();
                 }
@@ -129,9 +122,7 @@
             disabledChanged(val) {
                 this.changeSubmitDisabled(val);
                 this.actionsList[0].bind.disabled = val;
-                this.footerActionsList[0].bind.disabled = val;
                 this.actionsList = _.cloneDeep(this.actionsList);
-                this.footerActionsList = _.cloneDeep(this.footerActionsList);
             },
             formValid(valid) {
                 this.disabledChanged(!valid);

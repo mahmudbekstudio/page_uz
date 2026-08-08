@@ -2,7 +2,6 @@
     <page-box
         class="module-main-setting"
         :actions="actionsList"
-        :footerActions="footerActionsList"
     >
         <form-component
             :value="settingForm"
@@ -28,7 +27,6 @@
         data () {
             return {
                 actionsList: [],
-                footerActionsList: [],
                 settingForm: null,
                 formValidate: null,
                 formReset: null,
@@ -48,8 +46,6 @@
             });
             this.actionsList.push(resetButton);
             this.actionsList.push(saveButton);
-            this.footerActionsList.push(resetButton);
-            this.footerActionsList.push(saveButton);
 
             this.$options.service.getSettings(response => {
                 this.initialFormValues = response;

@@ -21,7 +21,7 @@
 
 .page-box {
   padding: 24px;
-  margin-top: 10px;
+  margin-top: 74px;
   border-top: 1px solid #e7eaec;
   background-color: rgba(255, 255, 255, 0.7) !important;
   border-radius: 3px;
@@ -35,6 +35,9 @@
 }
 
 .page-header {
+    right: 0;
+    background-color: #FFF;
+
   .v-btn {
     margin-left: 5px;
     margin-right: 5px;

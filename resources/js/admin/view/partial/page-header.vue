@@ -1,5 +1,9 @@
 <template>
-    <div class="page-header" v-if="showHeader">
+    <div
+        v-if="showHeader"
+        class="page-header v-footer--fixed"
+        :style="{left: navigationWidth + 'px'}"
+    >
         <v-app-bar>
             <v-toolbar-title>{{ $t(pageTitle) }}</v-toolbar-title>
             <div class="flex-grow-1"></div>
@@ -43,6 +47,11 @@
 <script>
     import {mapGetters} from 'vuex';
     export default {
+        data () {
+            return {
+                navigationClientWidth: 0,
+            };
+        },
         props: {
             actions: {
                 type: Array,
@@ -59,10 +68,17 @@
                 }
             }
         },
+        mounted() {
+            this.navigationClientWidth = document.querySelector('.navigation').clientWidth;
+        },
         computed: {
             ...mapGetters({
+                drawer: 'view/drawer',
                 viewTitle: 'view/title'
             }),
+            navigationWidth () {
+                return this.drawer ? this.navigationClientWidth : 0;
+            },
             showHeader() {
                 return this.pageTitle || this.actions.length || typeof this.$slots.actions !== 'undefined' || this.forceShow;
             },

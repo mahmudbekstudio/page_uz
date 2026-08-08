@@ -6,7 +6,12 @@
         <div class="page-box">
             <slot></slot>
         </div>
-        <page-footer :actions="footerActions"><span v-html="footerText"></span></page-footer>
+        <page-footer
+            v-if="footerActions.length || footerText.length"
+            :actions="footerActions"
+        >
+            <span v-html="footerText"></span>
+        </page-footer>
     </div>
 </template>
 <script>
