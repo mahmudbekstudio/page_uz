@@ -4,6 +4,7 @@ namespace App\DataTable;
 
 use App\Criteria\User\AddUserNameCriteriaCriteria;
 use App\Criteria\User\AddUserRoleCriteriaCriteria;
+use App\Criteria\User\GetUserByLowerRoleCriteriaCriteria;
 use App\Repositories\UserRepository;
 
 class UsersDataTable extends DataTable
@@ -25,6 +26,7 @@ class UsersDataTable extends DataTable
     {
         return $this
             ->repository
+            ->pushCriteria(GetUserByLowerRoleCriteriaCriteria::class)
             ->pushCriteria(AddUserNameCriteriaCriteria::class)
             ->pushCriteria(AddUserRoleCriteriaCriteria::class);
     }

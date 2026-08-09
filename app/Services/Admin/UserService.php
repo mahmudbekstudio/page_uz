@@ -73,7 +73,7 @@ class UserService extends BaseService
 
     public static function createDefaultRoles()
     {
-        foreach(User::getRoles() as $role) {
+        foreach(config('app.userRoles') as $role) {
             Role::findOrCreate($role, User::GUARD_NAME);
         }
     }

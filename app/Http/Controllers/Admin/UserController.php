@@ -63,6 +63,24 @@ class UserController extends Controller
 
     public function delete(User $user)
     {
+        $userRoles = config('app.userRoles');
+        $currentUser = auth()->user();
+        $currentUserRole = $currentUser->role;
+        $isFound = false;
+        foreach ($userRoles as $role) {
+            if ($currentUserRole == $role) {
+                $isFound = true;
+            }
+
+            if ($isFound) {
+                $roles[] = $role;
+            }
+        }
+
+        if (!in_array($user->role, $roles) || $currentUser->id === $user->id) {
+            return responseJsonMessage(false, __('words.you_cannot_delete_this_user'));
+        }
+
         $result = $this->userService->delete($user);
         return responseJsonData($result, $result ? $user->toArray() : []);
     }

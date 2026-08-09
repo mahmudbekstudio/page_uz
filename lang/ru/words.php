@@ -266,6 +266,7 @@ return [
     'show_all_roles' => 'Показать все роли',
     'show_all_status' => 'Показать все статусы',
     'do_you_really_want_to_delete_user' => 'Вы действительно хотите удалить пользователя',
+    'you_cannot_delete_this_user' => 'Вы не можете удалить этого пользователя.',
     'old_password' => 'Старый пароль',
     'layout' => 'Макет',
     'block' => 'Блок',

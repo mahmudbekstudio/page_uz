@@ -79,17 +79,6 @@ class User extends Authenticatable implements JWTSubject, CanResetPasswordContra
         self::websiteAddScope();
     }
 
-    public static function getRoles()
-    {
-        return [
-            self::ROLE_SUPER_ADMIN,
-            self::ROLE_ADMIN,
-            self::ROLE_MANAGER,
-            self::ROLE_PUBLISHER,
-            self::ROLE_USER
-        ];
-    }
-
     /**
      * Metas
      *

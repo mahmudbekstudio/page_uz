@@ -100,14 +100,14 @@ export default class Service {
             .send()
             .then(response => {
                 if (response.data.result) {
-                    successCallback();
+                    successCallback(response.data);
                 } else {
-                    errorCallback();
+                    errorCallback(response.data);
                 }
             })
             .catch(error => {
                 console.log(error);
-                errorCallback();
+                errorCallback(error);
             })
             .then(() => this.loading(false));
     }
@@ -119,14 +119,14 @@ export default class Service {
             .send()
             .then(response => {
                 if (response.data.result) {
-                    successCallback();
+                    successCallback(response.data);
                 } else {
-                    errorCallback();
+                    errorCallback(response.data);
                 }
             })
             .catch(error => {
                 console.log(error);
-                errorCallback();
+                errorCallback(error);
             })
             .then(() => this.loading(false));
     }
@@ -138,14 +138,14 @@ export default class Service {
             .send()
             .then(response => {
                 if (response.data.result) {
-                    successCallback();
+                    successCallback(response.data);
                 } else {
-                    errorCallback();
+                    errorCallback(response.data);
                 }
             })
             .catch(error => {
                 console.log(error);
-                errorCallback();
+                errorCallback(error);
             })
             .then(() => this.loading(false));
     }

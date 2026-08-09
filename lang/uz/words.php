@@ -266,6 +266,7 @@ return [
     'show_all_roles' => 'Barcha rollarni ko\'rsatish',
     'show_all_status' => 'Barcha holatni ko\'rsatish',
     'do_you_really_want_to_delete_user' => 'Siz haqiqatan ham foydalanuvchini o\'chirib tashlamoqchimisiz',
+    'you_cannot_delete_this_user' => 'Siz bu foydalanuvchini o\'chira olmaysiz',
     'old_password' => 'Eski parol',
     'layout' => 'Maket',
     'block' => 'Blok',

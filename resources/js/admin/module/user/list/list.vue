@@ -235,7 +235,9 @@ export default {
                     this.showDialog = false;
                     app.openMessage(this.$t('words.deleted'));
                     this.listReloadCallback();
-                }, () => app.openMessage(this.$t('words.error')));
+                }, error => {
+                    app.errorMessage(error.message.join("\n") || this.$t('words.error'));
+                });
             });
         },
         getStatusColor (statusId) {

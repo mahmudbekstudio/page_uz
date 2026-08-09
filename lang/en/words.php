@@ -266,6 +266,7 @@ return [
     'show_all_roles' => 'Show all roles',
     'show_all_status' => 'Show all status',
     'do_you_really_want_to_delete_user' => 'Do you really want to delete user',
+    'you_cannot_delete_this_user' => 'You cannot delete this user',
     'old_password' => 'Old Password',
     'layout' => 'Layout',
     'block' => 'Block',
