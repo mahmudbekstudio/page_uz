@@ -44,6 +44,11 @@ class SettingController extends Controller
         /*'image_sizes' => DataFormat::FORMAT_ARRAY,
 
         'social_networks' => DataFormat::FORMAT_ARRAY,*/
+        'category---category-template' => DataFormat::FORMAT_INT,
+        'page---post-template' => DataFormat::FORMAT_INT,
+        'post---post-template' => DataFormat::FORMAT_INT,
+        'theme_component_bootstrap' => DataFormat::FORMAT_STRING,
+        'theme_component_swiper_js' => DataFormat::FORMAT_STRING,
     ];
 
     public function get()
@@ -237,7 +242,7 @@ class SettingController extends Controller
                     "params" => [
                         "options" => $postTemplates,
                         "multiple" => false,
-                        "valueType" => DataFormat::FORMAT_ARRAY,
+                        "valueType" => DataFormat::FORMAT_STRING,
                         "label" => $activeType['title']
                     ],
                 ];
@@ -262,7 +267,7 @@ class SettingController extends Controller
                     "params" => [
                         "options" => $categoryTemplates,
                         "multiple" => false,
-                        "valueType" => DataFormat::FORMAT_ARRAY,
+                        "valueType" => DataFormat::FORMAT_STRING,
                         "label" => $activeType['title']
                     ],
                 ];

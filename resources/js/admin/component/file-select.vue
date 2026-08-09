@@ -176,7 +176,7 @@
             right: -12px;
             top: -15px;
             font-size: 18px;
-            z-index: 10;
+            z-index: 2;
             cursor: pointer;
         }
         .item-ico {
