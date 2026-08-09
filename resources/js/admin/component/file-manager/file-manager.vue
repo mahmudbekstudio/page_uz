@@ -589,14 +589,14 @@
                     })
             },
             showSelectedFiles: function (isShow) {
-                this.$nextTick(() => {
+                setTimeout(() => {
                     const filemanagerContent = document.getElementById('filemanager-content');
                     if (isShow) {
                         filemanagerContent.style.paddingTop = document.getElementById('filemanager-action-selected-files').clientHeight + 78 + 'px';
                     } else {
                         filemanagerContent.style.paddingTop = '78px';
                     }
-                });
+                }, 100);
                 this.selectedFilesShow = isShow;
             }
         },
