@@ -33,7 +33,39 @@ return [
             'metas' => [
                 [
                     'meta_key' => 'first_name',
+                    'meta_value' => 'Super Admin',
+                    'meta_format' => DataFormat::FORMAT_STRING,
+                ],
+            ],
+        ],
+        [
+            'id' => 'user_main_admin',
+            'data' => [
+                'status' => User::STATUS_ACTIVE,
+                'email' => 'main_' . User::ROLE_ADMIN . '@' . $main_website,
+                'password' => 'Password123!',
+            ],
+            'role' => User::ROLE_ADMIN,
+            'metas' => [
+                [
+                    'meta_key' => 'first_name',
                     'meta_value' => 'Admin',
+                    'meta_format' => DataFormat::FORMAT_STRING,
+                ],
+            ],
+        ],
+        [
+            'id' => 'user_main_manager',
+            'data' => [
+                'status' => User::STATUS_ACTIVE,
+                'email' => 'main_' . User::ROLE_MANAGER . '@' . $main_website,
+                'password' => 'Password123!',
+            ],
+            'role' => User::ROLE_MANAGER,
+            'metas' => [
+                [
+                    'meta_key' => 'first_name',
+                    'meta_value' => 'Manager',
                     'meta_format' => DataFormat::FORMAT_STRING,
                 ],
             ],
