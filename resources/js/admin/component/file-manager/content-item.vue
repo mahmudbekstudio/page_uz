@@ -159,6 +159,9 @@
                     return false;
                 }
 
+                return this.fileUrl;
+            },
+            fileUrl () {
                 return this.fileBaseUrl + this.selectedFolder.path + '/' + this.value.item.name + '.' + this.value.item.extension;
             }
         },
@@ -294,12 +297,17 @@
                         text: 'words.select',
                         value: 'select'
                     });
-                    /*if(constants.FILE_TYPES[this.value.item.extension] === 'image') {
+                    if(constants.FILE_TYPES[this.value.item.extension] === 'image') {
                         result.push({
-                            text: 'Open image',
+                            text: 'filemanager.open_image',
                             value: 'open_image'
                         });
-                    }*/
+                    } else {
+                        result.push({
+                            text: 'filemanager.download_file',
+                            value: 'download_file'
+                        });
+                    }
                     if (this.canRenameFile) {
                         result.push({
                             text: 'words.rename',
@@ -340,8 +348,10 @@
                             this.itemClick();
                             break;
                         case 'open_image':
-                            //TODO: open image in new tab
-                            //window.open(url, '_blank').focus();
+                            window.open(this.fileUrl, '_blank');
+                            break;
+                        case 'download_file':
+                            window.open(this.fileUrl, '_blank');
                             break;
                         case 'rename':
                             this.dialog.renameFile.name = this.value.item.name;

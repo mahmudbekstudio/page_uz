@@ -9,4 +9,6 @@ return [
     'select_file' => 'Выберите файл',
     'select_files' => 'Выбрать файлы',
     'you_can_select_only_count' => 'Вы можете выбрать только {count} файлов.',
+    'open_image' => 'Открыть изображение',
+    'download_file' => 'Скачать файл',
 ];
