@@ -4,8 +4,14 @@ namespace Database\Seeders;
 
 use App\Dto\Admin\User\CreateData;
 use App\Helpers\DataFormat;
+use App\Repositories\CategoryRepository;
 use App\Repositories\FileRepository;
 use App\Repositories\FolderRepository;
+use App\Repositories\MenuRepository;
+use App\Repositories\PostRepository;
+use App\Repositories\TemplateRepository;
+use App\Repositories\TypeRepository;
+use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
 use App\Services\Admin\CategoryService;
 use App\Services\Admin\FolderFileService;
@@ -48,6 +54,12 @@ class WebsitesTableSeeder extends Seeder
         $categoryService = app(CategoryService::class);
         $currentUser = null;
 
+        $userRepository = UserRepository::getInstance();
+        $typeRepository = app(TypeRepository::class);
+        $templateRepository = app(TemplateRepository::class);
+        $postRepository = app(PostRepository::class);
+        $categoryRepository = app(CategoryRepository::class);
+
         foreach ($websites as $websiteKey => $website) {
             $websiteInstance = $websiteService->create($website['website']['data'], Arr::get($website['website'], 'metas', []));
             WebsiteRepository::getInstance()->setCurrent($websiteInstance->id);
@@ -63,14 +75,17 @@ class WebsitesTableSeeder extends Seeder
                     $metas[$meta['meta_key']] = $meta;
                 }
 
-                $userInstance = $userService->create(new CreateData([
-                    'email' => $user['data']['email'],
-                    'first_name' => Arr::get($metas, 'first_name.meta_value', ''),
-                    'last_name' => Arr::get($metas, 'last_name.meta_value', ''),
-                    'password' => $user['data']['password'],
-                    'role' => $user['role'],
-                    'status' => $user['data']['status'],
-                ]));
+                $userInstance = $userRepository->getByEmail($user['data']['email']);
+                if (!$userInstance) {
+                    $userInstance = $userService->create(new CreateData([
+                        'email' => $user['data']['email'],
+                        'first_name' => Arr::get($metas, 'first_name.meta_value', ''),
+                        'last_name' => Arr::get($metas, 'last_name.meta_value', ''),
+                        'password' => $user['data']['password'],
+                        'role' => $user['role'],
+                        'status' => $user['data']['status'],
+                    ]));
+                }
 
                 if (isset($user['id'])) {
                     $itemsById['user#' . $user['id']] = $userInstance->toArray();
@@ -98,7 +113,10 @@ class WebsitesTableSeeder extends Seeder
                     $data['child_of'] = $itemsById['type#' . $type['child_of']]->id;
                 }
 
-                $typeInstance = $typeService->create($data);
+                $typeInstance = $typeRepository->getByName($data['name']);
+                if (!$typeInstance) {
+                    $typeInstance = $typeService->create($data);
+                }
 
                 if (isset($type['id'])) {
                     $itemsById['type#' . $type['id']] = $typeInstance->toArray();
@@ -119,7 +137,13 @@ class WebsitesTableSeeder extends Seeder
                     $data['layout_id'] = Arr::get($itemsById, 'template#' . $template['layout_id']);
                 }
 
-                $templateInstance = $templateService->create($data);
+                $templateInstance = $templateRepository
+                    ->where('name', json_encode($data['name']))
+                    ->where('type', $data['type'])
+                    ->first();
+                if (!$templateInstance) {
+                    $templateInstance = $templateService->create($data);
+                }
 
                 if (isset($template['id'])) {
                     $itemsById['template#' . $template['id']] = $templateInstance;
@@ -151,18 +175,31 @@ class WebsitesTableSeeder extends Seeder
                     $data['parent'] = Arr::get($itemsById, $itemKey . $page['parent']);
                 }
 
-                $service = $isPost ? $postService : $categoryService;
-                $pageInstance = $service->create(Arr::get($itemsById, 'type#' . $page['type_id']), $data);
+                $typeName = $itemsById['type#' . explode('.', $page['type_id'])[0]]['name'];
+                $typeId = Arr::get($itemsById, 'type#' . $page['type_id']);
+                $routeName = $typeName . '/' . $data['routeName'];
+                $pageRepository = $isPost ? $postRepository : $categoryRepository;
+                $pageInstance = $pageRepository
+                    ->where('type_id', $typeId)
+                    ->where('url', $routeName)
+                    ->first();
+                if (!$pageInstance) {
+                    $service = $isPost ? $postService : $categoryService;
+                    $pageInstance = $service->create(Arr::get($itemsById, 'type#' . $page['type_id']), $data);
+                }
 
                 if (isset($page['metas']) && !empty($page['metas'])) {
                     foreach ($page['metas'] as $meta) {
-                        $metaInstance = $pageInstance->metas()->create(
-                            [
-                                'meta_key' => $meta['meta_key'],
-                                'meta_format' => $meta['meta_format'],
-                                'meta_value' => $meta['meta_value'],
-                            ]
-                        );
+                        $metaInstance = $pageInstance->metas()->where('meta_key', $meta['meta_key'])->first();
+                        if (!$metaInstance) {
+                            $metaInstance = $pageInstance->metas()->create(
+                                [
+                                    'meta_key' => $meta['meta_key'],
+                                    'meta_format' => $meta['meta_format'],
+                                    'meta_value' => $meta['meta_value'],
+                                ]
+                            );
+                        }
                         $itemsById[$itemKey . '_meta_' . $page['id'] . '_' . $meta['meta_key']] = $metaInstance->toArray();
                     }
                 }
@@ -189,7 +226,11 @@ class WebsitesTableSeeder extends Seeder
                 app(FolderFileService::class)
             );
 
-            $this->createMenu(Arr::get($website, 'menus', []), $itemsById);
+            $menuRepository = app(MenuRepository::class);
+            $menusCount = $menuRepository->all(['id'])->count();
+            if (!$menusCount) {
+                $this->createMenu(Arr::get($website, 'menus', []), $itemsById);
+            }
 
             $currentUser = null;
         }
@@ -260,12 +301,21 @@ class WebsitesTableSeeder extends Seeder
 
         $list = Storage::disk('resources')->allFiles($rootPath);
         foreach ($list as $file) {
+            $fileInfo = pathinfo($file);
             $filePath = str_replace($rootPath . '/', '', $file);
             $fileFolderPathList = explode('/', $filePath);
             array_pop($fileFolderPathList);
             $fileFolderPath = implode('/', $fileFolderPathList);
-            $uploadedFile = pathToUploadedFile(resource_path($file));
-            $fileInstance = $folderFileService->uploadFile($addedFolders[$fileFolderPath]['id'], $uploadedFile);
+            $fileInstance = $fileRepository
+                ->where('folder_id', $addedFolders[$fileFolderPath]['id'])
+                ->where('name', $fileInfo['filename'])
+                ->where('extension', $fileInfo['extension'])
+                ->first();
+            if (!$fileInstance) {
+                $uploadedFile = pathToUploadedFile(resource_path($file));
+                $fileInstance = $folderFileService->uploadFile($addedFolders[$fileFolderPath]['id'], $uploadedFile);
+            }
+
             $itemsById['file#' . $fileInstance['id']] = $fileInstance->toArray();
         }
 
