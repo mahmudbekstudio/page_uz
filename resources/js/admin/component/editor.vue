@@ -7,7 +7,7 @@
             :plugins1="plugins"
             :toolbar1="toolbarFull"
             v-model="content"
-            api-key="s3vlgj779os2tcr8oyv1rjzieexvnvw5ffv0oxayighq4a7j"
+            tinymce-script-src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.9/tinymce.min.js"
         />
         <dialog-component
             title=""
