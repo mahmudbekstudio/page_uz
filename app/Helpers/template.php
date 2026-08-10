@@ -459,8 +459,10 @@ if (! function_exists('getFileUrl')) {
 }
 
 if (! function_exists('getFilesList')) {
-    function getFilesList(array $files): array
+    function getFilesList(array|null $files): array
     {
+        if (is_null($files)) return [];
+
         foreach ($files as $key => $file) {
             $file['url'] = getFileUrl($file);
             $files[$key] = $file;
