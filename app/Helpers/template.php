@@ -522,3 +522,23 @@ if (! function_exists('getStructureFields')) {
         return $result;
     }
 }
+
+if (! function_exists('initChildOfField')) {
+    function initChildOfField(array $structure, $childOfId, $label): array
+    {
+        foreach ($structure as $tabKey => $tab) {
+            foreach (Arr::get($tab, 'children', []) as $rowKey => $row) {
+                foreach (Arr::get($row, 'children', []) as $colKey => $col) {
+                    foreach (Arr::get($col, 'children', []) as $fieldKey => $field) {
+                        if ($field['type'] === 'advancedChildOf') {
+                            $structure[$tabKey]['children'][$rowKey]['children'][$colKey]['children'][$fieldKey]['params']['child_of'] = $childOfId;
+                            $structure[$tabKey]['children'][$rowKey]['children'][$colKey]['children'][$fieldKey]['params']['label'] = $label;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $structure;
+    }
+}

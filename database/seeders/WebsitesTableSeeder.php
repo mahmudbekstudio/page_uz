@@ -105,13 +105,17 @@ class WebsitesTableSeeder extends Seeder
                     'status' => $type['status'],
                     'type' => $type['type'],
                     'has_parent' => $type['has_parent'],
-                    'structure'=> $type['structure'],
-                    'fields' => getStructureFields($type['structure']),
                 ];
 
-                if (isset($type['child_of']) && isset($itemsById['type#' . $type['child_of']])) {
-                    $data['child_of'] = $itemsById['type#' . $type['child_of']]->id;
+                if (isset($type['child_of']) && Arr::has($itemsById, 'type#' . $type['child_of'])) {
+                    $childOfId = Arr::get($itemsById, 'type#' . $type['child_of']);
+                    $childOfLabel = Arr::get($itemsById, 'type#' . str_replace('.id', '.title', $type['child_of']));
+                    $data['child_of'] = $childOfId;
+                    $type['structure'] = initChildOfField($type['structure'], $childOfId, $childOfLabel);
                 }
+
+                $data['structure'] = $type['structure'];
+                $data['fields'] = getStructureFields($type['structure']);
 
                 $typeInstance = $typeRepository->getByName($data['name']);
                 if (!$typeInstance) {
