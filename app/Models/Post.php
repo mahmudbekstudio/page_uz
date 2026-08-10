@@ -62,6 +62,6 @@ class Post extends Model
 
     public function route(): HasOne
     {
-        return $this->hasOne(Route::class, 'parent_id');
+        return $this->hasOne(Route::class, 'parent_id')->where('type_id', $this->type_id);
     }
 }
