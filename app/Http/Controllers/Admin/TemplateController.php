@@ -49,7 +49,11 @@ class TemplateController extends Controller
     {
         $data = $request->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id']);
 
-        return responseJsonData(true, ['template' => $this->templateService->create($data)]);
+        return responseJsonData(true, [
+            'template' => $this->templateService
+                ->create($data)
+                ->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id'])
+        ]);
     }
 
     public function edit(int $template, CreateTemplateRequest $request)

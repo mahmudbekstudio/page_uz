@@ -26,7 +26,7 @@ class TemplateService extends BaseService
     {
         Arr::set($fields, 'params', Arr::get($fields, 'params', []));
 
-        return $this->templateRepository->create($fields)->only(['name', 'type', 'content', 'params', 'type_id', 'layout_id']);
+        return $this->templateRepository->create($fields);
     }
 
     public function getByType(string $type)

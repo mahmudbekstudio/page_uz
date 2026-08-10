@@ -137,6 +137,10 @@ class WebsitesTableSeeder extends Seeder
                     $data['layout_id'] = Arr::get($itemsById, 'template#' . $template['layout_id']);
                 }
 
+                if (isset($template['type_id']) && Arr::has($itemsById, 'type#' . $template['type_id'])) {
+                    $data['type_id'] = Arr::get($itemsById, 'type#' . $template['type_id']);
+                }
+
                 $templateInstance = $templateRepository
                     ->where('name', json_encode($data['name']))
                     ->where('type', $data['type'])
