@@ -39,45 +39,65 @@ class UserController extends Controller
 
     public function list(UsersDataTable $usersDataTable)
     {
+        $currentUserRole = auth()->user()->role;
+
+        if (!count(config('app.manage.user.' . $currentUserRole . '.read'))) {
+            return responseJsonMessage(false, __('words.you_cannot_delete_this_user'));
+        }
+
         return responseJsonData(true, $usersDataTable->toArray());
     }
 
     public function byId(int $id)
     {
-        return responseJsonData(true, getUserData($id));
+        $userData = getUserData($id);
+        $currentUserRole = auth()->user()->role;
+
+        if (!in_array($userData['role'], config('app.manage.user.' . $currentUserRole . '.read'))) {
+            return responseJsonMessage(false, __('words.you_cannot_delete_this_user'));
+        }
+
+        return responseJsonData(true, $userData);
     }
 
     public function create(CreateUserRequest $request): JsonResponse
     {
+        $currentUserRole = auth()->user()->role;
         $createUserData = new CreateData($request->only(['email', 'first_name', 'last_name', 'password', 'role', 'status']));
+
+        if (!in_array($createUserData->role, config('app.manage.user.' . $currentUserRole . '.create'))) {
+            return responseJsonMessage(false, __('words.you_cannot_delete_this_user'));
+        }
+
         $user = $this->userService->create($createUserData);
         return responseJsonData(!!$user, $user ? $user->toArray() : []);
     }
 
     public function update(User $user, UpdateUserRequest $request)
     {
+        $currentUserRole = auth()->user()->role;
         $updateUserData = new UpdateData($request->only(['first_name', 'last_name', 'password', 'role', 'status']));
+
+        if (
+            !in_array($updateUserData->role, config('app.manage.user.' . $currentUserRole . '.update')) ||
+            !in_array($user->role, config('app.manage.user.' . $currentUserRole . '.update'))
+        ) {
+            return responseJsonMessage(false, __('words.you_cannot_delete_this_user'));
+        }
+
         $result = $this->userService->update($user, $updateUserData);
         return responseJson($result);
     }
 
     public function delete(User $user)
     {
-        $userRoles = config('app.userRoles');
         $currentUser = auth()->user();
         $currentUserRole = $currentUser->role;
-        $isFound = false;
-        foreach ($userRoles as $role) {
-            if ($currentUserRole == $role) {
-                $isFound = true;
-            }
 
-            if ($isFound) {
-                $roles[] = $role;
-            }
-        }
-
-        if (!in_array($user->role, $roles) || $currentUser->id === $user->id) {
+        if (
+            !in_array($user->role, config('app.manage.user.' . $currentUserRole . '.delete')) ||
+            $currentUser->id === $user->id
+        ) {
             return responseJsonMessage(false, __('words.you_cannot_delete_this_user'));
         }
 

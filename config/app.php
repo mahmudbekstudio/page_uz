@@ -52,6 +52,92 @@ return [
         User::ROLE_PUBLISHER,
         User::ROLE_USER
     ],
+    'manage' => [
+        'user' => [
+            User::ROLE_SUPER_ADMIN => [
+                'create' => [
+                    User::ROLE_SUPER_ADMIN,
+                    User::ROLE_ADMIN,
+                    User::ROLE_MANAGER,
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ],
+                'read' => [
+                    User::ROLE_SUPER_ADMIN,
+                    User::ROLE_ADMIN,
+                    User::ROLE_MANAGER,
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ],
+                'update' => [
+                    User::ROLE_SUPER_ADMIN,
+                    User::ROLE_ADMIN,
+                    User::ROLE_MANAGER,
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ],
+                'delete' => [
+                    User::ROLE_SUPER_ADMIN,
+                    User::ROLE_ADMIN,
+                    User::ROLE_MANAGER,
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ]
+            ],
+            User::ROLE_ADMIN => [
+                'create' => [
+                    User::ROLE_MANAGER,
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ],
+                'read' => [
+                    User::ROLE_MANAGER,
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ],
+                'update' => [
+                    User::ROLE_MANAGER,
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ],
+                'delete' => [
+                    User::ROLE_MANAGER,
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ]
+            ],
+            User::ROLE_MANAGER => [
+                'create' => [
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ],
+                'read' => [
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ],
+                'update' => [
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ],
+                'delete' => [
+                    User::ROLE_PUBLISHER,
+                    User::ROLE_USER
+                ]
+            ],
+            User::ROLE_PUBLISHER => [
+                'create' => [],
+                'read' => [],
+                'update' => [],
+                'delete' => []
+            ],
+            User::ROLE_USER => [
+                'create' => [],
+                'read' => [],
+                'update' => [],
+                'delete' => []
+            ]
+        ]
+    ],
     'timeFormat' => [
         'full' => 'YYYY-MM-DD HH:mm:ss',
         'date' => 'YYYY-MM-DD',

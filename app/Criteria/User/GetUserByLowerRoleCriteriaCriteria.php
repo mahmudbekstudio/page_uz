@@ -12,23 +12,6 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 class GetUserByLowerRoleCriteriaCriteria implements CriteriaInterface
 {
-    private $roles = [];
-    public function __construct()
-    {
-        $userRoles = config('app.userRoles');
-        $currentUserRole = auth()->user()->role;
-        $isFound = false;
-        foreach ($userRoles as $role) {
-            if ($currentUserRole == $role) {
-                $isFound = true;
-            }
-
-            if ($isFound) {
-                $this->roles[] = $role;
-            }
-        }
-    }
-
     /**
      * Apply criteria in query repository
      *
@@ -40,7 +23,7 @@ class GetUserByLowerRoleCriteriaCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         return $model->whereHas('roles', function ($query) {
-            $query->whereIn('roles.name', $this->roles);
+            $query->whereIn('roles.name', config('app.manage.user.' . auth()->user()->role . '.read'));
         });
     }
 }
