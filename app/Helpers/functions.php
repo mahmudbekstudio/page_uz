@@ -2,6 +2,7 @@
 
 use App\Helpers\DataFormat;
 use App\Models\WebsiteMeta;
+use App\Repositories\SettingRepository;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -271,7 +272,8 @@ if (! function_exists('typeNavigation')) {
         $blocks = [];
         $settings = [];
         $postRepository = app(PostRepository::class);
-        app(TypeRepository::class)->getActiveList()->each(function ($item) use (&$posts, &$categories, &$blocks, &$settings, $postRepository) {
+        $settingRepository = app(SettingRepository::class);
+        app(TypeRepository::class)->getActiveList()->each(function ($item) use (&$posts, &$categories, &$blocks, &$settings, $postRepository, $settingRepository) {
             if ($item->type === Type::TYPE_POST) {
                 $posts[] = [
                     'text' => $item->title,
@@ -307,7 +309,7 @@ if (! function_exists('typeNavigation')) {
                 ];
             } elseif ($item->type === Type::TYPE_SETTING) {
                 $params = ['typeId' => $item->id];
-                $post = $postRepository->getByType($item->id)->first();
+                $post = $settingRepository->getByType($item->id)->first();
 
                 if ($post) {
                     $params['id'] = $post->id;

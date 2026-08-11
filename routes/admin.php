@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\TemplateController;
 use App\Http\Controllers\Admin\FeatureController;
+use App\Http\Controllers\Admin\BlockController;
 
 Route::group(['middleware' => ['auth:api']], function() {
     Route::get('settings', [MainController::class, 'settings'])->name('settings');
@@ -50,6 +51,16 @@ Route::group(['middleware' => ['auth:api']], function() {
                 Route::post('upload-file/{id}', [FolderFileController::class, 'uploadFile'])->name('upload-file');
                 Route::post('rename-file', [FolderFileController::class, 'renameFile'])->name('rename-file');
                 Route::delete('delete-file/{id}', [FolderFileController::class, 'deleteFile'])->name('delete-file');
+            });
+
+            Route::group(['prefix' => 'block/{type}', 'as' => 'block.'], function () {
+                Route::get('list', [BlockController::class, 'list'])->name('list');
+                Route::post('create', [BlockController::class, 'create'])->name('create');
+                Route::put('edit/{block}', [BlockController::class, 'edit'])->name('edit');
+                Route::get('get/{block}', [BlockController::class, 'get'])->name('get');
+                Route::delete('delete/{block}', [BlockController::class, 'delete'])->name('delete');
+
+                Route::get('active-list/{selectedId}', [BlockController::class, 'activeList'])->name('active-list');
             });
 
             Route::group(['prefix' => 'post/{type}', 'as' => 'post.'], function () {
@@ -135,7 +146,10 @@ Route::group(['middleware' => ['auth:api']], function() {
                 });
 
                 Route::group(['prefix' => 'setting', 'as' => 'setting.'], function () {
-                    Route::get('get', [SettingController::class, 'get'])->name('get');
+                    Route::post('create/{type}', [SettingController::class, 'create'])->name('create');
+                    Route::put('edit/{type}/{setting}', [SettingController::class, 'edit'])->name('edit');
+                    Route::get('get/{type}/{setting}', [SettingController::class, 'get'])->name('get');
+                    Route::get('all', [SettingController::class, 'all'])->name('all');
                     Route::put('update', [SettingController::class, 'update'])->name('update');
                 });
 

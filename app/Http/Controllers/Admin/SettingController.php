@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\DataFormat;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Setting\CreateSettingRequest;
 use App\Http\Requests\Admin\Setting\UpdateSettingRequest;
+use App\Models\SettingMeta;
 use App\Models\Template;
 use App\Models\Type;
 use App\Models\Website;
 use App\Models\WebsiteMeta;
 use App\Repositories\PostRepository;
+use App\Repositories\SettingMetaRepository;
+use App\Repositories\SettingRepository;
 use App\Repositories\TypeRepository;
 use App\Repositories\WebsiteRepository;
 use App\Services\Admin\TemplateService;
@@ -51,7 +55,16 @@ class SettingController extends Controller
         'theme_component_swiper_js' => DataFormat::FORMAT_STRING,
     ];
 
-    public function get()
+    private $settingRepository = null;
+    private $settingMetaRepository = null;
+
+    public function __construct()
+    {
+        $this->settingRepository = app(SettingRepository::class);
+        $this->settingMetaRepository = app(SettingMetaRepository::class);
+    }
+
+    public function all()
     {
         return responseJsonData(true, $this->getData());
     }
@@ -470,5 +483,57 @@ class SettingController extends Controller
         }
 
         return $metas;
+    }
+
+    public function get(int $type, int $setting)
+    {
+        $settingItem = $this->settingRepository->getById($setting);
+        $result = getFieldValues(getTypeById($type)->fields);
+
+        $settingItem->metas->each(function (SettingMeta $meta) use (&$result) {
+            $result[$meta->meta_key] = DataFormat::toFormat($meta->meta_value, $meta->meta_format);
+        });
+
+        return responseJsonData(true, ['setting' => $result]);
+    }
+
+    public function edit(int $type, int $setting, CreateSettingRequest $request)
+    {
+        $fieldNames = $request->only(getFieldNames(getTypeById($type)->fields));
+        $typeFields = getFields(getTypeById($type)->fields);
+        $settingItem = $this->settingRepository->getById($setting);
+        $settingItem->metas()->delete();
+        foreach ($fieldNames as $name => $value) {
+            $format = Arr::get($typeFields[$name], 'params.valueType', DataFormat::getDefault());
+            $settingMetaAttributes = [
+                'setting_id' => $settingItem->id,
+                'meta_format' => $format,
+                'meta_key' => $name,
+                'meta_value' => DataFormat::toString($value, $format),
+            ];
+            $this->settingMetaRepository->create($settingMetaAttributes);
+        }
+
+        return responseJsonData(true, ['setting' => $settingItem]);
+    }
+
+    public function create(int $type, CreateSettingRequest $request)
+    {
+        $fieldNames = $request->only(getFieldNames(getTypeById($type)->fields));
+        $typeFields = getFields(getTypeById($type)->fields);
+        $setting = $this->settingRepository->create(['type_id' => $type]);
+
+        foreach ($fieldNames as $name => $value) {
+            $format = Arr::get($typeFields[$name], 'params.valueType', DataFormat::getDefault());
+            $settingMetaAttributes = [
+                'setting_id' => $setting->id,
+                'meta_format' => $format,
+                'meta_key' => $name,
+                'meta_value' => DataFormat::toString($value, $format),
+            ];
+            $this->settingMetaRepository->create($settingMetaAttributes);
+        }
+
+        return responseJsonData(true, ['setting' => $setting]);
     }
 }

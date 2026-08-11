@@ -1,22 +1,89 @@
+<template>
+    <page-box
+        class="module-block-list"
+        :header-title="headerTitle"
+        :actions="actions"
+    >
+        <data-table
+            :headers="headers"
+            route="admin.block.list"
+            :routeCallback="dataTableRouteCallback"
+            route-need-token
+            row-clickable
+            :filter="filter"
+            @click:row="clickRow"
+            @reloadCallback="listReloadCallback = $event"
+        >
+            <template v-slot:item.title="props">
+                {{ $t(props.value) }}
+            </template>
+            <template v-slot:item.status="props">
+                <v-chip
+                    :color="props.value ? 'green' : 'red'"
+                    dark
+                >
+                    {{ $t('words.' + (props.value ? 'yes' : 'no')) }}
+                </v-chip>
+            </template>
+            <template v-slot:item.parent="props">
+                {{ $t(props.value) || '-' }}
+            </template>
+            <template v-slot:item.category="props">
+                {{ $t(props.value) || '-' }}
+            </template>
+            <template v-slot:item.created_at="props">{{ $moment(props.value).format(mainConfig.app.timeFormat.full) }}</template>
+            <template v-slot:item.actions="props">
+                <v-btn
+                    depressed
+                    color="error"
+                    @click.stop="clickDelete(props.item)"
+                >
+                    {{ $t('words.delete') }}
+                </v-btn>
+            </template>
+        </data-table>
+    </page-box>
+</template>
 <script>
-import PostList from '../../post/list/list.vue';
-import app from "../../../service/app";
+import pageBox from '../../../view/partial/page-box';
 import {getPageBoxAction} from "../../../helper";
+import dataTable from '../../../component/table/data-table';
 import {mapGetters} from "vuex";
+import mainConfig from '../../../config/main';
+import app from "../../../service/app";
+import Service from '../form/service';
 
 export default {
-    extends: PostList,
-    data () {
+    service: new Service(),
+    data() {
         return {
-            //
-        };
+            actions: [],
+            headers: [],
+            mainConfig: mainConfig,
+            listReloadCallback: null,
+            filter: {
+                status: {condition: '=', value: ''},
+            },
+        }
+    },
+    created() {
+        this.init();
     },
     computed: {
         ...mapGetters({
+            activeNavigation: 'view/activeNavigation',
             viewTitle: "view/title",
         }),
         headerTitle () {
             return this.$t(this.viewTitle) + ': ' + this.$t(this.activeNavigation.text);
+        },
+        typeId() {
+            return parseInt(this.$route.params.typeId);
+        },
+    },
+    watch: {
+        typeId() {
+            this.init();
         },
     },
     methods: {
@@ -48,9 +115,16 @@ export default {
                 });
             });
         },
+        dataTableRouteCallback(route) {
+            route.urlParam('{type}', this.typeId);
+        },
         clickRow (row) {
             this.$router.push({name: 'block.edit', params: {typeId: this.typeId, id: row.id}})
         },
+    },
+    components: {
+        dataTable,
+        pageBox
     }
 }
 </script>

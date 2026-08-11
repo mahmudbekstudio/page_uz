@@ -2,7 +2,7 @@ import route from '../../../api/route';
 
 const api = {
     getSettings: {
-        ...route.admin('setting.get'),
+        ...route.admin('setting.all'),
         token: true
     },
 
