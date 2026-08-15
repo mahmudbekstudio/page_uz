@@ -30,8 +30,8 @@ class SettingController extends Controller
         'status' => DataFormat::FORMAT_BOOL,
         'languages_list' => DataFormat::FORMAT_ARRAY,
         'language' => DataFormat::FORMAT_STRING,
-        'phone' => DataFormat::FORMAT_STRING,
-        'address' => DataFormat::FORMAT_STRING,
+        //'phone' => DataFormat::FORMAT_STRING,//
+        //'address' => DataFormat::FORMAT_STRING,//
         'favicon' => DataFormat::FORMAT_ARRAY,
         //'copyright' => DataFormat::FORMAT_STRING,
 
@@ -48,11 +48,11 @@ class SettingController extends Controller
         /*'image_sizes' => DataFormat::FORMAT_ARRAY,
 
         'social_networks' => DataFormat::FORMAT_ARRAY,*/
-        'category---category-template' => DataFormat::FORMAT_INT,
-        'page---post-template' => DataFormat::FORMAT_INT,
-        'post---post-template' => DataFormat::FORMAT_INT,
-        'theme_component_bootstrap' => DataFormat::FORMAT_STRING,
-        'theme_component_swiper_js' => DataFormat::FORMAT_STRING,
+        //'category---category-template' => DataFormat::FORMAT_INT,
+        //'page---post-template' => DataFormat::FORMAT_INT,
+        //'post---post-template' => DataFormat::FORMAT_INT,
+        //'theme_component_bootstrap' => DataFormat::FORMAT_STRING,
+        //'theme_component_swiper_js' => DataFormat::FORMAT_STRING,
     ];
 
     private $settingRepository = null;
@@ -183,7 +183,7 @@ class SettingController extends Controller
 
     private function getThemeFields($metas)
     {
-        $bootstrap = config('app.theme.components.bootstrap');
+        /*$bootstrap = config('app.theme.components.bootstrap');
         $bootstrapVersions = [];
         foreach ($bootstrap as $key => $value) {
             $bootstrapVersions[$key] = $key . '.' . $value;
@@ -216,15 +216,15 @@ class SettingController extends Controller
                     "label" => "words.swiper_js"
                 ],
             ],
-        ];
+        ];*/
 
         /**
          * @var TemplateService
          */
-        $templateService = app(TemplateService::class);
+        //$templateService = app(TemplateService::class);
         //'post_template',
         //'category_template',
-        $postTemplates = [];
+        /*$postTemplates = [];
         $categoryTemplates = [];
 
         foreach ($templateService->getByType(Template::TYPE_POST) as $item) {
@@ -233,9 +233,9 @@ class SettingController extends Controller
 
         foreach ($templateService->getByType(Template::TYPE_CATEGORY) as $item) {
             $categoryTemplates[$item->id] = $item->name;
-        }
+        }*/
 
-        foreach ($this->list as $key => $item) {
+        /*foreach ($this->list as $key => $item) {
             if (str_ends_with($key, WebsiteMeta::POST_TEMPLATE_POSTFIX)) {
                 $name = substr($key, 0, strlen($key) - strlen(WebsiteMeta::POST_TEMPLATE_POSTFIX));
                 $activeType = $this->getActiveType($name);
@@ -285,9 +285,9 @@ class SettingController extends Controller
                     ],
                 ];
             }
-        }
+        }*/
 
-        return $result;
+        return [];
     }
 
     private function getMainFields($metas)
@@ -390,7 +390,7 @@ class SettingController extends Controller
                     "label" => "words.language"
                 ],
             ],
-            [
+            /*[
                 "type" => "text",
                 "name" => "phone",
                 "value" => Arr::get($metas, 'phone', ''),
@@ -399,8 +399,8 @@ class SettingController extends Controller
                     "valueType" => DataFormat::FORMAT_STRING,
                     "label" => "words.phone"
                 ],
-            ],
-            [
+            ],*/
+            /*[
                 "type" => "textarea",
                 "name" => "address",
                 "value" => Arr::get($metas, 'address', ''),
@@ -408,7 +408,7 @@ class SettingController extends Controller
                     "valueType" => DataFormat::FORMAT_STRING,
                     "label" => "words.address",
                 ],
-            ],
+            ],*/
             /*[
                 "type" => "text",
                 "name" => "copyright",

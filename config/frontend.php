@@ -14,7 +14,6 @@ return [
     'app.timeFormat',
     'app.userRoles',
     'app.parentPageDeepLimit',
-    'app.theme.components',
     'template.exceptFields' => 'app.template.except_fields',
     'app.feature_types',
     'app.default_feature_type',

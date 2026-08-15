@@ -1,6 +1,6 @@
-import './search_button';
+/*import './search_button';
 import './account_button';
-import './cart_button';
+import './cart_button';*/
 
 window.openedPopover = null;
 parent.window.activeBlock = null;

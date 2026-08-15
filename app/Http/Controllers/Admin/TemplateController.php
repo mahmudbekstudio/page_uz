@@ -74,7 +74,10 @@ class TemplateController extends Controller
             Arr::set($template, 'name', json_decode($name, true));
         }*/
 
-        return responseJsonData(true, ['template' => $template]);
+        return responseJsonData(true, [
+            'template' => $template,
+            'theme_config' => $this->templateService->getThemeConfig()
+        ]);
     }
 
     public function getByType(string $type)

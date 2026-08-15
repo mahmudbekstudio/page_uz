@@ -181,9 +181,11 @@ return [
         'default' => [
             'css' => [
                 'https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css',
+                'https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/css/bootstrap.min.css',
             ],
             'js' => [
                 'https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js',
+                'https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.min.js',
                 'https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js',
                 //https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/scripts/verify.min.js
             ],

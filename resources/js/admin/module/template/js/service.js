@@ -9,7 +9,7 @@ import typeApi from '../../type/form/api';
 import store from './store';
 
 export default class Service extends BaseService {
-    //themeConfig = null;
+    themeConfig = null;
     settings (successCallback, errorCallback) {
         this.callback().request(api.settings, successCallback, errorCallback);
     }
@@ -29,6 +29,7 @@ export default class Service extends BaseService {
             .send()
             .then(response => {
                 if (typeof successCallback === 'function') {
+                    this.themeConfig = response.data.data.theme_config
                     successCallback(response.data);
                 }
             })

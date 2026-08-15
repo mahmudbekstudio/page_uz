@@ -65,7 +65,7 @@ class TemplateService extends BaseService
             $result['css'][] = $css;
         }
 
-        $websiteMetas = WebsiteRepository::getInstance()->getMetas();
+        /*$websiteMetas = WebsiteRepository::getInstance()->getMetas();
 
         foreach ($themeConfig['cdn'] as $component => $list) {
             $websiteMetas['theme_component_' . $component] = Arr::get(
@@ -75,7 +75,7 @@ class TemplateService extends BaseService
             foreach ($list as $type => $file) {
                 $result[$type][] = str_replace('{VERSION}', $websiteMetas['theme_component_' . $component], $file);
             }
-        }
+        }*/
 
         return $result;
     }
