@@ -130,6 +130,11 @@ class WebsitesTableSeeder extends Seeder
             // create templates
             $templates = Arr::get($website, 'templates', []);
             foreach ($templates as $template) {
+                if (empty($template['content'])) {
+                    $defaultData = $templateService->getDefaultData($template['type']);
+                    $template['content'] = $defaultData['content'];
+                    $template['params'] = $defaultData['params'];
+                }
                 $data = [
                     'name' => $template['name'],
                     'type' => $template['type'],

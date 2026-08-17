@@ -489,7 +489,9 @@ if (! function_exists('structureToHtml')) {
 
             foreach ($children as $itemKey => $item) {
                 if ($itemKey === 'field') {
-                    $result .= '{ $content }';
+                    $result .= '{ $' . $item . ' }';
+                } elseif (!isset($item['tag']) && isset($item['field'])) {
+                    $result .= '{ $' . $item['field'] . ' }';
                 } else {
                     $result .= structureToHtml($item, $fields);
                 }

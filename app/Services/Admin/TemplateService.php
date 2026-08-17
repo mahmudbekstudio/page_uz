@@ -7,6 +7,7 @@ use App\Repositories\TemplateRepository;
 use App\Repositories\WebsiteRepository;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
+use function Sodium\randombytes_random16;
 
 class TemplateService extends BaseService
 {
@@ -78,5 +79,38 @@ class TemplateService extends BaseService
         }*/
 
         return $result;
+    }
+
+    public function getDefaultData(string $type): array
+    {
+        $templates = config('templates');
+        $blocks = $templates['blocks'];
+        $template = collect($blocks)->firstWhere('type', 'content');
+        $templateItem = Arr::only($template, ['type', 'hide', 'fields', 'styles', 'title', 'styleFiles', 'scriptFiles', 'customStyles', 'children']);
+
+        $templateItem['fields'] = [...Arr::get($templateItem, 'fields', []), ...$templates['fields']];
+        $templateItem['styleFiles'] = [...Arr::get($templateItem, 'styleFiles', []), ...$templates['styleFiles']];
+        $templateItem['scriptFiles'] = [...Arr::get($templateItem, 'scriptFiles', []), ...$templates['scriptFiles']];
+        $templateItem['styles'] = [...Arr::get($templateItem, 'styles', []), ...$templates['styles']];
+        $templateItem['values'] = $template['samples'][0]['values'];
+        $templateItem['structure'] = $template['layout'][0]['structure'];
+        $templateItem['id'] = $templateItem['type'] . '-1';
+        $templateItem['title'] = Arr::get($templateItem, 'title', $templateItem['type']);
+        $templateItem['customStyles'] = Arr::get($templateItem, 'customStyles', ['' => []]);
+        $templateItem['isActive'] = false;
+        $templateItem['key'] = time();
+        $templateItem['children'] = Arr::get($templateItem, 'children', []);
+        $templateItem['structure']['attributes']['id'] = $templateItem['id'];
+
+        $params = [
+            'styles' => '',
+            'customStyles' => '',
+            'contentHtml' => structureToHtml($templateItem['structure'], $templateItem['fields']),
+        ];
+
+        return [
+            'content' => [$templateItem],
+            'params' => $params,
+        ];
     }
 }
