@@ -293,8 +293,8 @@ export default {
                     this.selectedLayout = response.data.template;
                     if (!this.isEdit) {
                         this.initWebsite(this.selectedLayout);
-                        this.renderWebsite();
                     }
+                    this.renderWebsite();
                 }, error => {
                     console.log('error', error);
                 }, layoutId);
