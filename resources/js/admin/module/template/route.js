@@ -5,9 +5,10 @@ const route = {
     path: 'template',
     component: ParentRoute,
     children: [
-        {path: '', redirect: {name: 'template.tab'}},
+        {path: '', redirect: {name: 'template.tab', params: { tab: 'layout' }}},
+        {path: 'tab', redirect: {name: 'template.tab', params: { tab: 'layout' }}},
         {
-            path: 'tab/:tab?',
+            path: 'tab/:tab',
             name: 'template.tab',
             component: Template,
             meta: {
