@@ -126,7 +126,7 @@ export default {
             this.$router.push({name: 'template.create', params: {type}});
         },
         gotoList() {
-            this.$router.push({name: 'template.tab', params: {tab: this.$route.params.type}});
+            this.$router.push({name: 'template.tab', params: {tab: this.type}});
         }
     },
     components: {
