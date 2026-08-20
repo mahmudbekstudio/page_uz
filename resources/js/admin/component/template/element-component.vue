@@ -6,6 +6,7 @@
     ></component>
 </template>
 <script>
+import simpleTextElement from "./elements/simpleTextElement.vue";
 import hElement from "./elements/hElement";
 import pElement from "./elements/pElement";
 import hrElement from "./elements/hrElement.vue";
@@ -64,6 +65,7 @@ export default {
         },
     },
     components: {
+        simpleTextElement,
         hElement,
         pElement,
         divElement,

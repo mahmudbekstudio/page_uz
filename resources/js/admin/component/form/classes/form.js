@@ -28,6 +28,8 @@ import requiredTemplateField from './required/requiredTemplateField';
 import requiredTitleField from './required/requiredTitleField';
 import featureContentField from './featureContentField';
 import validationField from './validationField';
+import wrapperField from './template/wrapperField';
+import textEditorField from './template/textEditorField';
 import { FORM } from '../../../constants';
 import * as _ from 'lodash';
 import i18n from "../../../plugin/i18n";
@@ -528,6 +530,13 @@ export class Field {
                 break;
             case 'featureContent':
                 this.field = new featureContentField(fieldObj);
+                break;
+            case 'wrapper':
+                this.field = new wrapperField(fieldObj);
+                break;
+            case 'textEditor':
+                this.field = new textEditorField(fieldObj);
+                break;
         }
     }
 

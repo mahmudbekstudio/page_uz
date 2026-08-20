@@ -1,3 +1,4 @@
+import simpleTextElement from './simpleTextElement';
 import hElement from './hElement';
 import pElement from './pElement';
 import divElement from "./divElement";
@@ -236,7 +237,7 @@ export class Element {
             name: 'title',
             params: {label: 'words.title'}
         },
-        {
+        /*{
             type: 'select',
             name: 'wrapper',
             value: 'div',
@@ -271,12 +272,15 @@ export class Element {
             name: 'link_target',
             value: '_self',
             params: {clearable: false, label: 'words.link_target', options: {'_self': 'Self', '_blank': 'Blank'}}
-        },
+        },*/
     ];
 
     constructor(elementObj, lang = null, withAllTranslations = false) {
         this.withAllTranslations = withAllTranslations;
         switch (elementObj.tag) {
+            case 'simpleText':
+                this.element = new simpleTextElement(elementObj, lang, this.withAllTranslations);
+                break;
             case 'h':
                 this.element = new hElement(elementObj, lang, this.withAllTranslations);
                 break;

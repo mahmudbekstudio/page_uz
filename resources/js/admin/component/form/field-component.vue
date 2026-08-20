@@ -69,6 +69,8 @@
     import requiredTemplateField from './fields/required/requiredTemplateField';
     import requiredTitleField from './fields/required/requiredTitleField';
     import colorField from "./fields/colorField";
+    import wrapperField from "./fields/template/wrapperField";
+    import textEditorField from "./fields/template/textEditorField";
 
     import validation from "../../config/validation";
     import {mapGetters} from "vuex";
@@ -208,6 +210,8 @@
             requiredTemplateField,
             requiredTitleField,
             colorField,
+            wrapperField,
+            textEditorField,
         }
     }
 </script>

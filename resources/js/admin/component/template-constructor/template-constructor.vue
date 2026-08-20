@@ -67,9 +67,14 @@ export default {
             templateObject: null,
             componentsList: {
                 basic: [
-                    new Element({tag: 'h'}),
-                    new Element({tag: 'p'}),
-                    new Element({tag: 'div'}),
+                    new Element({tag: 'simpleText'}),
+                    //list
+                    //table or grid
+                    //video
+                    //audio
+                    //new Element({tag: 'h'}),
+                    //new Element({tag: 'p'}),
+                    //new Element({tag: 'div'}),
                     new Element({tag: 'hr'}),
                     new Element({tag: 'img'})
                 ],
