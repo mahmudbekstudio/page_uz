@@ -88,14 +88,26 @@ export default class element {
     }
 
     get html() {
-        const wrapper = this.params.wrapper || 'div';
+        let wrapper = 'div';
+        if (this.params.wrapper) {
+            if (this.params.wrapper.wrapper === 'paragraph') {
+                wrapper = 'p';
+            } else if (this.params.wrapper.wrapper === 'header') {
+                wrapper = this.params.wrapper.header;
+            }
+        }
+
         let classes = this.params.class;
 
         for (const styleClass of this.params.text_style) {
             classes += ' text-' + styleClass;
         }
 
-        const subTag = this.params.link_url ? 'a' : 'span';
+        let subTag = 'span';
+
+        if (this.params.wrapper && this.params.wrapper.wrapper === 'link') {
+            subTag = 'a';
+        }
 
         let result = '<' + wrapper;
         if (this.params.id) {
@@ -113,8 +125,8 @@ export default class element {
         result += '>';
         result += '<' + subTag;
 
-        if (this.params.link_url) {
-            result += ' href="' + this.params.link_url + '" target="' + this.params.link_target + '"';
+        if (this.params.wrapper && this.params.wrapper.wrapper === 'link') {
+            result += ' href="' + this.params.wrapper.linkUrl + '" target="' + this.params.wrapper.linkTarget + '"';
         }
         result += '>';
         result += '{ $' + this.name + ' }';

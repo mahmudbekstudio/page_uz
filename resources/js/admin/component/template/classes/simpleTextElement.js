@@ -7,6 +7,9 @@ export default class simpleTextElement extends element {
             name: 'wrapper',
             params: {
                 label: 'words.wrapper',
+                hideId: true,
+                hideClass: true,
+                acceptedWrappers: ['container', 'link', 'paragraph', 'header'],
             }
         },
         {

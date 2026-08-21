@@ -1,9 +1,21 @@
 <template>
     <div>
+        <v-text-field
+            v-if="showId"
+            v-model="id"
+            :label="$t('words.wrapper_id')"
+            :placeholder="$t('words.wrapper_id')"
+        ></v-text-field>
+        <v-text-field
+            v-if="showClass"
+            v-model="classList"
+            :label="$t('words.wrapper_class')"
+            :placeholder="$t('words.wrapper_class')"
+        ></v-text-field>
         <v-select
             :items="wrapperItems"
             v-model="wrapperValue"
-            :label="$t('words.wrapper')"
+            :label="$t(params.label)"
         ></v-select>
         <v-select
             v-if="headerType"
@@ -35,23 +47,39 @@ export default {
     },
     data () {
         return {
-            wrapperValue: 'container',
+            id: '',
+            classList: '',
+            wrapperValue: 'none',
             headerValue: 'h1',
             linkUrlValue: '',
             linkTargetValue: '_self',
             headerType: false,
             linkUrl: false,
             linkTarget: false,
-        }
-    },
-    computed: {
-        wrapperItems () {
-            return [
+            wrappers: [
+                {text: 'none', value: 'none'},
                 {text: 'container', value: 'container'},
                 {text: 'header', value: 'header'},
                 {text: 'link', value: 'link'},
                 {text: 'paragraph', value: 'paragraph'},
-            ];
+            ],
+        }
+    },
+    computed: {
+        showId () {
+            return !this.params.hideId;
+        },
+        showClass () {
+            return !this.params.hideClass;
+        },
+        wrapperItems () {
+            return this.wrappers.filter(item => {
+                if (this.params.acceptedWrappers) {
+                    return this.params.acceptedWrappers.indexOf(item.value) > -1;
+                }
+
+                return true;
+            });
         },
         headerItems () {
             return [
@@ -71,7 +99,11 @@ export default {
         }
     },
     created () {
-        this.setValue(this.dataValue);
+        if (this.dataValue) {
+            this.setValue(this.dataValue);
+        } else {
+            this.valueChanged();
+        }
     },
     watch: {
         dataValue (value) {
@@ -91,6 +123,11 @@ export default {
                     break;
             }
 
+            if (value !== 'link') {
+                this.linkUrlValue = null;
+                this.linkTargetValue = null;
+            }
+
             this.valueChanged();
         },
         headerValue () {
@@ -102,6 +139,12 @@ export default {
         linkTargetValue () {
             this.valueChanged();
         },
+        id () {
+            this.valueChanged();
+        },
+        classList () {
+            this.valueChanged();
+        },
     },
     methods: {
         valueChanged () {
@@ -110,11 +153,24 @@ export default {
                 header: this.headerValue,
                 linkUrl: this.linkUrlValue,
                 linkTarget: this.linkTargetValue,
+                class: this.classList,
+                id: this.id,
             };
         },
         setValue (value) {
             if (value.wrapper) {
-                this.wrapperValue = value.wrapper;
+                let wrapperExist = false;
+                for (const item in this.wrapperItems) {
+                    if (item.value === value.wrapper) {
+                        wrapperExist = true;
+                    }
+                }
+
+                if (!wrapperExist) {
+                    this.wrapperValue = this.wrapperItems[0].value;
+                } else {
+                    this.wrapperValue = value.wrapper;
+                }
             }
 
             if (value.header) {
@@ -126,7 +182,15 @@ export default {
             }
 
             if (value.linkTarget) {
-                this.linkTargetValue = value.linkTarget;
+                this.linkTargetValue = value.linkTarget === '_blank' ? '_blank' : '_self';
+            }
+
+            if (value.id) {
+                this.id = value.id;
+            }
+
+            if (value.class) {
+                this.classList = value.class;
             }
         }
     }

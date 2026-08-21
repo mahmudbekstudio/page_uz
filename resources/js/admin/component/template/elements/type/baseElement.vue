@@ -1,38 +1,75 @@
 <template>
     <component
         :is="wrapperTag"
-        :id="params.id"
-        :class="classes"
-        :title="$t(params.title)"
+        :id="wrapperId"
+        :class="wrapperClass"
+        :href="linkUrl"
+        :target="linkTarget"
     >
-        <component :is="subTag" :href="linkUrl" :target="linkTarget">{{innerText}}</component>
+        <component
+            :is="subTag"
+            :id="params.id"
+            :class="classes"
+            :title="$t(params.title)"
+            v-html="innerText"
+        />
     </component>
 </template>
 <script>
 import mixins from '../../../../mixin';
 
 export default {
-    data () {
-        return {
-            href: null,
-            target: undefined,
-        }
-    },
     computed: {
         innerText () {
             return '{ $' + this.name + ' }';
         },
         wrapperTag () {
-            return this.params.wrapper || 'div';
+            let tag = 'div';
+            if (this.params.wrapper) {
+                if (this.params.wrapper.wrapper === 'none') {
+                    return 'Fragment';
+                } else if (this.params.wrapper.wrapper === 'paragraph') {
+                    tag = 'p';
+                } else if (this.params.wrapper.wrapper === 'header') {
+                    tag = this.params.wrapper.header;
+                }
+            }
+            return tag;
         },
         subTag () {
-            return this.params.link_url ? 'a' : 'span'
+            let tag = 'span';
+
+            if (this.params.wrapper && this.params.wrapper.wrapper === 'link') {
+                tag = 'a';
+            }
+
+            return tag
         },
         linkUrl () {
-            return this.params.link_url || null;
+            if (this.params.wrapper && this.params.wrapper.wrapper === 'link') {
+                return this.params.wrapper.linkUrl;
+            }
+
+            return null;
         },
         linkTarget () {
-            return this.params.link_url ? this.params.link_target : null;
+            if (this.params.wrapper && this.params.wrapper.wrapper === 'link') {
+                return this.params.wrapper.linkTarget;
+            }
+
+            return null;
+        },
+        wrapperId () {
+            if (this.params.wrapper.id) {
+                return this.params.wrapper.id;
+            }
+            return null;
+        },
+        wrapperClass () {
+            if (this.params.wrapper.id) {
+                return this.params.wrapper.class;
+            }
+            return null;
         },
         textStyle () {
             const classes = [];
@@ -52,6 +89,14 @@ export default {
         }
     },
     mixins: [mixins.get('templateElement')],
+    components: {
+        Fragment: {
+            functional: true,
+            render(h, context) {
+                return context.children;
+            }
+        }
+    }
 }
 </script>
 <style scoped lang="scss"></style>

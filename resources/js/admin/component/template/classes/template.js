@@ -390,7 +390,7 @@ export class Element {
             mergeObj[elementItem.name] = elementItem;
         }
 
-        if (mergeObj['content'].hide && !mergeObj['text_style']) {
+        /*if (mergeObj['content'].hide && !mergeObj['text_style']) {
             mergeObj['text_style'] = {
                 type: 'select',
                 name: 'text_style',
@@ -405,7 +405,7 @@ export class Element {
                     }
                 }
             };
-        }
+        }*/
 
         return Object.values(mergeObj).filter(item => !item.hide);
     }
